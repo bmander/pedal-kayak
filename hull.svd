@@ -1,0 +1,59 @@
+// hull.sv on two sheets: `lines`, the hull from the side, from above, from astern and in an
+// isometric; and `cutting`, the cut file: every panel's neutral layer, outside up, on its scarfed
+// blank, with the transom's pattern beside the garboards.
+model m from "hull.sv"
+
+sheet lines {
+  size (420mm, 297mm)
+  label "PEDAL KAYAK  hull: six developable strakes of okoumé plywood and a raked transom. LOA 5800, beam 824, depth 380" at (14mm, 16mm)
+  view profile_0(m.port_garboard_panel) from front at (40mm, 88mm) scale 0.06
+  view profile_1(m.starboard_garboard_panel) from front at (40mm, 88mm) scale 0.06
+  view profile_2(m.port_middle_panel) from front at (40mm, 88mm) scale 0.06
+  view profile_3(m.starboard_middle_panel) from front at (40mm, 88mm) scale 0.06
+  view profile_4(m.port_sheer_panel) from front at (40mm, 88mm) scale 0.06
+  view profile_5(m.starboard_sheer_panel) from front at (40mm, 88mm) scale 0.06
+  view profile_6(m.transom) from front at (40mm, 88mm) scale 0.06
+  view plan_0(m.port_garboard_panel) from top at (40mm, 148mm) scale 0.06
+  view plan_1(m.starboard_garboard_panel) from top at (40mm, 148mm) scale 0.06
+  view plan_2(m.port_middle_panel) from top at (40mm, 148mm) scale 0.06
+  view plan_3(m.starboard_middle_panel) from top at (40mm, 148mm) scale 0.06
+  view plan_4(m.port_sheer_panel) from top at (40mm, 148mm) scale 0.06
+  view plan_5(m.starboard_sheer_panel) from top at (40mm, 148mm) scale 0.06
+  view plan_6(m.transom) from top at (40mm, 148mm) scale 0.06
+  view astern_0(m.port_garboard_panel) from right at (330mm, 268mm) scale 0.16
+  view astern_1(m.starboard_garboard_panel) from right at (330mm, 268mm) scale 0.16
+  view astern_2(m.port_middle_panel) from right at (330mm, 268mm) scale 0.16
+  view astern_3(m.starboard_middle_panel) from right at (330mm, 268mm) scale 0.16
+  view astern_4(m.port_sheer_panel) from right at (330mm, 268mm) scale 0.16
+  view astern_5(m.starboard_sheer_panel) from right at (330mm, 268mm) scale 0.16
+  view astern_6(m.transom) from right at (330mm, 268mm) scale 0.16
+  view pictorial_0(m.port_garboard_panel) from isometric at (50mm, 288mm) scale 0.028
+  view pictorial_1(m.starboard_garboard_panel) from isometric at (50mm, 288mm) scale 0.028
+  view pictorial_2(m.port_middle_panel) from isometric at (50mm, 288mm) scale 0.028
+  view pictorial_3(m.starboard_middle_panel) from isometric at (50mm, 288mm) scale 0.028
+  view pictorial_4(m.port_sheer_panel) from isometric at (50mm, 288mm) scale 0.028
+  view pictorial_5(m.starboard_sheer_panel) from isometric at (50mm, 288mm) scale 0.028
+  view pictorial_6(m.transom) from isometric at (50mm, 288mm) scale 0.028
+  label "Profile, bow to the left" at (40mm, 42mm)
+  label "Plan" at (40mm, 112mm)
+  label "From astern" at (262mm, 192mm)
+  label "Isometric" at (40mm, 205mm)
+  style .hidden { display: none }
+}
+
+sheet cutting {
+  size (420mm, 297mm)
+  label "PEDAL KAYAK  cut file: each panel's neutral layer, outside up, on a blank of three 2440 × 1220 sheets scarfed end to end" at (14mm, 16mm)
+  sketch blanks(m) from m.floor at (24mm, 250mm) scale 0.05
+  label "Blank A, 9 mm: port and starboard garboards; the transom (right)" at (24mm, 262mm)
+  label "Blank B, 6 mm: port and starboard middle strakes, port and starboard sheer strakes" at (24mm, 102mm)
+  label "Scarfs 2440 apart. Red: the keel edges, which meet." at (24mm, 272mm)
+  style m.port_garboard_flat.a { color: #b22222 }
+  style m.starboard_garboard_flat.b { color: #b22222 }
+  style m.port_garboard_line { display: none }
+  style m.starboard_garboard_line { display: none }
+  style m.port_middle_line { display: none }
+  style m.starboard_middle_line { display: none }
+  style m.port_sheer_line { display: none }
+  style m.starboard_sheer_line { display: none }
+}

@@ -1,0 +1,406 @@
+<title>Hinged Tail Drive</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: one reading column of drafting sheets; each figure is a full-width plate with its controls beneath. */
+:root {
+  --paper: #edf1f3;
+  --sheet: #fbfcfc;
+  --ink: #132630;
+  --muted: #5b6f78;
+  --rule: #c9d4d9;
+  --water: #cfe2e5;
+  --water-line: #4f8f9c;
+  --wood: #e3c79c;
+  --wood-edge: #8a6633;
+  --metal: #6f818a;
+  --metal-fill: #c3ced3;
+  --accent: #0d6a85;
+  --force: #cf4419;
+  --font-display: "Barlow Semi Condensed", "Arial Narrow", system-ui, sans-serif;
+  --font-body: "Barlow", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-data: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #0d171c; --sheet: #121f25; --ink: #dae5e9; --muted: #8ea3ac; --rule: #2a3c44;
+    --water: #15323a; --water-line: #5fb0c0; --wood: #6e5533; --wood-edge: #c9a36a;
+    --metal: #a9bac2; --metal-fill: #3b4c54; --accent: #56b8d4; --force: #ff7d52;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #0d171c; --sheet: #121f25; --ink: #dae5e9; --muted: #8ea3ac; --rule: #2a3c44;
+  --water: #15323a; --water-line: #5fb0c0; --wood: #6e5533; --wood-edge: #c9a36a;
+  --metal: #a9bac2; --metal-fill: #3b4c54; --accent: #56b8d4; --force: #ff7d52;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--paper); color: var(--ink);
+  font: 16px/1.6 var(--font-body);
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 32px 64px;
+}
+main { max-width: 1040px; margin: 0 auto; display: grid; gap: 36px; }
+.prose { max-width: 68ch; }
+header { display: grid; gap: 10px; }
+.eyebrow { font: 500 12px/1 var(--font-data); letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+h1 { font: 700 clamp(34px, 6vw, 52px)/1.02 var(--font-display); margin: 0; text-wrap: balance; letter-spacing: -0.01em; }
+h2 { font: 600 26px/1.15 var(--font-display); margin: 0 0 10px; text-wrap: balance; }
+p { margin: 0 0 12px; }
+.lede { font-size: 18px; color: var(--ink); }
+.plate { background: var(--sheet); border: 1px solid var(--rule); border-radius: 4px; display: grid; gap: 0; }
+.plate-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 8px 16px; padding: 14px 18px 0; }
+.plate-title { font: 600 18px/1.2 var(--font-display); }
+.plate-ref { font: 400 12px/1 var(--font-data); color: var(--muted); }
+.figure-scroll { overflow-x: auto; }
+svg.fig { display: block; width: 100%; min-width: 720px; height: auto; }
+.controls { display: flex; flex-wrap: wrap; gap: 12px 22px; align-items: center; padding: 6px 18px 16px; border-top: 1px solid var(--rule); }
+.controls label { font: 500 13px/1 var(--font-data); color: var(--muted); display: flex; align-items: center; gap: 10px; flex: 1 1 260px; min-width: 0; }
+input[type=range] { flex: 1; accent-color: var(--accent); min-width: 120px; }
+.presets { display: flex; gap: 6px; flex-wrap: wrap; }
+button {
+  font: 500 13px/1 var(--font-body); color: var(--ink); background: transparent;
+  border: 1px solid var(--rule); border-radius: 3px; padding: 8px 12px; cursor: pointer;
+}
+button[aria-pressed="true"] { border-color: var(--accent); color: var(--accent); }
+button:focus-visible, input:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.readouts { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1px; background: var(--rule); border-top: 1px solid var(--rule); }
+.readout { background: var(--sheet); padding: 10px 18px 12px; display: grid; gap: 4px; }
+.readout .k { font: 500 11px/1.2 var(--font-data); letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
+.readout .v { font: 500 20px/1.1 var(--font-data); font-variant-numeric: tabular-nums; }
+.readout .note { font-size: 13px; color: var(--muted); line-height: 1.35; }
+.behaviour { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 18px 28px; }
+.behaviour div { min-width: 0; border-top: 2px solid var(--ink); padding-top: 8px; }
+.behaviour h3 { font: 600 17px/1.2 var(--font-display); margin: 0 0 4px; }
+.behaviour p { font-size: 15px; margin: 0; }
+.callout { border-left: 3px solid var(--force); padding: 4px 0 4px 16px; max-width: 70ch; }
+table { border-collapse: collapse; width: 100%; font-size: 15px; }
+.table-scroll { overflow-x: auto; }
+th, td { text-align: left; padding: 8px 12px 8px 0; border-bottom: 1px solid var(--rule); vertical-align: top; }
+th { font: 500 12px/1.2 var(--font-data); letter-spacing: 0.05em; text-transform: uppercase; color: var(--muted); }
+td.num { font-family: var(--font-data); font-variant-numeric: tabular-nums; white-space: nowrap; }
+svg text { font-family: var(--font-data); }
+@media (prefers-reduced-motion: no-preference) { .tail-g { transition: none; } }
+</style>
+
+<main>
+  <header>
+    <div class="eyebrow">Pedal kayak · stern drive · concept sketch 1</div>
+    <h1>Hinged Tail Drive</h1>
+    <p class="lede prose">The line shaft leaves the hull through the transom, just under the waterline. Behind the
+      transom a short tail carries the propeller on its own shaft. The tail hangs from a gimbal. Its tilt pin and its
+      steering pin both pass through the centre of a constant-velocity (CV) joint, so the tail can swing up out of the
+      way, or side to side to steer, and the joint keeps driving the propeller.</p>
+    <p class="prose">If you know a Thai long-tail boat, this is the same idea scaled down to a pedal kayak, with only
+      the tail moving.</p>
+  </header>
+
+  <section class="plate" aria-labelledby="side-title">
+    <div class="plate-head">
+      <span class="plate-title" id="side-title">Side view, stern, bow to the left</span>
+      <span class="plate-ref">mm · design waterline at 180 kg</span>
+    </div>
+    <div class="figure-scroll"><svg class="fig" id="side" viewBox="-1680 -460 2600 880" role="img" aria-label="Side view of the stern with the hinged tail"></svg></div>
+    <div class="controls">
+      <label for="tilt">Tail angle <input type="range" id="tilt" min="-24" max="40" step="1" value="-24"></label>
+      <div class="presets" role="group" aria-label="Tail positions">
+        <button type="button" id="p-run" data-tilt="-24">Running</button>
+        <button type="button" id="p-shallow" data-tilt="-6">Shallow</button>
+        <button type="button" id="p-raised" data-tilt="40">Raised</button>
+      </div>
+    </div>
+    <div class="readouts">
+      <div class="readout"><span class="k">Tail angle</span><span class="v" id="r-tilt"></span><span class="note">from horizontal, + is up</span></div>
+      <div class="readout"><span class="k">CV joint angle</span><span class="v" id="r-joint"></span><span class="note" id="r-joint-note"></span></div>
+      <div class="readout"><span class="k">Deepest point</span><span class="v" id="r-draft"></span><span class="note" id="r-draft-note"></span></div>
+      <div class="readout"><span class="k">Propeller</span><span class="v" id="r-state"></span><span class="note" id="r-state-note"></span></div>
+    </div>
+  </section>
+
+  <section class="plate" aria-labelledby="plan-title">
+    <div class="plate-head">
+      <span class="plate-title" id="plan-title">Plan view, steering by swinging the tail</span>
+      <span class="plate-ref">mm · tail running, 24° down · starboard is up the page</span>
+    </div>
+    <div class="figure-scroll"><svg class="fig" id="plan" viewBox="-1680 -520 2600 1040" role="img" aria-label="Plan view of the stern showing the tail swung to steer"></svg></div>
+    <div class="controls">
+      <label for="steer">Steering <input type="range" id="steer" min="-25" max="25" step="1" value="15"></label>
+    </div>
+    <div class="readouts">
+      <div class="readout"><span class="k">Tail swung</span><span class="v" id="r-steer"></span><span class="note">towards this side</span></div>
+      <div class="readout"><span class="k">Boat turns</span><span class="v" id="r-turn"></span><span class="note">thrust pushes the stern the other way</span></div>
+      <div class="readout"><span class="k">CV joint angle</span><span class="v" id="r-joint2"></span><span class="note">tilt and steering combined</span></div>
+    </div>
+  </section>
+
+  <section aria-labelledby="beh-title">
+    <h2 id="beh-title">How it behaves</h2>
+    <div class="behaviour">
+      <div><h3>Running</h3><p>The tail rests on a stop, held down by its own weight and a light spring. Thrust runs
+        along the tail and straight through the joint, so it neither pushes the tail down nor lifts it.</p></div>
+      <div><h3>Touching bottom</h3><p>A fin under the tail reaches about 25 mm below the propeller tips, so it hits ground
+        first. A blow from ahead lands below the hinge and swings the tail up and back, the way a kick-up rudder
+        works.</p></div>
+      <div><h3>Launching from the cart</h3><p>A line from the end of the tail runs over a sheave on the transom to a
+        cleat in the cockpit. Pull it to raise the propeller clear of the water. Then the boat draws only what the
+        hull draws, about 150 mm.</p></div>
+      <div><h3>Reverse</h3><p>Pedalling backwards reverses the propeller. Its thrust also runs through the joint, so
+        the tail stays down without a latch.</p></div>
+      <div><h3>Steering</h3><p>The tail swings ±25° on a vertical pin and steers by aiming the thrust. It steers even
+        at walking pace and in reverse, and it replaces the rudder. That leaves one appendage at the stern that has
+        to kick up, not two.</p></div>
+      <div><h3>Hull penetration</h3><p>The line shaft passes through the transom in a stern tube with a lip seal,
+        about 30 mm below the waterline. The water pressure on the seal is small.</p></div>
+    </div>
+  </section>
+
+  <section class="callout" aria-labelledby="corr-title">
+    <h2 id="corr-title">A correction to what I described before</h2>
+    <p>Last time I put the hinge above the shaft, so that thrust would push the tail down. Drawing it showed that this
+      doesn't work with a straight shaft. A shaft can only bend at a joint that sits on the hinge axis. Move the hinge
+      off the joint and the shaft needs a second joint and a sliding spline. Then, as the tail swings up, the joint
+      angles pass 70°, so the tail would have to unplug from the drive every time it lifted.</p>
+    <p>Putting the hinge through the joint solves that, but it loses the effect you wanted: thrust no longer holds the
+      tail down. Gravity and a spring do that job instead, and reverse no longer needs a latch.</p>
+  </section>
+
+  <section class="prose" aria-labelledby="alt-title">
+    <h2 id="alt-title">If you want thrust to hold it down</h2>
+    <p>Thrust can only hold the drive down if the propeller shaft runs below the hinge, parallel to it rather than
+      through it. That takes gears at both ends of a leg, as in an outboard motor's lower unit: a bevel pair at the
+      hinge, a shaft down the leg, and a second bevel pair at the propeller. Ahead thrust then swings the leg forward
+      onto its stop. The cost is two more bevel pairs, a few percent more loss, and a latch for reverse.</p>
+  </section>
+
+  <section aria-labelledby="num-title">
+    <h2 id="num-title">Sketch numbers</h2>
+    <p class="prose">These numbers come from this sketch, not from the design. The Solvent model will set them.</p>
+    <div class="table-scroll">
+      <table>
+        <thead><tr><th>Item</th><th>Sketch value</th><th>Note</th></tr></thead>
+        <tbody>
+          <tr><td>Joint centre</td><td class="num">60 aft of transom, 30 below WL</td><td>Tilt pin and steering pin both pass through it</td></tr>
+          <tr><td>Tail, joint to propeller</td><td class="num">520</td><td>Sets the lift and the steering moment</td></tr>
+          <tr><td>Propeller</td><td class="num">Ø270, 2 blades</td><td>About 420 rpm</td></tr>
+          <tr><td>Running tail angle</td><td class="num">24° down</td><td>The line shaft runs 2° down aft, so the joint runs at 22°</td></tr>
+          <tr><td>CV joint</td><td class="num">22° running, 33° at full helm, 42° raised</td><td>Rzeppa or double-Cardan. The raised angle is reached only with the drive idle.</td></tr>
+          <tr><td>Deepest point, running</td><td class="num">~390 below WL</td><td>The fin, about 25 below the propeller tips</td></tr>
+          <tr><td>Draft, raised</td><td class="num">~150</td><td>The hull alone</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+</main>
+
+<script>
+(function () {
+  const NS = "http://www.w3.org/2000/svg";
+  const rad = d => d * Math.PI / 180;
+  const deg = r => r * 180 / Math.PI;
+  const J = { x: 60, z: -30 };        // CV joint centre, mm (x aft, z up, WL z = 0)
+  const LT = 520, R = 135, TUBE = 18; // tail length, prop radius, tail tube half-width
+  const SHAFT_ANGLE = -2;             // line shaft, degrees from horizontal (down aft)
+  const RUN_PITCH = -24;
+
+  function el(parent, tag, attrs, text) {
+    const e = document.createElementNS(NS, tag);
+    for (const k in attrs) e.setAttribute(k, attrs[k]);
+    if (text != null) e.textContent = text;
+    parent.appendChild(e);
+    return e;
+  }
+  const pts = a => a.map(p => `${p.x.toFixed(1)},${(-p.z).toFixed(1)}`).join(" ");
+  const add = (a, b, s = 1) => ({ x: a.x + b.x * s, z: a.z + b.z * s });
+  const ns = { "vector-effect": "non-scaling-stroke" };
+
+  function arrow(g, from, to, color, width) {
+    const dx = to.x - from.x, dz = to.z - from.z, L = Math.hypot(dx, dz);
+    const ux = dx / L, uz = dz / L, h = 34, w = 15;
+    const base = { x: to.x - ux * h, z: to.z - uz * h };
+    el(g, "line", Object.assign({ x1: from.x, y1: -from.z, x2: base.x, y2: -base.z, stroke: color, "stroke-width": width, "stroke-linecap": "round" }, ns));
+    el(g, "polygon", { points: pts([to, { x: base.x - uz * w, z: base.z + ux * w }, { x: base.x + uz * w, z: base.z - ux * w }]), fill: color });
+  }
+  function label(g, p, text, opts = {}) {
+    el(g, "text", { x: p.x, y: -p.z, "font-size": opts.size || 34, fill: opts.color || "var(--ink)", "text-anchor": opts.anchor || "start", "font-weight": opts.weight || 400 }, text);
+  }
+
+  // ---------- side view ----------
+  const side = document.getElementById("side");
+  const zb = x => -60 - 95 * (1 - Math.exp(-Math.max(0, -x) / 700));   // keel line rising to the transom
+  const TB = { x: 0, z: -60 }, TT = { x: 85, z: 270 };                  // transom bottom, top
+  const transomX = z => TB.x + (TT.x - TB.x) * (z - TB.z) / (TT.z - TB.z);
+
+  function drawSide(tilt) {
+    side.innerHTML = "";
+    const g = el(side, "g", {});
+    // water
+    el(g, "rect", { x: -1680, y: 0, width: 2600, height: 460, fill: "var(--water)" });
+    el(g, "line", Object.assign({ x1: -1680, y1: 0, x2: 920, y2: 0, stroke: "var(--water-line)", "stroke-width": 1.5, "stroke-dasharray": "10 6" }, ns));
+    label(g, { x: 880, z: 14 }, "DWL", { anchor: "end", color: "var(--water-line)", size: 30 });
+
+    // hull profile
+    const hull = [];
+    for (let x = -1680; x <= 0; x += 40) hull.push({ x, z: zb(x) });
+    hull.push(TB, TT, { x: -1680, z: 252 });
+    el(g, "polygon", Object.assign({ points: pts(hull), fill: "var(--wood)", stroke: "var(--wood-edge)", "stroke-width": 2, "fill-opacity": 0.55 }, ns));
+    label(g, { x: -1640, z: 200 }, "hull, 9 mm garboards and transom", { color: "var(--wood-edge)", size: 30 });
+
+    // line shaft and stern tube
+    const sa = rad(SHAFT_ANGLE);
+    const shaftStart = { x: -1680, z: J.z + (J.x + 1680) * Math.tan(-sa) };
+    el(g, "line", Object.assign({ x1: shaftStart.x, y1: -shaftStart.z, x2: J.x, y2: -J.z, stroke: "var(--metal)", "stroke-width": 4 }, ns));
+    const tx = transomX(J.z);
+    const tube = [{ x: tx - 60, z: J.z + 22 }, { x: tx + 20, z: J.z + 22 }, { x: tx + 20, z: J.z - 22 }, { x: tx - 60, z: J.z - 22 }];
+    el(g, "polygon", Object.assign({ points: pts(tube), fill: "var(--metal-fill)", stroke: "var(--metal)", "stroke-width": 1.5 }, ns));
+    label(g, { x: -1640, z: 62 }, "line shaft from the gearbox, 2° down", { color: "var(--muted)", size: 30 });
+    label(g, { x: -330, z: 70 }, "stern tube + lip seal", { color: "var(--muted)", size: 30 });
+    el(g, "line", Object.assign({ x1: -60, y1: -62, x2: tx - 20, y2: -(J.z + 22), stroke: "var(--muted)", "stroke-width": 1 }, ns));
+
+    // gimbal bracket on the transom
+    const br = [{ x: transomX(70), z: 70 }, { x: 70, z: 70 }, { x: 108, z: J.z }, { x: 70, z: -78 }, { x: transomX(-60) - 4, z: -78 }];
+    el(g, "polygon", Object.assign({ points: pts(br), fill: "var(--metal-fill)", stroke: "var(--metal)", "stroke-width": 1.5 }, ns));
+
+    // tail
+    const t = rad(tilt);
+    const d = { x: Math.cos(t), z: Math.sin(t) }, n = { x: -Math.sin(t), z: Math.cos(t) };
+    const at = (u, v) => add(add(J, d, u), n, v);
+    const tg = el(g, "g", { class: "tail-g" });
+    // fin under the tail
+    const FIN = R + 50; // deep enough that, with the tail tilted, the fin is below the propeller tips
+    const fin = [at(0.58 * LT, -TUBE), at(0.9 * LT, -TUBE), at(0.9 * LT, -FIN), at(0.79 * LT, -FIN)];
+    el(tg, "polygon", Object.assign({ points: pts(fin), fill: "var(--metal-fill)", stroke: "var(--metal)", "stroke-width": 1.5 }, ns));
+    // tube
+    const tubeP = [at(26, TUBE), at(LT - 34, TUBE), at(LT - 34, -TUBE), at(26, -TUBE)];
+    el(tg, "polygon", Object.assign({ points: pts(tubeP), fill: "var(--metal-fill)", stroke: "var(--metal)", "stroke-width": 1.5 }, ns));
+    [0.3, 0.82].forEach(f => {
+      const b = [at(f * LT - 18, TUBE + 6), at(f * LT + 18, TUBE + 6), at(f * LT + 18, -TUBE - 6), at(f * LT - 18, -TUBE - 6)];
+      el(tg, "polygon", Object.assign({ points: pts(b), fill: "var(--sheet)", stroke: "var(--metal)", "stroke-width": 1.5 }, ns));
+    });
+    // propeller: hub and two blades seen edge-on
+    const C = at(LT, 0);
+    el(tg, "line", Object.assign({ x1: at(LT, R).x, y1: -at(LT, R).z, x2: at(LT, -R).x, y2: -at(LT, -R).z, stroke: "var(--muted)", "stroke-width": 1, "stroke-dasharray": "4 5" }, ns));
+    [1, -1].forEach(s => {
+      const c = at(LT, s * R / 2 + s * 8);
+      el(tg, "ellipse", Object.assign({ cx: c.x, cy: -c.z, rx: 22, ry: R / 2 - 6, transform: `rotate(${-tilt} ${c.x} ${-c.z})`, fill: "var(--metal)", stroke: "var(--ink)", "stroke-width": 1.2 }, ns));
+    });
+    el(tg, "ellipse", Object.assign({ cx: C.x, cy: -C.z, rx: 40, ry: 22, transform: `rotate(${-tilt} ${C.x} ${-C.z})`, fill: "var(--metal-fill)", stroke: "var(--ink)", "stroke-width": 1.2 }, ns));
+
+    // down-spring from the bracket to the tail
+    const A = { x: transomX(150) + 12, z: 150 }, B = at(210, TUBE);
+    el(g, "circle", { cx: A.x, cy: -A.z, r: 9, fill: "var(--metal)" });
+    const sd = { x: B.x - A.x, z: B.z - A.z }, sl = Math.hypot(sd.x, sd.z);
+    const mid = add(A, sd, 0.55 / 1);
+    el(g, "line", Object.assign({ x1: A.x, y1: -A.z, x2: B.x, y2: -B.z, stroke: "var(--metal)", "stroke-width": 3 }, ns));
+    el(g, "line", Object.assign({ x1: A.x, y1: -A.z, x2: mid.x, y2: -mid.z, stroke: "var(--metal)", "stroke-width": 9, "stroke-linecap": "round" }, ns));
+    label(g, { x: A.x + 40, z: A.z + 40 }, "spring holds the tail down", { color: "var(--muted)", size: 28 });
+
+    // raise line over a sheave at the transom top
+    const S = { x: TT.x + 10, z: 245 }, L0 = at(0.9 * LT, TUBE);
+    el(g, "circle", Object.assign({ cx: S.x, cy: -S.z, r: 16, fill: "none", stroke: "var(--metal)", "stroke-width": 1.5 }, ns));
+    el(g, "polyline", Object.assign({ points: pts([L0, { x: S.x + 16, z: S.z }]), fill: "none", stroke: "var(--accent)", "stroke-width": 1.5, "stroke-dasharray": "8 6" }, ns));
+    el(g, "polyline", Object.assign({ points: pts([{ x: S.x, z: S.z + 16 }, { x: -520, z: 300 }]), fill: "none", stroke: "var(--accent)", "stroke-width": 1.5, "stroke-dasharray": "8 6" }, ns));
+    label(g, { x: -1060, z: 318 }, "raise line, to a cockpit cleat", { color: "var(--accent)", size: 28 });
+
+    // joint
+    el(g, "circle", Object.assign({ cx: J.x, cy: -J.z, r: 24, fill: "var(--sheet)", stroke: "var(--ink)", "stroke-width": 2 }, ns));
+    el(g, "circle", { cx: J.x, cy: -J.z, r: 7, fill: "var(--ink)" });
+    label(g, { x: 150, z: 60 }, "CV joint + gimbal", { size: 30, weight: 500 });
+    el(g, "line", Object.assign({ x1: 148, y1: -50, x2: J.x + 18, y2: -(J.z + 14), stroke: "var(--ink)", "stroke-width": 1 }, ns));
+
+    // forces when running
+    if (tilt <= -15) {
+      const thrustFrom = at(LT + 230, 0), thrustTo = at(LT + 60, 0);
+      el(g, "line", Object.assign({ x1: at(LT + 60, 0).x, y1: -at(LT + 60, 0).z, x2: at(-150, 0).x, y2: -at(-150, 0).z, stroke: "var(--force)", "stroke-width": 1, "stroke-dasharray": "3 6" }, ns));
+      arrow(g, thrustFrom, thrustTo, "var(--force)", 3);
+      label(g, add(thrustFrom, { x: -60, z: -70 }), "thrust: its line", { color: "var(--force)", size: 28 });
+      label(g, add(thrustFrom, { x: -60, z: -104 }), "passes through the joint", { color: "var(--force)", size: 28 });
+      const foot = at(0.9 * LT, -FIN);
+      arrow(g, add(foot, { x: -170, z: -40 }), add(foot, { x: -4, z: 0 }), "var(--force)", 3);
+      label(g, add(foot, { x: -560, z: -80 }), "ground strike lifts the tail", { color: "var(--force)", size: 28 });
+    }
+
+    // seabed hint: the depth the boat needs in this position
+    const deepest = Math.min(at(0.79 * LT, -FIN).z, at(0.9 * LT, -FIN).z, at(LT, -R).z, at(LT, R).z, zb(-1680));
+    el(g, "line", Object.assign({ x1: -1680, y1: -deepest + 6, x2: 920, y2: -deepest + 6, stroke: "var(--muted)", "stroke-width": 1, "stroke-dasharray": "2 6" }, ns));
+    label(g, { x: -1640, z: deepest - 40 }, `water needed: ${Math.round(-deepest)} mm`, { color: "var(--muted)", size: 28 });
+
+    // readouts
+    const joint = Math.abs(tilt - SHAFT_ANGLE);
+    const top = Math.max(at(LT, R).z, at(LT, -R).z), bottom = Math.min(at(LT, R).z, at(LT, -R).z);
+    document.getElementById("r-tilt").textContent = `${tilt > 0 ? "+" : ""}${tilt}°`;
+    document.getElementById("r-joint").textContent = `${joint}°`;
+    document.getElementById("r-joint-note").textContent = joint <= 25 ? "fine for driving" : "drive idle here";
+    document.getElementById("r-draft").textContent = `${Math.round(-deepest)} mm`;
+    document.getElementById("r-draft-note").textContent = "below the waterline, boat level";
+    let st, note;
+    if (bottom >= 0) { st = "clear"; note = "out of the water"; }
+    else if (top <= -20) { st = "immersed"; note = "full thrust"; }
+    else { st = "part out"; note = "crawl only; it will ventilate"; }
+    document.getElementById("r-state").textContent = st;
+    document.getElementById("r-state-note").textContent = note;
+    document.querySelectorAll(".presets button").forEach(b => b.setAttribute("aria-pressed", String(+b.dataset.tilt === tilt)));
+  }
+
+  // ---------- plan view ----------
+  const plan = document.getElementById("plan");
+  function drawPlan(steer) {
+    plan.innerHTML = "";
+    const g = el(plan, "g", {});
+    el(g, "rect", { x: -1680, y: -520, width: 2600, height: 1040, fill: "var(--water)", "fill-opacity": 0.6 });
+    const half = x => 270 + 130 * Math.pow(Math.max(0, -x) / 1680, 0.8);
+    const sb = [], pt = [];
+    for (let x = -1680; x <= 0; x += 40) { sb.push({ x, z: half(x) }); pt.unshift({ x, z: -half(x) }); }
+    el(g, "polygon", Object.assign({ points: pts(sb.concat(pt)), fill: "var(--wood)", "fill-opacity": 0.55, stroke: "var(--wood-edge)", "stroke-width": 2 }, ns));
+    label(g, { x: -1640, z: 300 }, "starboard", { color: "var(--wood-edge)", size: 30 });
+    label(g, { x: -1640, z: -330 }, "port", { color: "var(--wood-edge)", size: 30 });
+    label(g, { x: -1640, z: -440 }, "◄ bow", { color: "var(--muted)", size: 30 });
+    el(g, "line", Object.assign({ x1: -1680, y1: 0, x2: J.x, y2: 0, stroke: "var(--metal)", "stroke-width": 4 }, ns));
+    // tail, projected: horizontal length shortened by the running pitch
+    const s = rad(steer), Lp = LT * Math.cos(rad(RUN_PITCH));
+    const d = { x: Math.cos(s), z: Math.sin(s) }, n = { x: -Math.sin(s), z: Math.cos(s) };
+    const at = (u, v) => add(add(J, d, u), n, v);
+    el(g, "polygon", Object.assign({ points: pts([at(26, TUBE), at(Lp - 30, TUBE), at(Lp - 30, -TUBE), at(26, -TUBE)]), fill: "var(--metal-fill)", stroke: "var(--metal)", "stroke-width": 1.5 }, ns));
+    [1, -1].forEach(k => {
+      const c = at(Lp, k * (R / 2 + 8));
+      el(g, "ellipse", Object.assign({ cx: c.x, cy: -c.z, rx: 18, ry: R / 2 - 6, transform: `rotate(${-steer} ${c.x} ${-c.z})`, fill: "var(--metal)", stroke: "var(--ink)", "stroke-width": 1.2 }, ns));
+    });
+    const C = at(Lp, 0);
+    el(g, "ellipse", Object.assign({ cx: C.x, cy: -C.z, rx: 40, ry: 22, transform: `rotate(${-steer} ${C.x} ${-C.z})`, fill: "var(--metal-fill)", stroke: "var(--ink)", "stroke-width": 1.2 }, ns));
+    el(g, "circle", Object.assign({ cx: J.x, cy: -J.z, r: 24, fill: "var(--sheet)", stroke: "var(--ink)", "stroke-width": 2 }, ns));
+    el(g, "circle", { cx: J.x, cy: 0, r: 7, fill: "var(--ink)" });
+    // centreline reference arc
+    el(g, "line", Object.assign({ x1: J.x, y1: 0, x2: J.x + Lp + 120, y2: 0, stroke: "var(--muted)", "stroke-width": 1, "stroke-dasharray": "4 6" }, ns));
+    if (steer !== 0) {
+      arrow(g, at(Lp + 230, 0), at(Lp + 60, 0), "var(--force)", 3);
+      label(g, { x: 330, z: steer > 0 ? -300 : 330 }, "thrust", { color: "var(--force)", size: 30 });
+      // stern pushed
+      const dir = -Math.sign(steer); // the stern is pushed away from the side the tail swings to
+      arrow(g, { x: -250, z: dir * 315 }, { x: -250, z: dir * 470 }, "var(--force)", 3);
+      arrow(g, { x: -1300, z: -dir * 390 }, { x: -1300, z: -dir * 505 }, "var(--accent)", 3);
+      label(g, { x: -220, z: dir * 420 - 12 }, "stern pushed", { color: "var(--force)", size: 28 });
+      label(g, { x: -1270, z: -dir * 450 - 12 }, "bow swings", { color: "var(--accent)", size: 28 });
+    }
+    label(g, { x: 150, z: steer >= 0 ? -120 : 90 }, "vertical steering pin", { size: 28, color: "var(--muted)" });
+    label(g, { x: 150, z: steer >= 0 ? -156 : 54 }, "through the joint centre", { size: 28, color: "var(--muted)" });
+
+    const side = steer > 0 ? "starboard" : steer < 0 ? "port" : "centre";
+    document.getElementById("r-steer").textContent = steer === 0 ? "0°" : `${Math.abs(steer)}° ${side}`;
+    document.getElementById("r-turn").textContent = steer === 0 ? "straight" : `to ${side}`;
+    const tilt = rad(RUN_PITCH - SHAFT_ANGLE);
+    const combined = deg(Math.acos(Math.cos(tilt) * Math.cos(s)));
+    document.getElementById("r-joint2").textContent = `${Math.round(combined)}°`;
+  }
+
+  const tiltIn = document.getElementById("tilt"), steerIn = document.getElementById("steer");
+  tiltIn.addEventListener("input", () => drawSide(+tiltIn.value));
+  steerIn.addEventListener("input", () => drawPlan(+steerIn.value));
+  document.querySelectorAll(".presets button").forEach(b => b.addEventListener("click", () => {
+    tiltIn.value = b.dataset.tilt; drawSide(+b.dataset.tilt);
+  }));
+  drawSide(+tiltIn.value);
+  drawPlan(+steerIn.value);
+})();
+</script>

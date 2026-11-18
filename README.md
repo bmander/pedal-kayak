@@ -41,7 +41,7 @@ The `.sv` models will follow it.
 | Panels | 6 mm okoumé sides; 9 mm garboards and transom | The garboards carry the shaft fitting, the strut and grounding loads. Each panel needs about three sheets, scarfed. |
 | Transom | Immersed at most a little at design load | A transom dragging under water costs speed at kayak speeds |
 | Buoyancy | Sealed bulkheads fore and aft; foredeck over the drive; aft deck | Self-rescue in cold water |
-| Steering | Kick-up rudder on the transom, in the propeller's wash, with a hand control | |
+| Steering | The propeller tail swings to steer (see below), worked by a hand lever | |
 
 `solventc` refuses a panel whose rails turn back on themselves. Each chine and sheer is therefore
 drawn in a plane and kept convex within it.
@@ -71,31 +71,40 @@ Bow buoyancy → pedals and gearbox under the foredeck → pilot's seat on rails
 | Line shaft | Straight from the gearbox to the stern, down at ~5°, in a tunnel along the keel that doubles as a keelson. One intermediate bearing: an unsupported 3.8 m aluminium tube has its first critical speed near 280 rpm, below the operating speed. |
 | Reverse | Pedal backward. No freewheel. |
 
-### Propeller lift for shallow water
+### Propeller lift for shallow water: hinged tail (sketch 1)
 
-A fixed propeller of this size adds ~250 mm of draft. The proposed answer is a **hinged tail**:
+A fixed propeller of this size adds ~250 mm of draft. The proposed answer is a **hinged tail**,
+sketched interactively in [`docs/hinged-tail.html`](docs/hinged-tail.html):
 
-- The line shaft passes through the hull in a fixed stern tube.
-- Outboard of the tube, a universal joint and a sliding spline drive a short tail shaft. The tail
-  shaft and its thrust bearing are carried in a strut.
-- The strut pivots on a transverse pin set *above* the shaft line.
+- The line shaft runs about 2° down aft. It leaves the hull through the transom in a stern tube
+  with a lip seal, about 30 mm below the waterline.
+- Just aft of the transom, a constant-velocity (CV) joint drives a 520 mm tail carrying the
+  propeller. The tail hangs from a gimbal. Its tilt pin and its steering pin both pass through the
+  joint's centre.
+- **Running:** the tail sits 24° down on a stop, held there by its weight and a light spring.
+  Thrust, ahead or astern, runs through the joint, so it neither deploys nor lifts the tail.
+- **Grounding:** a fin about 25 mm below the propeller tips touches first. It kicks the tail up
+  and aft.
+- **Launching:** a line to a cockpit cleat raises the propeller clear of the water, leaving only
+  the hull's ~150 mm draft.
+- **Steering:** the tail swings ±25° and steers by aiming the thrust. There is no separate rudder.
+- **CV joint angles:** 22° running, ~33° at full helm, 42° raised (drive idle).
 
-The forces then do the work:
+An earlier idea put the pivot above the shaft line, so that thrust would hold the tail down. That
+needs a second joint and a sliding spline, and the joint angles pass 70° as the tail rises, so it
+is dropped. If thrust-held deployment is wanted, the alternative is a leg with bevel gears at the
+hinge and at the propeller, like an outboard's lower unit.
 
-- **Ahead thrust** acts below the pivot. It swings the strut forward and down onto its stop:
-  pedalling deploys the propeller.
-- **A grounding strike** pushes aft and up. It kicks the strut up, the same way a kick-up rudder
-  works.
-- **Raised**, the tail trails up behind the transom.
-- **Astern thrust** lifts it, so reverse needs a latch the pilot can work from the seat.
+## Decided since v0
+
+- **Passenger:** faces forward, sitting low in the cargo well.
+- **Bicycle:** lies in the cargo well with its front wheel off. The cockpit opening must therefore
+  run the length of the well, about 1.8 m.
 
 ## Open questions
 
-1. Hinged tail vs. alternatives (a Z-drive leg, a smaller propeller in a skeg). This decides how
-   far the brief's "shaft pierces the hull" holds.
-2. Where the passenger sits: in the cargo well facing forward, or back to back.
-3. How the bicycle is stowed: in the well with the front wheel off, or across the decks.
-4. Weight budget for cart handling.
+1. Hinged tail (sketch 1) vs. the geared leg.
+2. Weight budget for cart handling.
 
 ## Layout of this repository (planned)
 

@@ -297,8 +297,71 @@ def rail_block():
             names = emit(f"{short}{side[0]}", pts, mirror)
             out.append(f"{side}_{rail} := spline({', '.join(names)})")
     out.extend(transom_block())
+    out.extend(skeg_block())
+    out.extend(bulkhead_block())
     out.append("// END generated")
-    return "\n".join(out)
+    return "\n  ".join(out)
+
+
+SKEG_FWD = 4000.0      # where the skeg leaves the keel
+SKEG_HEEL = 5770.0     # its aft end, past the transom's bottom: the gimbal's bracket bolts here
+SKEG_FOOT = 4400.0     # where its bottom reaches the baseline
+
+
+def skeg_block():
+    """The skeg's outline in the centreplane (u = x, v = z): its top along the keel from SKEG_FWD to
+    the transom, its heel square, its bottom on the baseline, rising forward to the keel."""
+    top = [(x, keel_z(x)) for x in stations(SKEG_FWD, keel_aft_x(), 7)]
+    ring = top + [(SKEG_HEEL, KEEL_AFT_Z), (SKEG_HEEL, 0.0), (SKEG_FOOT, 0.0)]
+    out = ["// the skeg's outline in the centreplane, its top along the keel", "in centre {"]
+    names = []
+    for i, (x, z) in enumerate(ring):
+        n = f"sk{i}"
+        names.append(n)
+        out.append(f"  {n} := point hint(({fmt(x)}, {fmt(z)}))")
+        out.append(f"  fix(({fmt(x)}mm, {fmt(z)}mm)) {n}")
+    chain = " -> ".join(f"line({a}, {b})" for a, b in zip(names, names[1:]))
+    out.append(f"  skeg_outline := {chain} -> line({names[-1]}, {names[0]}) -> close")
+    out.append("}")
+    return out
+
+
+BULKHEADS = {"forward": (1600.0, None), "floor": (2180.0, 110.0), "aft": (5250.0, None)}   # station, top (None: to the sheer)
+
+
+def bulkhead_block():
+    """Each bulkhead's plane (square to the centreline at its station, u to starboard, v up) and its
+    outline: the hull's inside at that station, through the rails' points, keel to sheer and across
+    the top. Panels are built outboard of their rails, so the rails trace the hull's inside."""
+    out = []
+    for name, (x, top) in BULKHEADS.items():
+        sec = section(x)
+        if top is not None:          # a floor: the section below `top`, square across
+            low = [sec[0]]
+            for (y0, z0), (y1, z1) in zip(sec, sec[1:]):
+                if z1 >= top:
+                    low.append((y0 + (top - z0) / (z1 - z0) * (y1 - y0), top))
+                    break
+                low.append((y1, z1))
+            sec = low
+        ring = [(0.0, sec[0][1])] + [(y, z) for y, z in sec[1:]]
+        ring += [(-y, z) for y, z in ring[:0:-1]]
+        out.append(f"// the {name} bulkhead, {fmt(x)} aft of the stem head")
+        out.append(f"bh_{name} := plane")
+        out.append(f"fix(origin == ({fmt(x)}mm, 0mm, 0mm)) bh_{name}")
+        out.append(f"fix(dir == (0, 1, 0)) bh_{name}.u")
+        out.append(f"fix(dir == (0, 0, 1)) bh_{name}.v")
+        out.append(f"in bh_{name} {{")
+        names = []
+        for i, (y, z) in enumerate(ring):
+            n = f"b_{name}{i}"
+            names.append(n)
+            out.append(f"  {n} := point hint(({fmt(y)}, {fmt(z)}))")
+            out.append(f"  fix(({fmt(y)}mm, {fmt(z)}mm)) {n}")
+        chain = " -> ".join(f"line({a}, {b})" for a, b in zip(names, names[1:]))
+        out.append(f"  bh_{name}_outline := {chain} -> line({names[-1]}, {names[0]}) -> close")
+        out.append("}")
+    return out
 
 
 def transom_block():

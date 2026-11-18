@@ -2,3 +2,4 @@ renders/*.svg
 !renders/cutting.svg
 __pycache__/
 _*.sv
+exp/

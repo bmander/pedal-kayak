@@ -99,6 +99,14 @@ z_line_pinion := 15
 step_1 := z_crank_gear / z_tower_pinion          // 2.5
 step_2 := z_tower_gear / z_line_pinion           // 2.8
 ratio := step_1 * step_2                         // 7
+// the members' mean pitch radii: each pair's apex is where its shafts meet, and each member's mean
+// point stands its mate's mean pitch radius along its own axis from there
+r_crank_gear := z_crank_gear * m_1 / 2           // 56.25
+r_tower_pinion := z_tower_pinion * m_1 / 2       // 22.5
+r_tower_gear := z_tower_gear * m_2 / 2           // 42
+r_line_pinion := z_line_pinion * m_2 / 2         // 15
+delta_1 := atan(z_crank_gear / z_tower_pinion)   // stage 1's gear pitch angle, 68.2°
+delta_2 := atan(z_tower_gear / z_line_pinion)    // stage 2's, 70.3°
 prop_speed := cadence * ratio                    // 490 rpm
 slip := 1 - cruise / (prop_speed / turn * prop_pitch)
 thrust_load := drag / (0.5 * rho_sea * cruise^2 * pi * prop_r^2)    // C_T: light, so efficient
@@ -134,8 +142,17 @@ bb_z := 330mm
 lower_box_z := 72mm                    // the line shaft's height at the lower bevel box
 joint_x := 5798mm                      // the CV joint: 60 aft of the transom, at the skeg's heel
 joint_z := 30mm
-line_length := sqrt((joint_x - bb_x)^2 + (lower_box_z - joint_z)^2)
-line_slope := atan((lower_box_z - joint_z) / (joint_x - bb_x))
+// The tower stands square to the line shaft, through the cranks' axle: its foot `low` on the line
+// shaft is where (bb − low) · (joint − low) = 0, a quadratic in low's x, the root under the axle.
+low_x := ((bb_x + joint_x) - sqrt((joint_x - bb_x)^2 - 4 * (bb_z - lower_box_z) * (joint_z - lower_box_z))) / 2
+line_length := sqrt((joint_x - low_x)^2 + (lower_box_z - joint_z)^2)
+tower_length := sqrt((bb_x - low_x)^2 + (bb_z - lower_box_z)^2)
+// unit directions, in the centreplane (x, z): down the tower, and aft along the line shaft
+down_x := (low_x - bb_x) / tower_length
+down_z := (lower_box_z - bb_z) / tower_length
+aft_x := (joint_x - low_x) / line_length
+aft_z := (joint_z - lower_box_z) / line_length
+line_slope := atan((lower_box_z - joint_z) / (joint_x - low_x))
 span := line_length / 2                // between bearings
 line_J := pi * (line_od^4 - line_id^4) / 32
 line_I := line_J / 2
@@ -164,6 +181,13 @@ fin_below_tips := 25mm
 tip_z := joint_z - tail * sin(tail_down) - prop_r * cos(tail_down)  // the lowest tip's height
 deepest_running := draft_design - (tip_z - fin_below_tips)          // the fin, below the waterline
 
+// -- the cranks, the boom and the steering ------------------------------------------------------
+q_half := 70mm                         // each crank arm's plane, out from the centreline
+pedal_width := 90mm
+boom_x := 1606mm                       // the boom's forward end, on the forward bulkhead's face
+transom_rake := 12deg                  // the steering stock leans aft with the transom
+stock_top_z := 470mm                   // the tiller head, above the deck aft
+
 // -- the seat ---------------------------------------------------------------------------------------
 // The pedal's far point is reach_factor of the functional leg length from the backrest: the ball
 // of the foot on the spindle, the knee a little short of straight. The seat slides on rails; the
@@ -176,6 +200,10 @@ hip_x_max := bb_x + sqrt(hip_to_bb_max^2 - (bb_z - hip_z)^2)
 seat_travel_needed := hip_x_max - hip_x_min
 seat_travel := 380mm
 seat_width := 480mm
+// As drawn in the assembly: the 99th-percentile man, the seat fully aft, his starboard pedal at
+// its far point and the port at its near point, so the arms lie along the line from hip to axle.
+crank_ux := (bb_x - hip_x_max) / hip_to_bb_max
+crank_uz := (bb_z - hip_z) / hip_to_bb_max
 
 // -- claims ------------------------------------------------------------------------------------------
 claim full_load <= 320kg               // inside lines.py's full-load hydrostatics

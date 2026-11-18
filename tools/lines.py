@@ -214,6 +214,26 @@ def hydro(T, dx=10.0):
                 bm=I / vol, cb=vol / (lwl * bwl * T) if lwl and bwl else 0)
 
 
+def wetted(T, dx=10.0):
+    """Wetted surface (mm^2): the half-section's girth below z = T, both sides, along x."""
+    S = 0.0
+    x = FOREFOOT[0]
+    while x <= LOA:
+        poly = section(x)
+        if poly:
+            g = 0.0
+            for (y0, z0), (y1, z1) in zip(poly, poly[1:]):
+                if z0 >= T:
+                    break
+                if z1 > T:
+                    t = (T - z0) / (z1 - z0)
+                    y1, z1 = y0 + t * (y1 - y0), T
+                g += math.hypot(y1 - y0, z1 - z0)
+            S += 2 * g * dx
+        x += dx
+    return S
+
+
 def draft_for(kg):
     lo, hi = 1.0, 400.0
     for _ in range(60):
@@ -342,14 +362,14 @@ def main():
               f"transom ({r.xt:.0f}, y={r.yt:.0f}, z={r.zt:.0f})  plane z = {r.a:.1f} "
               f"{r.b:+.5f} x {r.c:+.4f} y")
     print("transom corners (starboard):", [tuple(round(v) for v in p) for p in transom_corners()])
-    for label, kg in (("light (hull+drive+pilot 60 kg)", 120), ("design (pilot 90 kg + gear)", 180),
+    for label, kg in (("light (boat 51 kg, pilot 47 kg)", 98), ("design (boat, pilot 90, gear 15)", 156),
                       ("full (pilot, passenger, cargo)", 320)):
         h = draft_for(kg)
         immersion = h["T"] - KEEL_AFT_Z
         print(f"{label:34} {kg:4} kg: draft {h['T']:5.1f}  LWL {h['lwl']:5.0f}  BWL {h['bwl']:4.0f}"
               f"  LCB {h['lcb']:5.0f} ({h['lcb'] / LOA:.3f} LOA)"
               f"  KB {h['kb']:4.0f}  BM {h['bm']:4.0f}  KM {h['kb'] + h['bm']:4.0f}"
-              f"  Cb {h['cb']:.2f}  transom immersed {immersion:5.1f}")
+              f"  Cb {h['cb']:.2f}  transom immersed {immersion:5.1f}  wetted {wetted(h['T']) / 1e6:.2f} m2")
     sheer_mid = SIDE["sheer"].z(X_MAX)
     print(f"depth at the widest station: {sheer_mid - keel_z(X_MAX):.0f}; "
           f"freeboard there at full load: {sheer_mid - draft_for(320)['T']:.0f}")

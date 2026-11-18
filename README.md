@@ -76,19 +76,25 @@ Bow buoyancy → pedals and gearbox under the foredeck → pilot's seat on rails
 A fixed propeller of this size adds ~250 mm of draft. The proposed answer is a **hinged tail**,
 sketched interactively in [`docs/hinged-tail.html`](docs/hinged-tail.html):
 
-- The line shaft runs about 2° down aft. It leaves the hull through the transom in a stern tube
-  with a lip seal, about 30 mm below the waterline.
-- Just aft of the transom, a constant-velocity (CV) joint drives a 520 mm tail carrying the
-  propeller. The tail hangs from a gimbal. Its tilt pin and its steering pin both pass through the
-  joint's centre.
-- **Running:** the tail sits 24° down on a stop, held there by its weight and a light spring.
-  Thrust, ahead or astern, runs through the joint, so it neither deploys nor lifts the tail.
+- **Hinge as low as possible, but no lower than the keel.** A skeg carries the keel line aft at
+  full depth (~150 mm below the DWL). The line shaft runs about 4° down aft and passes through
+  the hull bottom into a tube inside the skeg, with a lip seal at the skeg's heel.
+- At the heel, 60 mm aft of the transom and 125 mm below the waterline, a constant-velocity (CV)
+  joint drives a 520 mm tail carrying the propeller. The tail hangs from a gimbal. Its tilt pin and
+  its steering pin both pass through the joint's centre. The gimbal's lowest point is level with
+  the keel.
+- **Running:** the tail sits 8° down on a stop, so 99% of the thrust pushes forward, and the joint
+  runs at only 4°. The tail's weight and a light spring hold it there. Thrust, ahead or astern,
+  runs through the joint, so it neither deploys nor lifts the tail.
+- **Why not lower:** a level tail needs the hinge 215 mm down. That adds ~90 mm of draft that never
+  lifts, for less than 1% more forward thrust.
 - **Grounding:** a fin about 25 mm below the propeller tips touches first. It kicks the tail up
   and aft.
 - **Launching:** a line to a cockpit cleat raises the propeller clear of the water, leaving only
   the hull's ~150 mm draft.
 - **Steering:** the tail swings ±25° and steers by aiming the thrust. There is no separate rudder.
-- **CV joint angles:** 22° running, ~33° at full helm, 42° raised (drive idle).
+- **Raised:** the tail swings 30° up, which lifts the propeller clear of the water.
+- **CV joint angles:** 4° running, ~25° at full helm, 34° raised (drive idle).
 
 An earlier idea put the pivot above the shaft line, so that thrust would hold the tail down. That
 needs a second joint and a sliding spline, and the joint angles pass 70° as the tail rises, so it
@@ -103,8 +109,9 @@ hinge and at the propeller, like an outboard's lower unit.
 
 ## Open questions
 
-1. Hinged tail (sketch 1) vs. the geared leg.
-2. Weight budget for cart handling.
+1. Weight budget for cart handling.
+
+The hinged tail is chosen over the geared leg.
 
 ## Layout of this repository (planned)
 

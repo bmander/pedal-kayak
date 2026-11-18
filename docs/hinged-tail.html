@@ -90,8 +90,9 @@ svg text { font-family: var(--font-data); }
   <header>
     <div class="eyebrow">Pedal kayak · stern drive · concept sketch 1</div>
     <h1>Hinged Tail Drive</h1>
-    <p class="lede prose">The line shaft leaves the hull through the transom, just under the waterline. Behind the
-      transom a short tail carries the propeller on its own shaft. The tail hangs from a gimbal. Its tilt pin and its
+    <p class="lede prose">The line shaft leaves the hull through its bottom into a skeg that carries the keel line
+      aft at full depth. At the skeg's heel, just behind the transom, a short tail carries the propeller on its own
+      shaft. The tail hangs from a gimbal. Its tilt pin and its
       steering pin both pass through the centre of a constant-velocity (CV) joint, so the tail can swing up out of the
       way, or side to side to steer, and the joint keeps driving the propeller.</p>
     <p class="prose">If you know a Thai long-tail boat, this is the same idea scaled down to a pedal kayak, with only
@@ -103,13 +104,13 @@ svg text { font-family: var(--font-data); }
       <span class="plate-title" id="side-title">Side view, stern, bow to the left</span>
       <span class="plate-ref">mm · design waterline at 180 kg</span>
     </div>
-    <div class="figure-scroll"><svg class="fig" id="side" viewBox="-1680 -460 2600 880" role="img" aria-label="Side view of the stern with the hinged tail"></svg></div>
+    <div class="figure-scroll"><svg class="fig" id="side" viewBox="-1680 -380 2600 860" role="img" aria-label="Side view of the stern with the hinged tail"></svg></div>
     <div class="controls">
-      <label for="tilt">Tail angle <input type="range" id="tilt" min="-24" max="40" step="1" value="-24"></label>
+      <label for="tilt">Tail angle <input type="range" id="tilt" min="-8" max="30" step="1" value="-8"></label>
       <div class="presets" role="group" aria-label="Tail positions">
-        <button type="button" id="p-run" data-tilt="-24">Running</button>
-        <button type="button" id="p-shallow" data-tilt="-6">Shallow</button>
-        <button type="button" id="p-raised" data-tilt="40">Raised</button>
+        <button type="button" id="p-run" data-tilt="-8">Running</button>
+        <button type="button" id="p-shallow" data-tilt="4">Shallow</button>
+        <button type="button" id="p-raised" data-tilt="30">Raised</button>
       </div>
     </div>
     <div class="readouts">
@@ -123,7 +124,7 @@ svg text { font-family: var(--font-data); }
   <section class="plate" aria-labelledby="plan-title">
     <div class="plate-head">
       <span class="plate-title" id="plan-title">Plan view, steering by swinging the tail</span>
-      <span class="plate-ref">mm · tail running, 24° down · starboard is up the page</span>
+      <span class="plate-ref">mm · tail running, 8° down · starboard is up the page</span>
     </div>
     <div class="figure-scroll"><svg class="fig" id="plan" viewBox="-1680 -520 2600 1040" role="img" aria-label="Plan view of the stern showing the tail swung to steer"></svg></div>
     <div class="controls">
@@ -139,22 +140,43 @@ svg text { font-family: var(--font-data); }
   <section aria-labelledby="beh-title">
     <h2 id="beh-title">How it behaves</h2>
     <div class="behaviour">
-      <div><h3>Running</h3><p>The tail rests on a stop, held down by its own weight and a light spring. Thrust runs
-        along the tail and straight through the joint, so it neither pushes the tail down nor lifts it.</p></div>
+      <div><h3>Running</h3><p>The tail rests on a stop 8° below horizontal, so 99% of the thrust pushes forward. Its
+        own weight and a light spring hold it there. Thrust runs along the tail and straight through the joint, so it
+        neither pushes the tail down nor lifts it.</p></div>
       <div><h3>Touching bottom</h3><p>A fin under the tail reaches about 25 mm below the propeller tips, so it hits ground
         first. A blow from ahead lands below the hinge and swings the tail up and back, the way a kick-up rudder
         works.</p></div>
       <div><h3>Launching from the cart</h3><p>A line from the end of the tail runs over a sheave on the transom to a
         cleat in the cockpit. Pull it to raise the propeller clear of the water. Then the boat draws only what the
-        hull draws, about 150 mm.</p></div>
+        hull draws, about 150 mm. The skeg and the gimbal sit no
+        lower than the keel, so they add nothing.</p></div>
       <div><h3>Reverse</h3><p>Pedalling backwards reverses the propeller. Its thrust also runs through the joint, so
         the tail stays down without a latch.</p></div>
       <div><h3>Steering</h3><p>The tail swings ±25° on a vertical pin and steers by aiming the thrust. It steers even
         at walking pace and in reverse, and it replaces the rudder. That leaves one appendage at the stern that has
         to kick up, not two.</p></div>
-      <div><h3>Hull penetration</h3><p>The line shaft passes through the transom in a stern tube with a lip seal,
-        about 30 mm below the waterline. The water pressure on the seal is small.</p></div>
+      <div><h3>Hull penetration</h3><p>The line shaft passes through the hull bottom into a tube inside the skeg, with a
+        lip seal at the skeg's heel about 125 mm below the waterline. The pressure on the seal is small.</p></div>
     </div>
+  </section>
+
+  <section aria-labelledby="low-title">
+    <h2 id="low-title">How low the hinge goes</h2>
+    <p class="prose">A lower hinge points the thrust closer to horizontal and runs the joint straighter. But the hinge
+      can't lift, so anything below the keel adds to the draft for launching. The table shows each hinge height with the
+      tail as high as it can sit while keeping the top propeller tip 60 mm under water.</p>
+    <div class="table-scroll">
+      <table>
+        <thead><tr><th>Hinge below WL</th><th>Tail when running</th><th>Thrust forward</th><th>Raised to</th><th>Fixed draft</th></tr></thead>
+        <tbody>
+          <tr><td class="num">30</td><td class="num">18° down</td><td class="num">95.1%</td><td class="num">19° up</td><td class="num">~150 (hull)</td></tr>
+          <tr><td class="num"><strong>125 (chosen)</strong></td><td class="num">8° down</td><td class="num">99.0%</td><td class="num">30° up</td><td class="num">~150 (hull)</td></tr>
+          <tr><td class="num">215</td><td class="num">level</td><td class="num">99.9%</td><td class="num">40° up</td><td class="num">~240</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="prose">At 125 mm the gimbal's lowest point is level with the keel. Going lower would cost about 90 mm of
+      launching draft for less than 1% more forward thrust.</p>
   </section>
 
   <section class="callout" aria-labelledby="corr-title">
@@ -182,13 +204,13 @@ svg text { font-family: var(--font-data); }
       <table>
         <thead><tr><th>Item</th><th>Sketch value</th><th>Note</th></tr></thead>
         <tbody>
-          <tr><td>Joint centre</td><td class="num">60 aft of transom, 30 below WL</td><td>Tilt pin and steering pin both pass through it</td></tr>
+          <tr><td>Joint centre</td><td class="num">60 aft of transom, 125 below WL</td><td>At the skeg's heel. Tilt pin and steering pin both pass through it.</td></tr>
           <tr><td>Tail, joint to propeller</td><td class="num">520</td><td>Sets the lift and the steering moment</td></tr>
           <tr><td>Propeller</td><td class="num">Ø270, 2 blades</td><td>About 420 rpm</td></tr>
-          <tr><td>Running tail angle</td><td class="num">24° down</td><td>The line shaft runs 2° down aft, so the joint runs at 22°</td></tr>
-          <tr><td>CV joint</td><td class="num">22° running, 33° at full helm, 42° raised</td><td>Rzeppa or double-Cardan. The raised angle is reached only with the drive idle.</td></tr>
-          <tr><td>Deepest point, running</td><td class="num">~390 below WL</td><td>The fin, about 25 below the propeller tips</td></tr>
-          <tr><td>Draft, raised</td><td class="num">~150</td><td>The hull alone</td></tr>
+          <tr><td>Running tail angle</td><td class="num">8° down</td><td>The line shaft runs 4° down aft, so the joint runs at 4°</td></tr>
+          <tr><td>CV joint</td><td class="num">4° running, 25° at full helm, 34° raised</td><td>Rzeppa or double-Cardan. The raised angle is reached only with the drive idle.</td></tr>
+          <tr><td>Deepest point, running</td><td class="num">~360 below WL</td><td>The fin, about 25 below the propeller tips</td></tr>
+          <tr><td>Draft, raised</td><td class="num">~150</td><td>The keel, skeg and gimbal, all level</td></tr>
         </tbody>
       </table>
     </div>
@@ -200,10 +222,10 @@ svg text { font-family: var(--font-data); }
   const NS = "http://www.w3.org/2000/svg";
   const rad = d => d * Math.PI / 180;
   const deg = r => r * 180 / Math.PI;
-  const J = { x: 60, z: -30 };        // CV joint centre, mm (x aft, z up, WL z = 0)
+  const J = { x: 60, z: -125 };       // CV joint centre, mm (x aft, z up, WL z = 0): at the skeg's heel
   const LT = 520, R = 135, TUBE = 18; // tail length, prop radius, tail tube half-width
-  const SHAFT_ANGLE = -2;             // line shaft, degrees from horizontal (down aft)
-  const RUN_PITCH = -24;
+  const SHAFT_ANGLE = -4;             // line shaft, degrees from horizontal (down aft)
+  const RUN_PITCH = -8;
 
   function el(parent, tag, attrs, text) {
     const e = document.createElementNS(NS, tag);
@@ -252,15 +274,24 @@ svg text { font-family: var(--font-data); }
     const sa = rad(SHAFT_ANGLE);
     const shaftStart = { x: -1680, z: J.z + (J.x + 1680) * Math.tan(-sa) };
     el(g, "line", Object.assign({ x1: shaftStart.x, y1: -shaftStart.z, x2: J.x, y2: -J.z, stroke: "var(--metal)", "stroke-width": 4 }, ns));
-    const tx = transomX(J.z);
-    const tube = [{ x: tx - 60, z: J.z + 22 }, { x: tx + 20, z: J.z + 22 }, { x: tx + 20, z: J.z - 22 }, { x: tx - 60, z: J.z - 22 }];
+    // skeg: carries the keel line aft at full depth, so nothing fixed hangs below the keel
+    const skeg = [];
+    for (let x = -1400; x <= 0; x += 40) skeg.push({ x, z: zb(x) });
+    skeg.push({ x: 20, z: -60 }, { x: 20, z: -150 }, { x: -1000, z: -150 });
+    el(g, "polygon", Object.assign({ points: pts(skeg), fill: "var(--wood)", stroke: "var(--wood-edge)", "stroke-width": 2, "fill-opacity": 0.9 }, ns));
+    label(g, { x: -980, z: -205 }, "skeg, bottom level with the keel", { color: "var(--wood-edge)", size: 28 });
+    const sp = x => ({ x, z: J.z + (J.x - x) * Math.tan(-sa) });
+    const tube = [add(sp(-560), { x: 0, z: 20 }), add(sp(20), { x: 0, z: 20 }), add(sp(20), { x: 0, z: -20 }), add(sp(-560), { x: 0, z: -20 })];
     el(g, "polygon", Object.assign({ points: pts(tube), fill: "var(--metal-fill)", stroke: "var(--metal)", "stroke-width": 1.5 }, ns));
-    label(g, { x: -1640, z: 62 }, "line shaft from the gearbox, 2° down", { color: "var(--muted)", size: 30 });
-    label(g, { x: -330, z: 70 }, "stern tube + lip seal", { color: "var(--muted)", size: 30 });
-    el(g, "line", Object.assign({ x1: -60, y1: -62, x2: tx - 20, y2: -(J.z + 22), stroke: "var(--muted)", "stroke-width": 1 }, ns));
+    label(g, { x: -1640, z: 62 }, "line shaft from the gearbox, 4° down", { color: "var(--muted)", size: 30 });
+    label(g, { x: -760, z: 120 }, "shaft tube inside the skeg, seal at its heel", { color: "var(--muted)", size: 28 });
+    el(g, "line", Object.assign({ x1: -300, y1: -108, x2: -250, y2: -sp(-250).z - 18, stroke: "var(--muted)", "stroke-width": 1 }, ns));
+    // steering stock: the vertical pin through the joint, carried up behind the transom
+    el(g, "line", Object.assign({ x1: J.x, y1: -J.z, x2: J.x, y2: -262, stroke: "var(--metal)", "stroke-width": 5 }, ns));
+    label(g, { x: J.x - 14, z: 210 }, "steering stock", { color: "var(--muted)", size: 28, anchor: "end" });
 
     // gimbal bracket on the transom
-    const br = [{ x: transomX(70), z: 70 }, { x: 70, z: 70 }, { x: 108, z: J.z }, { x: 70, z: -78 }, { x: transomX(-60) - 4, z: -78 }];
+    const br = [{ x: 20, z: -88 }, { x: 82, z: -88 }, { x: 104, z: J.z }, { x: 82, z: -150 }, { x: 20, z: -150 }];
     el(g, "polygon", Object.assign({ points: pts(br), fill: "var(--metal-fill)", stroke: "var(--metal)", "stroke-width": 1.5 }, ns));
 
     // tail
@@ -269,7 +300,7 @@ svg text { font-family: var(--font-data); }
     const at = (u, v) => add(add(J, d, u), n, v);
     const tg = el(g, "g", { class: "tail-g" });
     // fin under the tail
-    const FIN = R + 50; // deep enough that, with the tail tilted, the fin is below the propeller tips
+    const FIN = R + 35; // deep enough that, with the tail tilted, the fin is below the propeller tips
     const fin = [at(0.58 * LT, -TUBE), at(0.9 * LT, -TUBE), at(0.9 * LT, -FIN), at(0.79 * LT, -FIN)];
     el(tg, "polygon", Object.assign({ points: pts(fin), fill: "var(--metal-fill)", stroke: "var(--metal)", "stroke-width": 1.5 }, ns));
     // tube
@@ -289,13 +320,13 @@ svg text { font-family: var(--font-data); }
     el(tg, "ellipse", Object.assign({ cx: C.x, cy: -C.z, rx: 40, ry: 22, transform: `rotate(${-tilt} ${C.x} ${-C.z})`, fill: "var(--metal-fill)", stroke: "var(--ink)", "stroke-width": 1.2 }, ns));
 
     // down-spring from the bracket to the tail
-    const A = { x: transomX(150) + 12, z: 150 }, B = at(210, TUBE);
+    const A = { x: J.x, z: 150 }, B = at(210, TUBE);
     el(g, "circle", { cx: A.x, cy: -A.z, r: 9, fill: "var(--metal)" });
     const sd = { x: B.x - A.x, z: B.z - A.z }, sl = Math.hypot(sd.x, sd.z);
     const mid = add(A, sd, 0.55 / 1);
     el(g, "line", Object.assign({ x1: A.x, y1: -A.z, x2: B.x, y2: -B.z, stroke: "var(--metal)", "stroke-width": 3 }, ns));
     el(g, "line", Object.assign({ x1: A.x, y1: -A.z, x2: mid.x, y2: -mid.z, stroke: "var(--metal)", "stroke-width": 9, "stroke-linecap": "round" }, ns));
-    label(g, { x: A.x + 40, z: A.z + 40 }, "spring holds the tail down", { color: "var(--muted)", size: 28 });
+    label(g, { x: A.x + 40, z: A.z + 40 }, "spring on the stock holds the tail down", { color: "var(--muted)", size: 28 });
 
     // raise line over a sheave at the transom top
     const S = { x: TT.x + 10, z: 245 }, L0 = at(0.9 * LT, TUBE);
@@ -307,16 +338,16 @@ svg text { font-family: var(--font-data); }
     // joint
     el(g, "circle", Object.assign({ cx: J.x, cy: -J.z, r: 24, fill: "var(--sheet)", stroke: "var(--ink)", "stroke-width": 2 }, ns));
     el(g, "circle", { cx: J.x, cy: -J.z, r: 7, fill: "var(--ink)" });
-    label(g, { x: 150, z: 60 }, "CV joint + gimbal", { size: 30, weight: 500 });
-    el(g, "line", Object.assign({ x1: 148, y1: -50, x2: J.x + 18, y2: -(J.z + 14), stroke: "var(--ink)", "stroke-width": 1 }, ns));
+    label(g, { x: 150, z: -40 }, "CV joint + gimbal", { size: 30, weight: 500 });
+    el(g, "line", Object.assign({ x1: 148, y1: 50, x2: J.x + 18, y2: -(J.z + 14), stroke: "var(--ink)", "stroke-width": 1 }, ns));
 
     // forces when running
-    if (tilt <= -15) {
+    if (tilt <= -5) {
       const thrustFrom = at(LT + 230, 0), thrustTo = at(LT + 60, 0);
       el(g, "line", Object.assign({ x1: at(LT + 60, 0).x, y1: -at(LT + 60, 0).z, x2: at(-150, 0).x, y2: -at(-150, 0).z, stroke: "var(--force)", "stroke-width": 1, "stroke-dasharray": "3 6" }, ns));
       arrow(g, thrustFrom, thrustTo, "var(--force)", 3);
-      label(g, add(thrustFrom, { x: -60, z: -70 }), "thrust: its line", { color: "var(--force)", size: 28 });
-      label(g, add(thrustFrom, { x: -60, z: -104 }), "passes through the joint", { color: "var(--force)", size: 28 });
+      label(g, { x: 905, z: -50 }, "thrust: its line passes", { color: "var(--force)", size: 28, anchor: "end" });
+      label(g, { x: 905, z: -84 }, "through the joint", { color: "var(--force)", size: 28, anchor: "end" });
       const foot = at(0.9 * LT, -FIN);
       arrow(g, add(foot, { x: -170, z: -40 }), add(foot, { x: -4, z: 0 }), "var(--force)", 3);
       label(g, add(foot, { x: -560, z: -80 }), "ground strike lifts the tail", { color: "var(--force)", size: 28 });
@@ -348,6 +379,7 @@ svg text { font-family: var(--font-data); }
   const plan = document.getElementById("plan");
   function drawPlan(steer) {
     plan.innerHTML = "";
+    const J = { x: 60, z: 0 }; // the joint, on the centreline in plan
     const g = el(plan, "g", {});
     el(g, "rect", { x: -1680, y: -520, width: 2600, height: 1040, fill: "var(--water)", "fill-opacity": 0.6 });
     const half = x => 270 + 130 * Math.pow(Math.max(0, -x) / 1680, 0.8);
@@ -357,6 +389,7 @@ svg text { font-family: var(--font-data); }
     label(g, { x: -1640, z: 300 }, "starboard", { color: "var(--wood-edge)", size: 30 });
     label(g, { x: -1640, z: -330 }, "port", { color: "var(--wood-edge)", size: 30 });
     label(g, { x: -1640, z: -440 }, "◄ bow", { color: "var(--muted)", size: 30 });
+    el(g, "rect", Object.assign({ x: -1400, y: -20, width: 1420, height: 40, fill: "var(--wood)", stroke: "var(--wood-edge)", "stroke-width": 1.5 }, ns));
     el(g, "line", Object.assign({ x1: -1680, y1: 0, x2: J.x, y2: 0, stroke: "var(--metal)", "stroke-width": 4 }, ns));
     // tail, projected: horizontal length shortened by the running pitch
     const s = rad(steer), Lp = LT * Math.cos(rad(RUN_PITCH));
@@ -375,7 +408,7 @@ svg text { font-family: var(--font-data); }
     el(g, "line", Object.assign({ x1: J.x, y1: 0, x2: J.x + Lp + 120, y2: 0, stroke: "var(--muted)", "stroke-width": 1, "stroke-dasharray": "4 6" }, ns));
     if (steer !== 0) {
       arrow(g, at(Lp + 230, 0), at(Lp + 60, 0), "var(--force)", 3);
-      label(g, { x: 330, z: steer > 0 ? -300 : 330 }, "thrust", { color: "var(--force)", size: 30 });
+      label(g, { x: 905, z: steer > 0 ? 300 : -330 }, "thrust", { color: "var(--force)", size: 30, anchor: "end" });
       // stern pushed
       const dir = -Math.sign(steer); // the stern is pushed away from the side the tail swings to
       arrow(g, { x: -250, z: dir * 315 }, { x: -250, z: dir * 470 }, "var(--force)", 3);

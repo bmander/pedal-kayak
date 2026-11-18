@@ -1,125 +1,104 @@
 # Pedal kayak
 
 A plywood stitch-and-glue pedal kayak for open water in the San Juan Islands. A recumbent pilot
-drives a propeller through a geared line shaft that pierces the hull. The hull follows the
-Duckling (Sam Devlin's 14′ skiff): six developable hull panels, three a side, plus a transom and
-assorted pieces. Every part is drawn in [Solvent](https://github.com/bmander/geomsolver) and
-checked with `solventc` v0.1.24.
+drives a propeller through two spiral bevel stages and a line shaft that passes through the hull.
+The hull follows the Duckling (Sam Devlin's 14′ skiff): six developable plywood panels, three a side,
+plus a transom and assorted pieces. Every part is drawn in [Solvent](https://github.com/bmander/geomsolver)
+and checked with `solventc` v0.1.24.
 
-This file is the design brief. It records what is decided, what is proposed and what is still open.
-The `.sv` models will follow it.
+![General arrangement](renders/arrangement.png)
 
-## Mission
+![The assembly](renders/kayak_iso.png)
 
-- **Water:** San Juan Islands. Open water and coastal chop, tidal currents of 2–4 kn in the passes,
-  ferry wakes, and water around 10 °C, so the boat must be self-rescuable.
-- **Launch:** from a cart, in shallow water. The propeller must not ground while launching or landing.
-- **Load:** a pilot alone, with a passenger, or with moderate luggage such as a bicycle.
-- **Fit:** adjustable for 98% of adults, from the 1st to the 99th percentile.
-- **Speed:** as fast as one person's sustained output allows (about 75–150 W), without giving up the
-  load cases above.
+## State of the design (v0.2)
 
-## Decided
+Built and solving:
 
-| Item | Decision |
+- **Hull.** Seven rails, each in its own plane and convex in it, so every panel develops without
+  folding. Six developable strakes, a raked transom, a skeg, two bulkheads, a floor frame under the
+  pedal tower, the shaft tunnel, and two developable decks.
+- **Cut file.** All six strakes are laid flat (their neutral layers, outside up) on two blanks of
+  three scarfed sheets each, one 9 mm and one 6 mm, with the transom pattern on the 9 mm blank.
+- **Drive.** Two spiral bevel stages, each laid out and cut by a generating crown (geomsolver's
+  `HypoidPair` with no offset):
+  - stage 1: 45:18, module 2.5, at the cranks;
+  - stage 2: 42:15, module 2, over the keel.
+
+  Also: the pedal tower, the line shaft with its midway bearing, the CV joint, the gimbal (tilt pin
+  and raked steering stock), the hinged tail, and a two-blade helicoidal propeller.
+- **Seat and pilot.** A sliding recumbent seat. The leg is checked as a two-link chain for the
+  1st-percentile woman and the 99th-percentile man of ANSUR II, at the pedal's far and near points.
+- **Design table** (`dims.sv`). 20 claims, all holding. Among them: stability, freeboard,
+  power against drag, gear root stresses, shaft stress, whirl and wind-up, tail and CV-joint
+  angles, propeller clearance when raised, seat travel and seat width.
+
+## Key numbers
+
+| | |
 |---|---|
-| Construction | Stitch and glue, with six developable hull panels, a transom, bulkheads, decks and seat parts |
-| Propulsion | Pedals and gears driving a propeller shaft that passes through the hull |
-| Gears | Designed in full in Solvent, not bought in as an envelope |
-| Tooling | `solventc` v0.1.24, using `std.panels` for the hull panels and the spiral bevel and planetary work in `geomsolver/rust/examples/shaft_drive` |
+| LOA × beam × depth | 5800 × 824 × 380 mm |
+| Boat weight (estimate) | 51 kg: hull 38, drive 9, seat 4 |
+| Design load / full load | 156 kg (draft 123 mm) / 320 kg (draft 181 mm, freeboard 199 mm) |
+| GM, design / full | 263 / 189 mm |
+| Drag at 4 kn (estimate) | 25 N, 51 W at the water. 100 W at the pedals delivers 70 W after the drive (94%) and the propeller (75%). |
+| Train | 70 rpm at the cranks × 2.5 × 2.8 = 490 rpm at the propeller. Slip 16%; thrust loading C_T 0.20. |
+| Propeller | Ø270 mm, 300 mm pitch, 2 blades, blade area ratio 0.27, true helicoidal blades |
+| Line shaft | 6061-T6 tube, 25 × 1.5 mm, 3.55 m. Whirls at 1258 rpm with the midway bearing, and at 315 rpm (below running speed) without it. Wind-up 2.1° at the cranks under a 200 N·m push. |
+| Tail | 520 mm, 11.3° below level when running. CV joint at 10.6° running, 27° at full helm, 33° raised. Deepest point (the guard fin) about 352 mm below the waterline running, ~150 mm with the tail raised. |
+| Seat | 380 mm of travel. The hip moves 2967–3303 mm aft of the stem head to fit legs from 921 to 1267 mm (ANSUR II functional leg length). Knee bend at the top of the stroke: 103° (smallest pilot), 89° (largest). |
 
-## Proposed (v0): to confirm
-
-### Hull
-
-| Parameter | Value | Reasoning |
-|---|---|---|
-| LOA | ~5.8 m (19′) | At 4–5 kn a 4.3 m hull runs at Froude number 0.33–0.41, where wave drag climbs steeply. 5.8 m runs at 0.28–0.35. Friction drag rises only ~17% from 4.3 to 5.8 m (ITTC-57 estimate: 18.8 N vs 16.0 N at 4 kn). Length also gives room for a pilot, a cargo well and buoyancy at each end. |
-| Beam, sheer / waterline | ~820 mm / ~680 mm at design load | Stability with a raised recumbent seat and a passenger, in chop |
-| Depth amidships | ~380 mm | Freeboard for chop at full load |
-| Displacement | design ~180 kg (pilot and gear); maximum ~320 kg (pilot, passenger and cargo) | |
-| Panels | 6 mm okoumé sides; 9 mm garboards and transom | The garboards carry the shaft fitting, the strut and grounding loads. Each panel needs about three sheets, scarfed. |
-| Transom | Immersed at most a little at design load | A transom dragging under water costs speed at kayak speeds |
-| Buoyancy | Sealed bulkheads fore and aft; foredeck over the drive; aft deck | Self-rescue in cold water |
-| Steering | The propeller tail swings to steer (see below), worked by a hand lever | |
-
-`solventc` refuses a panel whose rails turn back on themselves. Each chine and sheer is therefore
-drawn in a plane and kept convex within it.
-
-### Layout, bow to stern (rough)
-
-Bow buoyancy → pedals and gearbox under the foredeck → pilot's seat on rails → cargo well
-(passenger or bicycle, ~1.8 m) → shaft exit and strut → transom and rudder → stern buoyancy.
-
-### Ergonomics
-
-- **Fixed crank, sliding seat.** The pedal axle stays put, because the gearbox and the shaft line
-  hang from it. The seat slides about 300 mm on rails to cover leg reach from the 1st to the 99th
-  percentile. This range is to be confirmed against anthropometric tables.
-- Crank length ~155 mm, swappable.
-- The seat-back angle is adjustable.
-- The passenger sits low in the cargo well, to keep the centre of gravity down.
-
-### Drive
-
-| Parameter | Value |
-|---|---|
-| Cadence | ~70 rpm |
-| Propeller | 2 blades, ~270 mm diameter, ~350 mm pitch, ~420 rpm |
-| Overall ratio | ~1 : 6 |
-| Train (proposed) | Stage 1: helical planetary, × 3, in the crank housing. Stage 2: spiral bevel, × 2, onto the line shaft. Both adapted from `shaft_drive`. |
-| Line shaft | Straight from the gearbox to the stern, down at ~5°, in a tunnel along the keel that doubles as a keelson. One intermediate bearing: an unsupported 3.8 m aluminium tube has its first critical speed near 280 rpm, below the operating speed. |
-| Reverse | Pedal backward. No freewheel. |
-
-### Propeller lift for shallow water: hinged tail (sketch 1)
-
-A fixed propeller of this size adds ~250 mm of draft. The proposed answer is a **hinged tail**,
-sketched interactively in [`docs/hinged-tail.html`](docs/hinged-tail.html):
-
-- **Hinge as low as possible, but no lower than the keel.** A skeg carries the keel line aft at
-  full depth (~150 mm below the DWL). The line shaft runs about 4° down aft and passes through
-  the hull bottom into a tube inside the skeg, with a lip seal at the skeg's heel.
-- At the heel, 60 mm aft of the transom and 125 mm below the waterline, a constant-velocity (CV)
-  joint drives a 520 mm tail carrying the propeller. The tail hangs from a gimbal. Its tilt pin and
-  its steering pin both pass through the joint's centre. The gimbal's lowest point is level with
-  the keel.
-- **Running:** the tail sits 8° down on a stop, so 99% of the thrust pushes forward, and the joint
-  runs at only 4°. The tail's weight and a light spring hold it there. Thrust, ahead or astern,
-  runs through the joint, so it neither deploys nor lifts the tail.
-- **Why not lower:** a level tail needs the hinge 215 mm down. That adds ~90 mm of draft that never
-  lifts, for less than 1% more forward thrust.
-- **Grounding:** a fin about 25 mm below the propeller tips touches first. It kicks the tail up
-  and aft.
-- **Launching:** a line to a cockpit cleat raises the propeller clear of the water, leaving only
-  the hull's ~150 mm draft.
-- **Steering:** the tail swings ±25° and steers by aiming the thrust. There is no separate rudder.
-- **Raised:** the tail swings 30° up, which lifts the propeller clear of the water.
-- **CV joint angles:** 4° running, ~25° at full helm, 34° raised (drive idle).
-
-An earlier idea put the pivot above the shaft line, so that thrust would hold the tail down. That
-needs a second joint and a sliding spline, and the joint angles pass 70° as the tail rises, so it
-is dropped. If thrust-held deployment is wanted, the alternative is a leg with bevel gears at the
-hinge and at the propeller, like an outboard's lower unit.
-
-## Decided since v0
-
-- **Passenger:** faces forward, sitting low in the cargo well.
-- **Bicycle:** lies in the cargo well with its front wheel off. The cockpit opening must therefore
-  run the length of the well, about 1.8 m.
-
-## Open questions
-
-1. Weight budget for cart handling.
-
-The hinged tail is chosen over the geared leg.
-
-## Layout of this repository (planned)
+## Files
 
 | File | What it is |
 |---|---|
-| `dims.sv` | The design table: the numbers above, with claims that check them |
-| `hull.sv` | Rails, the six panels, the transom, bulkheads, decks and their developments |
-| `drive.sv` | Gear train, line shaft, bearings, stern tube, hinged tail and propeller |
-| `seat.sv` | Recumbent seat, rails and adjustment, crank and pedal geometry |
-| `kayak.sv` | The assembly |
-| `*.svd` | Drawings and cut sheets |
+| `dims.sv` | The design table, every figure with its unit, and the claims it is held to (`solventc dims.sv`). |
+| `tools/lines.py` | The lines plan and hydrostatics. `python3 tools/lines.py --write` regenerates the rails, transom, skeg, bulkheads, tunnel and deck rails in `hull.sv`. |
+| `hull.sv`, `hull.svd` | The `Hull` component, and the cut file at the top level. Drawing sheets: `lines` and `cutting`. |
+| `drive.sv` | The `Drive` component and `PropBlade`. `drive.sv` itself draws the drive with its teeth cut (`teeth: 1`, about 30 s to solve and minutes to render). |
+| `seat.sv` | The `Seat` and `Pilot` components; the ergonomics check across the ANSUR range. |
+| `kayak.sv`, `kayak.svd` | The assembly, with gear blanks (`teeth: 0`) so it solves in a second. Drawing sheet: `arrangement`. |
+| `spiral_bevel/hypoid.sv` | geomsolver's `HypoidPair`, vendored unchanged (MIT). |
+| `docs/hinged-tail.html` | The interactive concept sketch of the tail. Its numbers came before this model and differ from the current ones. |
+| `renders/` | PNG renders, and the cut file as SVG. |
+
+```sh
+solventc dims.sv                                   # the design table: every claim judged
+solventc kayak.sv --png kayak.png --view 300,35    # the assembly
+solventc hull.svd --sheet cutting -o cutting.svg   # the cut file
+solventc drive.sv --png tower.png --view 35,20     # the gears with their teeth (slow)
+```
+
+![Spiral bevel stage 1](renders/stage1.png)
+
+![The stern](renders/stern.png)
+
+## What solventc did, and where it pushed back
+
+- **Developable panels:** every strake, both decks, and their developments are exact. The rails
+  were designed planar and convex so that no panel folds. A pattern placed by its edge can land on
+  the reversed root, so the starboard middle strake is laid bow-right on its blank.
+- **Spiral bevels:** generated by the crown, with the face mill's pressure shift found where the
+  pinion's two flanks are equally far from undercut (stage 1: −1.35°, margin 0.21).
+  - Seating a pair with `seats` on rotated datums diverged in this version. Explicit relations
+    converge.
+  - The cut pairs did not converge inside the full assembly. So the assembly uses blanks of the
+    same size, and `drive.sv` carries claims (theorems) that the cut members' mean points coincide
+    with the blanks'.
+- **The propeller** is a section carried by a screw (`std.stations.Helix`), so its pitch is exact
+  at every radius.
+- A deck could not be cut from a longer developable sheet with a half-space. Each deck has its
+  own short rails instead.
+
+## Open items
+
+1. Gear webs and hubs, so each gear reaches its shaft. Bearings (`std.bearings`) and seals. The
+   housings are placeholders.
+2. Check the direction of rotation through the train, choose the spiral hands and the propeller's
+   hand to match, and check each mesh as it rolls (as geomsolver's `shaft_drive/mesh.sv` does).
+3. The tail's kick-up stop, its down-spring and raise line, and the tiller and steering cables.
+4. Seat rails and the adjuster. A cockpit coaming and spray cover for chop. Flotation volumes.
+5. A Michell-integral wave-resistance estimate to replace the 25% allowance. Trim with the pilot
+   and passenger placed.
+6. Cut files for the bulkheads, decks, tunnel, skeg and seat.
+7. Update the tail sketch (`docs/hinged-tail.html`) to the modelled numbers: the joint is 93 mm
+   below the waterline and the tail runs 11° down.

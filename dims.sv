@@ -90,6 +90,11 @@ prop_d := 270mm
 prop_r := prop_d / 2
 prop_pitch := 300mm
 prop_blades := 2
+prop_hub_r := 28mm
+blade_sweep := 50deg                   // each blade's angular extent: blade area ratio ≈ 0.28
+blade_t := 6mm                         // its thickness along the axis
+blade_turns := blade_sweep / 360deg
+blade_area_ratio := prop_blades * blade_sweep / 360deg * (1 - (prop_hub_r / prop_r)^2)
 
 // -- the train --------------------------------------------------------------------------------------
 z_crank_gear := 45                     // stage 1, at the top of the pedal tower

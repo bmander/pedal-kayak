@@ -18,6 +18,7 @@
 unit mm
 use std
 use std.panels
+use std.solids (cut)
 use std.solids
 
 // The hull is a component, so the assembly (`kayak.sv`) can place it; this file draws one.
@@ -182,30 +183,6 @@ component Hull() {
     fix((-205mm, 54.2mm)) t6
     transom_outline := line(t0, t1) -> line(t1, t2) -> line(t2, t3) -> line(t3, t4) -> line(t4, t5) -> line(t5, t6) -> line(t6, t0) -> close
   }
-  // the transom's pattern on the 9 mm blank: its outline as drawn in its plane
-  in floor {
-    tp0 := point hint((6400, 120))
-    fix((6400mm, 120mm)) tp0
-    tp1 := point hint((6605, 174.2))
-    fix((6605mm, 174.2mm)) tp1
-    tp2 := point hint((6695, 273.4))
-    fix((6695mm, 273.4mm)) tp2
-    tp3 := point hint((6722, 419.5))
-    fix((6722mm, 419.5mm)) tp3
-    tp4 := point hint((6078, 419.5))
-    fix((6078mm, 419.5mm)) tp4
-    tp5 := point hint((6105, 273.4))
-    fix((6105mm, 273.4mm)) tp5
-    tp6 := point hint((6195, 174.2))
-    fix((6195mm, 174.2mm)) tp6
-    transom_pattern_0 := line(tp0, tp1)
-    transom_pattern_1 := line(tp1, tp2)
-    transom_pattern_2 := line(tp2, tp3)
-    transom_pattern_3 := line(tp3, tp4)
-    transom_pattern_4 := line(tp4, tp5)
-    transom_pattern_5 := line(tp5, tp6)
-    transom_pattern_6 := line(tp6, tp0)
-  }
   // the skeg's outline in the centreplane, its top along the keel
   in centre {
     sk0 := point hint((4000, 13))
@@ -292,6 +269,84 @@ component Hull() {
     fix((-235.5mm, 133.6mm)) b_aft6
     bh_aft_outline := line(b_aft0, b_aft1) -> line(b_aft1, b_aft2) -> line(b_aft2, b_aft3) -> line(b_aft3, b_aft4) -> line(b_aft4, b_aft5) -> line(b_aft5, b_aft6) -> line(b_aft6, b_aft0) -> close
   }
+  // the shaft tunnel's profile and its channel's, in the centreplane
+  in centre {
+    tu0 := point hint((2300, 13.5))
+    fix((2300mm, 13.5mm)) tu0
+    tu1 := point hint((2497.6, 7.6))
+    fix((2497.6mm, 7.6mm)) tu1
+    tu2 := point hint((3037.5, 0.1))
+    fix((3037.5mm, 0.1mm)) tu2
+    tu3 := point hint((3775, 7.3))
+    fix((3775mm, 7.3mm)) tu3
+    tu4 := point hint((4512.5, 32.1))
+    fix((4512.5mm, 32.1mm)) tu4
+    tu5 := point hint((5052.4, 61.4))
+    fix((5052.4mm, 61.4mm)) tu5
+    tu6 := point hint((5250, 74.4))
+    fix((5250mm, 74.4mm)) tu6
+    tu7 := point hint((5250, 116))
+    fix((5250mm, 116mm)) tu7
+    tu8 := point hint((2300, 116))
+    fix((2300mm, 116mm)) tu8
+    tunnel_outline := line(tu0, tu1) -> line(tu1, tu2) -> line(tu2, tu3) -> line(tu3, tu4) -> line(tu4, tu5) -> line(tu5, tu6) -> line(tu6, tu7) -> line(tu7, tu8) -> line(tu8, tu0) -> close
+  }
+  in centre {
+    tc0 := point hint((2299, -16.5))
+    fix((2299mm, -16.5mm)) tc0
+    tc1 := point hint((5251, 44.4))
+    fix((5251mm, 44.4mm)) tc1
+    tc2 := point hint((5251, 110))
+    fix((5251mm, 110mm)) tc2
+    tc3 := point hint((2299, 110))
+    fix((2299mm, 110mm)) tc3
+    channel_outline := line(tc0, tc1) -> line(tc1, tc2) -> line(tc2, tc3) -> line(tc3, tc0) -> close
+  }
+  // each deck's two sheers: the sheer over the deck's length
+  dfp0 := point hint((0, 0, 540))
+  fix((0mm, 0mm, 540mm)) dfp0
+  dfp1 := point hint((234.3, -53.2, 519.8))
+  fix((234.3mm, -53.2mm, 519.8mm)) dfp1
+  dfp2 := point hint((800, -168.8, 475.7))
+  fix((800mm, -168.8mm, 475.7mm)) dfp2
+  dfp3 := point hint((1365.7, -265.3, 438.6))
+  fix((1365.7mm, -265.3mm, 438.6mm)) dfp3
+  dfp4 := point hint((1600, -299.2, 425.5))
+  fix((1600mm, -299.2mm, 425.5mm)) dfp4
+  fore_port_sheer := spline(dfp0, dfp1, dfp2, dfp3, dfp4)
+  dfs0 := point hint((0, 0, 540))
+  fix((0mm, 0mm, 540mm)) dfs0
+  dfs1 := point hint((234.3, 53.2, 519.8))
+  fix((234.3mm, 53.2mm, 519.8mm)) dfs1
+  dfs2 := point hint((800, 168.8, 475.7))
+  fix((800mm, 168.8mm, 475.7mm)) dfs2
+  dfs3 := point hint((1365.7, 265.3, 438.6))
+  fix((1365.7mm, 265.3mm, 438.6mm)) dfs3
+  dfs4 := point hint((1600, 299.2, 425.5))
+  fix((1600mm, 299.2mm, 425.5mm)) dfs4
+  fore_starboard_sheer := spline(dfs0, dfs1, dfs2, dfs3, dfs4)
+  dap0 := point hint((5250, -363.2, 391.4))
+  fix((5250mm, -363.2mm, 391.4mm)) dap0
+  dap1 := point hint((5330.5, -358.2, 393.1))
+  fix((5330.5mm, -358.2mm, 393.1mm)) dap1
+  dap2 := point hint((5525, -344.6, 397.5))
+  fix((5525mm, -344.6mm, 397.5mm)) dap2
+  dap3 := point hint((5719.5, -329.1, 402.6))
+  fix((5719.5mm, -329.1mm, 402.6mm)) dap3
+  dap4 := point hint((5800, -322, 405))
+  fix((5800mm, -322mm, 405mm)) dap4
+  aft_port_sheer := spline(dap0, dap1, dap2, dap3, dap4)
+  das0 := point hint((5250, 363.2, 391.4))
+  fix((5250mm, 363.2mm, 391.4mm)) das0
+  das1 := point hint((5330.5, 358.2, 393.1))
+  fix((5330.5mm, 358.2mm, 393.1mm)) das1
+  das2 := point hint((5525, 344.6, 397.5))
+  fix((5525mm, 344.6mm, 397.5mm)) das2
+  das3 := point hint((5719.5, 329.1, 402.6))
+  fix((5719.5mm, 329.1mm, 402.6mm)) das3
+  das4 := point hint((5800, 322, 405))
+  fix((5800mm, 322mm, 405mm)) das4
+  aft_starboard_sheer := spline(das0, das1, das2, das3, das4)
   // END generated
 
   // -- the six panels ------------------------------------------------------------------------------
@@ -320,143 +375,6 @@ component Hull() {
   // -- the transom: 9 mm, inside the panels' aft ends ----------------------------------------------
   transom := solid(std.solids.Prism(face(transom_outline), from: -9mm, to: 0mm))
 
-  // -- the cut file ---------------------------------------------------------------------------------
-  // Each panel's neutral layer (half its thickness out) laid flat, outside up, on a blank of three
-  // 2440 × 1220 sheets scarfed end to end, drawn in the shop floor's plane below the boat. Each
-  // pattern is laid from its home ruling amidships, 3000 aft of the stem head, and placed by its
-  // lower edge's two ends. Port and starboard patterns are mirror images, as a builder cuts them.
-  floor := plane
-  fix(origin == (0mm, 0mm, -1500mm)) floor
-  fix(dir == (1, 0, 0)) floor.u
-  fix(dir == (0, 1, 0)) floor.v
-
-  in floor {
-    // blank A, 9 mm: both garboards and the transom
-    a0 := point
-    a1 := point
-    a2 := point
-    a3 := point
-    fix((0mm, 0mm)) a0
-    fix((7320mm, 0mm)) a1
-    fix((7320mm, 1220mm)) a2
-    fix((0mm, 1220mm)) a3
-    blank_9_bottom := line(a0, a1)
-    blank_9_end := line(a1, a2)
-    blank_9_top := line(a2, a3)
-    blank_9_start := line(a3, a0)
-    // blank B, 6 mm: the four strakes
-    b0 := point
-    b1 := point
-    b2 := point
-    b3 := point
-    fix((0mm, 1620mm)) b0
-    fix((7320mm, 1620mm)) b1
-    fix((7320mm, 2840mm)) b2
-    fix((0mm, 2840mm)) b3
-    blank_6_bottom := line(b0, b1)
-    blank_6_end := line(b1, b2)
-    blank_6_top := line(b2, b3)
-    blank_6_start := line(b3, b0)
-    // the scarfs, a sheet's length apart
-    sa1 := point
-    sa2 := point
-    fix((2440mm, 0mm)) sa1
-    fix((2440mm, 1220mm)) sa2
-    scarf_9a := line(sa1, sa2)
-    sb1 := point
-    sb2 := point
-    fix((4880mm, 0mm)) sb1
-    fix((4880mm, 1220mm)) sb2
-    scarf_9b := line(sb1, sb2)
-    sc1 := point
-    sc2 := point
-    fix((2440mm, 1620mm)) sc1
-    fix((2440mm, 2840mm)) sc2
-    scarf_6a := line(sc1, sc2)
-    sd1 := point
-    sd2 := point
-    fix((4880mm, 1620mm)) sd1
-    fix((4880mm, 2840mm)) sd2
-    scarf_6b := line(sd1, sd2)
-    // the lines the patterns' lower edges are laid on, one per pattern
-    ga := point
-    gb := point
-    fix((300mm, 80mm)) ga
-    fix((6000mm, 80mm)) gb
-    port_garboard_line := line(ga, gb)
-    gc := point
-    gd := point
-    fix((300mm, 700mm)) gc
-    fix((6000mm, 700mm)) gd
-    starboard_garboard_line := line(gc, gd)
-    ma := point
-    mb := point
-    fix((300mm, 1660mm)) ma
-    fix((6000mm, 1660mm)) mb
-    port_middle_line := line(ma, mb)
-    mc := point
-    md := point
-    fix((5780mm, 1977mm)) mc
-    fix((300mm, 1977mm)) md
-    starboard_middle_line := line(mc, md)
-    ha := point
-    hb := point
-    fix((300mm, 2125mm)) ha
-    fix((6000mm, 2125mm)) hb
-    port_sheer_line := line(ha, hb)
-    hc := point
-    hd := point
-    fix((300mm, 2444mm)) hc
-    fix((6000mm, 2444mm)) hd
-    starboard_sheer_line := line(hc, hd)
-  }
-
-  // the home rulings' first ends, 3000 aft of the stem head on each panel's first rail
-  pg_home := point hint((3000, 0, 0))
-  pg_home coincident keel
-  shp0 distance(3000mm, along: std.x) pg_home
-  sg_home := point hint((3000, 285, 62))
-  sg_home coincident starboard_chine_lo
-  shp0 distance(3000mm, along: std.x) sg_home
-  pm_home := point hint((3000, -285, 62))
-  pm_home coincident port_chine_lo
-  shp0 distance(3000mm, along: std.x) pm_home
-  sm_home := point hint((3000, 385, 185))
-  sm_home coincident starboard_chine_hi
-  shp0 distance(3000mm, along: std.x) sm_home
-  ps_home := point hint((3000, -385, 185))
-  ps_home coincident port_chine_hi
-  shp0 distance(3000mm, along: std.x) ps_home
-  ss_home := point hint((3000, 412, 380))
-  ss_home coincident starboard_sheer
-  shp0 distance(3000mm, along: std.x) ss_home
-
-  port_garboard_flat := std.panels.Development(port_garboard, pg_home, d: garboard_t / 2) in floor
-  port_garboard_flat.start.p1 coincident ga
-  port_garboard_flat.end.p1 coincident port_garboard_line
-  ga distance(>= 1000mm, along: std.x) port_garboard_flat.end.p1
-  starboard_garboard_flat := std.panels.Development(starboard_garboard, sg_home, d: garboard_t / 2) in floor
-  starboard_garboard_flat.start.p2 coincident gc
-  starboard_garboard_flat.end.p2 coincident starboard_garboard_line
-  gc distance(>= 1000mm, along: std.x) starboard_garboard_flat.end.p2
-  port_middle_flat := std.panels.Development(port_middle, pm_home, d: strake_t / 2) in floor
-  port_middle_flat.start.p1 coincident ma
-  port_middle_flat.end.p1 coincident port_middle_line
-  ma distance(>= 1000mm, along: std.x) port_middle_flat.end.p1
-  starboard_middle_flat := std.panels.Development(starboard_middle, sm_home, d: strake_t / 2) in floor
-  // this one solves bow to the right of the blank; it is cut the same either way round
-  starboard_middle_flat.start.p1 coincident mc
-  starboard_middle_flat.end.p1 coincident starboard_middle_line
-  starboard_middle_flat.end.p1 distance(>= 1000mm, along: std.x) mc
-  port_sheer_flat := std.panels.Development(port_sheer_strake, ps_home, d: strake_t / 2) in floor
-  port_sheer_flat.start.p1 coincident ha
-  port_sheer_flat.end.p1 coincident port_sheer_line
-  ha distance(>= 1000mm, along: std.x) port_sheer_flat.end.p1
-  starboard_sheer_flat := std.panels.Development(starboard_sheer_strake, ss_home, d: strake_t / 2) in floor
-  starboard_sheer_flat.start.p2 coincident hc
-  starboard_sheer_flat.end.p2 coincident starboard_sheer_line
-  hc distance(>= 1000mm, along: std.x) starboard_sheer_flat.end.p2
-
   // -- the skeg: a 50 mm deadwood under the keel aft, carrying the line shaft's tube to the CV
   // joint at its heel and the gimbal's bracket. Its bottom is level with the keel's lowest point,
   // so it adds no draft.
@@ -473,6 +391,187 @@ component Hull() {
   forward_bulkhead := solid(std.solids.Prism(face(bh_forward_outline), from: 0mm, to: bulkhead_t))
   floor_frame := solid(std.solids.Prism(face(bh_floor_outline), from: 0mm, to: 12mm))
   aft_bulkhead := solid(std.solids.Prism(face(bh_aft_outline), from: -bulkhead_t, to: 0mm))
+
+  // -- the shaft tunnel: a 6 mm box along the keel over the line shaft, from the pedal tower's foot
+  // to the aft bulkhead, open below; it stiffens the bottom and carries the seat's rails
+  tunnel := solid(std.solids.Prism(face(tunnel_outline), from: -36mm, to: 36mm))
+  channel := solid(std.solids.Prism(face(channel_outline), from: -30mm, to: 30mm))
+  channel cut tunnel
+
+  // -- the decks: each the developable sheet between its two sheers (its rulings straight across,
+  // port to starboard), 6 mm on its outside, up: the foredeck from the stem to the forward
+  // bulkhead, the aft deck from the aft bulkhead to the transom. Between them the cockpit is open:
+  // the pilot's knees and feet rise above the sheer.
+  foredeck_sheet := std.panels.Developable(fore_port_sheer, fore_starboard_sheer)
+  aft_deck_sheet := std.panels.Developable(aft_port_sheer, aft_starboard_sheer)
+  foredeck_skin := { q | q distance(<= 6mm, side: outside) foredeck_sheet }
+  aft_deck_skin := { q | q distance(<= 6mm, side: outside) aft_deck_sheet }
+  foredeck := solid(foredeck_skin)
+  aft_deck := solid(aft_deck_skin)
 }
 
 hull := Hull()
+
+// -- the cut file ---------------------------------------------------------------------------------
+// Each panel's neutral layer (half its thickness out) laid flat, outside up, on a blank of three
+// 2440 × 1220 sheets scarfed end to end, drawn in the shop floor's plane below the boat. Each
+// pattern is laid from its home ruling amidships, 3000 aft of the stem head, and placed by its
+// lower edge's two ends. Port and starboard patterns are mirror images, as a builder cuts them.
+floor := plane
+fix(origin == (0mm, 0mm, -1500mm)) floor
+fix(dir == (1, 0, 0)) floor.u
+fix(dir == (0, 1, 0)) floor.v
+
+in floor {
+  // blank A, 9 mm: both garboards and the transom
+  a0 := point
+  a1 := point
+  a2 := point
+  a3 := point
+  fix((0mm, 0mm)) a0
+  fix((7320mm, 0mm)) a1
+  fix((7320mm, 1220mm)) a2
+  fix((0mm, 1220mm)) a3
+  blank_9_bottom := line(a0, a1)
+  blank_9_end := line(a1, a2)
+  blank_9_top := line(a2, a3)
+  blank_9_start := line(a3, a0)
+  // blank B, 6 mm: the four strakes
+  b0 := point
+  b1 := point
+  b2 := point
+  b3 := point
+  fix((0mm, 1620mm)) b0
+  fix((7320mm, 1620mm)) b1
+  fix((7320mm, 2840mm)) b2
+  fix((0mm, 2840mm)) b3
+  blank_6_bottom := line(b0, b1)
+  blank_6_end := line(b1, b2)
+  blank_6_top := line(b2, b3)
+  blank_6_start := line(b3, b0)
+  // the scarfs, a sheet's length apart
+  sa1 := point
+  sa2 := point
+  fix((2440mm, 0mm)) sa1
+  fix((2440mm, 1220mm)) sa2
+  scarf_9a := line(sa1, sa2)
+  sb1 := point
+  sb2 := point
+  fix((4880mm, 0mm)) sb1
+  fix((4880mm, 1220mm)) sb2
+  scarf_9b := line(sb1, sb2)
+  sc1 := point
+  sc2 := point
+  fix((2440mm, 1620mm)) sc1
+  fix((2440mm, 2840mm)) sc2
+  scarf_6a := line(sc1, sc2)
+  sd1 := point
+  sd2 := point
+  fix((4880mm, 1620mm)) sd1
+  fix((4880mm, 2840mm)) sd2
+  scarf_6b := line(sd1, sd2)
+  // the lines the patterns' lower edges are laid on, one per pattern
+  ga := point
+  gb := point
+  fix((300mm, 80mm)) ga
+  fix((6000mm, 80mm)) gb
+  port_garboard_line := line(ga, gb)
+  gc := point
+  gd := point
+  fix((300mm, 700mm)) gc
+  fix((6000mm, 700mm)) gd
+  starboard_garboard_line := line(gc, gd)
+  ma := point
+  mb := point
+  fix((300mm, 1660mm)) ma
+  fix((6000mm, 1660mm)) mb
+  port_middle_line := line(ma, mb)
+  mc := point
+  md := point
+  fix((5780mm, 1977mm)) mc
+  fix((300mm, 1977mm)) md
+  starboard_middle_line := line(mc, md)
+  ha := point
+  hb := point
+  fix((300mm, 2125mm)) ha
+  fix((6000mm, 2125mm)) hb
+  port_sheer_line := line(ha, hb)
+  hc := point
+  hd := point
+  fix((300mm, 2444mm)) hc
+  fix((6000mm, 2444mm)) hd
+  starboard_sheer_line := line(hc, hd)
+}
+
+// the home rulings' first ends, 3000 aft of the stem head on each panel's first rail
+pg_home := point hint((3000, 0, 0))
+pg_home coincident hull.keel
+hull.shp0 distance(3000mm, along: std.x) pg_home
+sg_home := point hint((3000, 285, 62))
+sg_home coincident hull.starboard_chine_lo
+hull.shp0 distance(3000mm, along: std.x) sg_home
+pm_home := point hint((3000, -285, 62))
+pm_home coincident hull.port_chine_lo
+hull.shp0 distance(3000mm, along: std.x) pm_home
+sm_home := point hint((3000, 385, 185))
+sm_home coincident hull.starboard_chine_hi
+hull.shp0 distance(3000mm, along: std.x) sm_home
+ps_home := point hint((3000, -385, 185))
+ps_home coincident hull.port_chine_hi
+hull.shp0 distance(3000mm, along: std.x) ps_home
+ss_home := point hint((3000, 412, 380))
+ss_home coincident hull.starboard_sheer
+hull.shp0 distance(3000mm, along: std.x) ss_home
+
+port_garboard_flat := std.panels.Development(hull.port_garboard, pg_home, d: hull.garboard_t / 2) in floor
+port_garboard_flat.start.p1 coincident ga
+port_garboard_flat.end.p1 coincident port_garboard_line
+ga distance(>= 1000mm, along: std.x) port_garboard_flat.end.p1
+starboard_garboard_flat := std.panels.Development(hull.starboard_garboard, sg_home, d: hull.garboard_t / 2) in floor
+starboard_garboard_flat.start.p2 coincident gc
+starboard_garboard_flat.end.p2 coincident starboard_garboard_line
+gc distance(>= 1000mm, along: std.x) starboard_garboard_flat.end.p2
+port_middle_flat := std.panels.Development(hull.port_middle, pm_home, d: hull.strake_t / 2) in floor
+port_middle_flat.start.p1 coincident ma
+port_middle_flat.end.p1 coincident port_middle_line
+ma distance(>= 1000mm, along: std.x) port_middle_flat.end.p1
+starboard_middle_flat := std.panels.Development(hull.starboard_middle, sm_home, d: hull.strake_t / 2) in floor
+// this one solves bow to the right of the blank; it is cut the same either way round
+starboard_middle_flat.start.p1 coincident mc
+starboard_middle_flat.end.p1 coincident starboard_middle_line
+starboard_middle_flat.end.p1 distance(>= 1000mm, along: std.x) mc
+port_sheer_flat := std.panels.Development(hull.port_sheer_strake, ps_home, d: hull.strake_t / 2) in floor
+port_sheer_flat.start.p1 coincident ha
+port_sheer_flat.end.p1 coincident port_sheer_line
+ha distance(>= 1000mm, along: std.x) port_sheer_flat.end.p1
+starboard_sheer_flat := std.panels.Development(hull.starboard_sheer_strake, ss_home, d: hull.strake_t / 2) in floor
+starboard_sheer_flat.start.p2 coincident hc
+starboard_sheer_flat.end.p2 coincident starboard_sheer_line
+hc distance(>= 1000mm, along: std.x) starboard_sheer_flat.end.p2
+
+// BEGIN generated cut
+// the transom's pattern on the 9 mm blank: its outline as drawn in its plane
+in floor {
+  tp0 := point hint((6400, 120))
+  fix((6400mm, 120mm)) tp0
+  tp1 := point hint((6605, 174.2))
+  fix((6605mm, 174.2mm)) tp1
+  tp2 := point hint((6695, 273.4))
+  fix((6695mm, 273.4mm)) tp2
+  tp3 := point hint((6722, 419.5))
+  fix((6722mm, 419.5mm)) tp3
+  tp4 := point hint((6078, 419.5))
+  fix((6078mm, 419.5mm)) tp4
+  tp5 := point hint((6105, 273.4))
+  fix((6105mm, 273.4mm)) tp5
+  tp6 := point hint((6195, 174.2))
+  fix((6195mm, 174.2mm)) tp6
+  transom_pattern_0 := line(tp0, tp1)
+  transom_pattern_1 := line(tp1, tp2)
+  transom_pattern_2 := line(tp2, tp3)
+  transom_pattern_3 := line(tp3, tp4)
+  transom_pattern_4 := line(tp4, tp5)
+  transom_pattern_5 := line(tp5, tp6)
+  transom_pattern_6 := line(tp6, tp0)
+}
+// END generated cut

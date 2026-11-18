@@ -19,6 +19,8 @@
 unit mm
 use std
 use std.sets
+use std.stations
+use std.place (coords)
 use dims
 use spiral_bevel.hypoid (HypoidPair)
 
@@ -133,11 +135,29 @@ component Drive(teeth: Int) {
   line_seg := line(pinion_2, joint)
   line_shaft := solid(std.sets.Rod(line_seg, r: dims.line_od / 2))
 
+  // the midway bearing: a pillow block on the tunnel's top, at the middle of the shaft's run
+  run := dims.r_tower_gear + (dims.line_length - dims.r_tower_gear) / 2
+  mb_a := point hint((4020, 0, 51))
+  fix((dims.low_x + (run - 15mm) * dims.aft_x, 0mm, dims.lower_box_z + (run - 15mm) * dims.aft_z)) mb_a
+  mb_b := point hint((4050, 0, 51))
+  fix((dims.low_x + (run + 15mm) * dims.aft_x, 0mm, dims.lower_box_z + (run + 15mm) * dims.aft_z)) mb_b
+  mb_line := line(mb_a, mb_b)
+  midway_bearing := solid(std.sets.Rod(mb_line, r: 26mm))
+
   // the CV joint, and the tail's tube to the propeller's hub
   cv := solid(std.sets.Ball(joint, r: 30mm))
   tube_line := line(joint, prop_c)
   tail_tube := solid(std.sets.Rod(tube_line, r: 20mm))
   hub := solid(std.sets.Ball(prop_c, r: 28mm))
+
+  // the propeller's base: square to the tail at the hub, a half-blade's advance ahead of its centre,
+  // `u` athwartships; each blade is its radial section carried from here by the propeller's screw
+  td := dims.tail_down
+  half_advance := dims.prop_pitch * dims.blade_turns / 2
+  prop_base := plane
+  fix(origin == (dims.joint_x + (dims.tail - half_advance) * cos(td), 0mm, dims.joint_z - (dims.tail - half_advance) * sin(td))) prop_base
+  fix(dir == (0, 1, 0)) prop_base.u
+  fix(dir == (sin(td), 0, cos(td))) prop_base.v
 
   // -- the cranks and pedals: arms in planes q_half each side, opposite, drawn along the line from
   // the drawn pilot's hip through the axle (`dims.crank_ux`, `dims.crank_uz`)
@@ -203,3 +223,26 @@ component Drive(teeth: Int) {
 }
 
 drive := Drive(teeth: 1)
+
+param s: Scalar over (0, 1)
+blade_a := solid({ p | some s: p in PropBlade(drive.prop_base, side: 1).f at s })
+blade_b := solid({ p | some s: p in PropBlade(drive.prop_base, side: -1).f at s })
+
+// One blade of the propeller: its radial section, hub to tip and `dims.blade_t` thick along the axis,
+// drawn in the screw's axial plane on the `side` (1 or -1) of the axis, and carried by a screw of the
+// propeller's pitch about the base's normal through `dims.blade_sweep`: a true helicoidal blade, its
+// pitch the same at every radius. A positive pitch winds right-handed.
+component PropBlade(base: plane, side: Scalar, s: Scalar) {
+  st := std.stations.Helix(base, pitch: dims.prop_pitch, turns: dims.blade_turns, s: s)
+  in st.axial {
+    a := point
+    b := point
+    c := point
+    d := point
+    a coords(du: side * dims.prop_hub_r, dv: -dims.blade_t / 2) st.axial
+    b coords(du: side * dims.prop_r, dv: -dims.blade_t / 2) st.axial
+    c coords(du: side * dims.prop_r, dv: dims.blade_t / 2) st.axial
+    d coords(du: side * dims.prop_hub_r, dv: dims.blade_t / 2) st.axial
+  }
+  f := face(a, b, c, d, -> close)
+}

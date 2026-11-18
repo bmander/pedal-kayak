@@ -14,6 +14,12 @@ sheet lines {
   view profile_5(m.hull.starboard_sheer_panel) from front at (40mm, 88mm) scale 0.06
   view profile_6(m.hull.transom) from front at (40mm, 88mm) scale 0.06
   view profile_7(m.hull.skeg) from front at (40mm, 88mm) scale 0.06
+  view profile_8(m.hull.forward_bulkhead) from front at (40mm, 88mm) scale 0.06
+  view profile_9(m.hull.floor_frame) from front at (40mm, 88mm) scale 0.06
+  view profile_10(m.hull.aft_bulkhead) from front at (40mm, 88mm) scale 0.06
+  view profile_11(m.hull.tunnel) from front at (40mm, 88mm) scale 0.06
+  view profile_12(m.hull.foredeck) from front at (40mm, 88mm) scale 0.06
+  view profile_13(m.hull.aft_deck) from front at (40mm, 88mm) scale 0.06
   view plan_0(m.hull.port_garboard_panel) from top at (40mm, 148mm) scale 0.06
   view plan_1(m.hull.starboard_garboard_panel) from top at (40mm, 148mm) scale 0.06
   view plan_2(m.hull.port_middle_panel) from top at (40mm, 148mm) scale 0.06
@@ -22,6 +28,12 @@ sheet lines {
   view plan_5(m.hull.starboard_sheer_panel) from top at (40mm, 148mm) scale 0.06
   view plan_6(m.hull.transom) from top at (40mm, 148mm) scale 0.06
   view plan_7(m.hull.skeg) from top at (40mm, 148mm) scale 0.06
+  view plan_8(m.hull.forward_bulkhead) from top at (40mm, 148mm) scale 0.06
+  view plan_9(m.hull.floor_frame) from top at (40mm, 148mm) scale 0.06
+  view plan_10(m.hull.aft_bulkhead) from top at (40mm, 148mm) scale 0.06
+  view plan_11(m.hull.tunnel) from top at (40mm, 148mm) scale 0.06
+  view plan_12(m.hull.foredeck) from top at (40mm, 148mm) scale 0.06
+  view plan_13(m.hull.aft_deck) from top at (40mm, 148mm) scale 0.06
   view astern_0(m.hull.port_garboard_panel) from right at (330mm, 268mm) scale 0.16
   view astern_1(m.hull.starboard_garboard_panel) from right at (330mm, 268mm) scale 0.16
   view astern_2(m.hull.port_middle_panel) from right at (330mm, 268mm) scale 0.16
@@ -30,6 +42,12 @@ sheet lines {
   view astern_5(m.hull.starboard_sheer_panel) from right at (330mm, 268mm) scale 0.16
   view astern_6(m.hull.transom) from right at (330mm, 268mm) scale 0.16
   view astern_7(m.hull.skeg) from right at (330mm, 268mm) scale 0.16
+  view astern_8(m.hull.forward_bulkhead) from right at (330mm, 268mm) scale 0.16
+  view astern_9(m.hull.floor_frame) from right at (330mm, 268mm) scale 0.16
+  view astern_10(m.hull.aft_bulkhead) from right at (330mm, 268mm) scale 0.16
+  view astern_11(m.hull.tunnel) from right at (330mm, 268mm) scale 0.16
+  view astern_12(m.hull.foredeck) from right at (330mm, 268mm) scale 0.16
+  view astern_13(m.hull.aft_deck) from right at (330mm, 268mm) scale 0.16
   view pictorial_0(m.hull.port_garboard_panel) from isometric at (50mm, 288mm) scale 0.028
   view pictorial_1(m.hull.starboard_garboard_panel) from isometric at (50mm, 288mm) scale 0.028
   view pictorial_2(m.hull.port_middle_panel) from isometric at (50mm, 288mm) scale 0.028
@@ -38,6 +56,12 @@ sheet lines {
   view pictorial_5(m.hull.starboard_sheer_panel) from isometric at (50mm, 288mm) scale 0.028
   view pictorial_6(m.hull.transom) from isometric at (50mm, 288mm) scale 0.028
   view pictorial_7(m.hull.skeg) from isometric at (50mm, 288mm) scale 0.028
+  view pictorial_8(m.hull.forward_bulkhead) from isometric at (50mm, 288mm) scale 0.028
+  view pictorial_9(m.hull.floor_frame) from isometric at (50mm, 288mm) scale 0.028
+  view pictorial_10(m.hull.aft_bulkhead) from isometric at (50mm, 288mm) scale 0.028
+  view pictorial_11(m.hull.tunnel) from isometric at (50mm, 288mm) scale 0.028
+  view pictorial_12(m.hull.foredeck) from isometric at (50mm, 288mm) scale 0.028
+  view pictorial_13(m.hull.aft_deck) from isometric at (50mm, 288mm) scale 0.028
   label "Profile, bow to the left" at (40mm, 42mm)
   label "Plan" at (40mm, 112mm)
   label "From astern" at (262mm, 192mm)
@@ -48,16 +72,16 @@ sheet lines {
 sheet cutting {
   size (420mm, 297mm)
   label "PEDAL KAYAK  cut file: each panel's neutral layer, outside up, on a blank of three 2440 × 1220 sheets scarfed end to end" at (14mm, 16mm)
-  sketch blanks(m) from m.hull.floor at (24mm, 250mm) scale 0.05
+  sketch blanks(m) from m.floor at (24mm, 250mm) scale 0.05
   label "Blank A, 9 mm: port and starboard garboards; the transom (right)" at (24mm, 262mm)
   label "Blank B, 6 mm: port and starboard middle strakes, port and starboard sheer strakes" at (24mm, 102mm)
   label "Scarfs 2440 apart. Red: the keel edges, which meet." at (24mm, 272mm)
-  style m.hull.port_garboard_flat.a { color: #b22222 }
-  style m.hull.starboard_garboard_flat.b { color: #b22222 }
-  style m.hull.port_garboard_line { display: none }
-  style m.hull.starboard_garboard_line { display: none }
-  style m.hull.port_middle_line { display: none }
-  style m.hull.starboard_middle_line { display: none }
-  style m.hull.port_sheer_line { display: none }
-  style m.hull.starboard_sheer_line { display: none }
+  style m.port_garboard_flat.a { color: #b22222 }
+  style m.starboard_garboard_flat.b { color: #b22222 }
+  style m.port_garboard_line { display: none }
+  style m.starboard_garboard_line { display: none }
+  style m.port_middle_line { display: none }
+  style m.starboard_middle_line { display: none }
+  style m.port_sheer_line { display: none }
+  style m.starboard_sheer_line { display: none }
 }

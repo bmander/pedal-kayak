@@ -1,0 +1,96 @@
+// kayak.sv on one sheet: the boat and its drive in profile with the port side taken away, in plan
+// with the decks lifted, and the stern's drive close up.
+model m from "kayak.sv"
+
+sheet arrangement {
+  size (420mm, 297mm)
+  label "PEDAL KAYAK  general arrangement. LOA 5800, beam 824, 51 kg; 99th-percentile pilot, seat fully aft" at (14mm, 16mm)
+  view profile_0(m.hull.starboard_garboard_panel) from front at (30mm, 110mm) scale 0.06
+  view profile_1(m.hull.starboard_middle_panel) from front at (30mm, 110mm) scale 0.06
+  view profile_2(m.hull.starboard_sheer_panel) from front at (30mm, 110mm) scale 0.06
+  view profile_3(m.hull.transom) from front at (30mm, 110mm) scale 0.06
+  view profile_4(m.hull.skeg) from front at (30mm, 110mm) scale 0.06
+  view profile_5(m.hull.forward_bulkhead) from front at (30mm, 110mm) scale 0.06
+  view profile_6(m.hull.floor_frame) from front at (30mm, 110mm) scale 0.06
+  view profile_7(m.hull.aft_bulkhead) from front at (30mm, 110mm) scale 0.06
+  view profile_8(m.hull.tunnel) from front at (30mm, 110mm) scale 0.06
+  view profile_9(m.hull.foredeck) from front at (30mm, 110mm) scale 0.06
+  view profile_10(m.hull.aft_deck) from front at (30mm, 110mm) scale 0.06
+  view profile_11(m.drive.crank_gear_blank) from front at (30mm, 110mm) scale 0.06
+  view profile_12(m.drive.tower_pinion_blank) from front at (30mm, 110mm) scale 0.06
+  view profile_13(m.drive.tower_gear_blank) from front at (30mm, 110mm) scale 0.06
+  view profile_14(m.drive.line_pinion_blank) from front at (30mm, 110mm) scale 0.06
+  view profile_15(m.drive.axle) from front at (30mm, 110mm) scale 0.06
+  view profile_16(m.drive.tower_shaft) from front at (30mm, 110mm) scale 0.06
+  view profile_17(m.drive.line_shaft) from front at (30mm, 110mm) scale 0.06
+  view profile_18(m.drive.cv) from front at (30mm, 110mm) scale 0.06
+  view profile_19(m.drive.tail_tube) from front at (30mm, 110mm) scale 0.06
+  view profile_20(m.drive.hub) from front at (30mm, 110mm) scale 0.06
+  view profile_21(m.drive.starboard_crank) from front at (30mm, 110mm) scale 0.06
+  view profile_22(m.drive.port_crank) from front at (30mm, 110mm) scale 0.06
+  view profile_23(m.drive.starboard_pedal) from front at (30mm, 110mm) scale 0.06
+  view profile_24(m.drive.port_pedal) from front at (30mm, 110mm) scale 0.06
+  view profile_25(m.drive.crank_pod) from front at (30mm, 110mm) scale 0.06
+  view profile_26(m.drive.tower_column) from front at (30mm, 110mm) scale 0.06
+  view profile_27(m.drive.keel_box) from front at (30mm, 110mm) scale 0.06
+  view profile_28(m.drive.boom) from front at (30mm, 110mm) scale 0.06
+  view profile_29(m.drive.tilt_pin) from front at (30mm, 110mm) scale 0.06
+  view profile_30(m.drive.steering_stock) from front at (30mm, 110mm) scale 0.06
+  view profile_31(m.drive.midway_bearing) from front at (30mm, 110mm) scale 0.06
+  view profile_32(m.seat.pan) from front at (30mm, 110mm) scale 0.06
+  view profile_33(m.seat.back) from front at (30mm, 110mm) scale 0.06
+  view profile_34(m.blade_a) from front at (30mm, 110mm) scale 0.06
+  view profile_35(m.blade_b) from front at (30mm, 110mm) scale 0.06
+  view plan_0(m.hull.port_garboard_panel) from top at (30mm, 190mm) scale 0.06
+  view plan_1(m.hull.starboard_garboard_panel) from top at (30mm, 190mm) scale 0.06
+  view plan_2(m.hull.port_middle_panel) from top at (30mm, 190mm) scale 0.06
+  view plan_3(m.hull.starboard_middle_panel) from top at (30mm, 190mm) scale 0.06
+  view plan_4(m.hull.port_sheer_panel) from top at (30mm, 190mm) scale 0.06
+  view plan_5(m.hull.starboard_sheer_panel) from top at (30mm, 190mm) scale 0.06
+  view plan_6(m.hull.transom) from top at (30mm, 190mm) scale 0.06
+  view plan_7(m.hull.skeg) from top at (30mm, 190mm) scale 0.06
+  view plan_8(m.hull.forward_bulkhead) from top at (30mm, 190mm) scale 0.06
+  view plan_9(m.hull.floor_frame) from top at (30mm, 190mm) scale 0.06
+  view plan_10(m.hull.aft_bulkhead) from top at (30mm, 190mm) scale 0.06
+  view plan_11(m.hull.tunnel) from top at (30mm, 190mm) scale 0.06
+  view plan_12(m.drive.crank_gear_blank) from top at (30mm, 190mm) scale 0.06
+  view plan_13(m.drive.tower_pinion_blank) from top at (30mm, 190mm) scale 0.06
+  view plan_14(m.drive.tower_gear_blank) from top at (30mm, 190mm) scale 0.06
+  view plan_15(m.drive.line_pinion_blank) from top at (30mm, 190mm) scale 0.06
+  view plan_16(m.drive.axle) from top at (30mm, 190mm) scale 0.06
+  view plan_17(m.drive.tower_shaft) from top at (30mm, 190mm) scale 0.06
+  view plan_18(m.drive.line_shaft) from top at (30mm, 190mm) scale 0.06
+  view plan_19(m.drive.cv) from top at (30mm, 190mm) scale 0.06
+  view plan_20(m.drive.tail_tube) from top at (30mm, 190mm) scale 0.06
+  view plan_21(m.drive.hub) from top at (30mm, 190mm) scale 0.06
+  view plan_22(m.drive.starboard_crank) from top at (30mm, 190mm) scale 0.06
+  view plan_23(m.drive.port_crank) from top at (30mm, 190mm) scale 0.06
+  view plan_24(m.drive.starboard_pedal) from top at (30mm, 190mm) scale 0.06
+  view plan_25(m.drive.port_pedal) from top at (30mm, 190mm) scale 0.06
+  view plan_26(m.drive.crank_pod) from top at (30mm, 190mm) scale 0.06
+  view plan_27(m.drive.tower_column) from top at (30mm, 190mm) scale 0.06
+  view plan_28(m.drive.keel_box) from top at (30mm, 190mm) scale 0.06
+  view plan_29(m.drive.boom) from top at (30mm, 190mm) scale 0.06
+  view plan_30(m.drive.tilt_pin) from top at (30mm, 190mm) scale 0.06
+  view plan_31(m.drive.steering_stock) from top at (30mm, 190mm) scale 0.06
+  view plan_32(m.drive.midway_bearing) from top at (30mm, 190mm) scale 0.06
+  view plan_33(m.seat.pan) from top at (30mm, 190mm) scale 0.06
+  view plan_34(m.seat.back) from top at (30mm, 190mm) scale 0.06
+  view plan_35(m.blade_a) from top at (30mm, 190mm) scale 0.06
+  view plan_36(m.blade_b) from top at (30mm, 190mm) scale 0.06
+  view stern_3(m.hull.transom) from front at (-360mm, 272mm) scale 0.12
+  view stern_4(m.hull.skeg) from front at (-360mm, 272mm) scale 0.12
+  view stern_5(m.hull.aft_deck) from front at (-360mm, 272mm) scale 0.12
+  view stern_6(m.hull.aft_bulkhead) from front at (-360mm, 272mm) scale 0.12
+  view stern_8(m.drive.cv) from front at (-360mm, 272mm) scale 0.12
+  view stern_9(m.drive.tail_tube) from front at (-360mm, 272mm) scale 0.12
+  view stern_10(m.drive.hub) from front at (-360mm, 272mm) scale 0.12
+  view stern_11(m.drive.tilt_pin) from front at (-360mm, 272mm) scale 0.12
+  view stern_12(m.drive.steering_stock) from front at (-360mm, 272mm) scale 0.12
+  view stern_13(m.blade_a) from front at (-360mm, 272mm) scale 0.12
+  view stern_14(m.blade_b) from front at (-360mm, 272mm) scale 0.12
+  label "Profile from starboard" at (30mm, 62mm)
+  label "Plan, decks lifted" at (30mm, 150mm)
+  label "The stern, 1:8.3: skeg, CV joint, tail, propeller, steering stock" at (30mm, 262mm)
+  style .hidden { display: none }
+}

@@ -20,6 +20,9 @@ use std
 use std.panels
 use std.solids (cut)
 use std.solids
+use std.sets
+use dims
+use mech
 
 // The hull is a component, so the assembly (`kayak.sv`) can place it; this file draws one.
 component Hull() {
@@ -187,25 +190,23 @@ component Hull() {
   in centre {
     sk0 := point hint((4000, 13))
     fix((4000mm, 13mm)) sk0
-    sk1 := point hint((4116.4, 16.6))
-    fix((4116.4mm, 16.6mm)) sk1
-    sk2 := point hint((4434.4, 28.7))
-    fix((4434.4mm, 28.7mm)) sk2
-    sk3 := point hint((4868.9, 50.4))
-    fix((4868.9mm, 50.4mm)) sk3
-    sk4 := point hint((5303.3, 78.1))
-    fix((5303.3mm, 78.1mm)) sk4
-    sk5 := point hint((5621.3, 102.3))
-    fix((5621.3mm, 102.3mm)) sk5
-    sk6 := point hint((5737.7, 112))
-    fix((5737.7mm, 112mm)) sk6
-    sk7 := point hint((5770, 112))
-    fix((5770mm, 112mm)) sk7
-    sk8 := point hint((5770, 0))
-    fix((5770mm, 0mm)) sk8
-    sk9 := point hint((4400, 0))
-    fix((4400mm, 0mm)) sk9
-    skeg_outline := line(sk0, sk1) -> line(sk1, sk2) -> line(sk2, sk3) -> line(sk3, sk4) -> line(sk4, sk5) -> line(sk5, sk6) -> line(sk6, sk7) -> line(sk7, sk8) -> line(sk8, sk9) -> line(sk9, sk0) -> close
+    sk1 := point hint((4111.9, 16.5))
+    fix((4111.9mm, 16.5mm)) sk1
+    sk2 := point hint((4417.5, 27.9))
+    fix((4417.5mm, 27.9mm)) sk2
+    sk3 := point hint((4835, 48.5))
+    fix((4835mm, 48.5mm)) sk3
+    sk4 := point hint((5252.5, 74.6))
+    fix((5252.5mm, 74.6mm)) sk4
+    sk5 := point hint((5558.1, 97.3))
+    fix((5558.1mm, 97.3mm)) sk5
+    sk6 := point hint((5670, 106.3))
+    fix((5670mm, 106.3mm)) sk6
+    sk7 := point hint((5670, 0))
+    fix((5670mm, 0mm)) sk7
+    sk8 := point hint((4400, 0))
+    fix((4400mm, 0mm)) sk8
+    skeg_outline := line(sk0, sk1) -> line(sk1, sk2) -> line(sk2, sk3) -> line(sk3, sk4) -> line(sk4, sk5) -> line(sk5, sk6) -> line(sk6, sk7) -> line(sk7, sk8) -> line(sk8, sk0) -> close
   }
   // the forward bulkhead, 1600 aft of the stem head
   bh_forward := plane
@@ -229,22 +230,22 @@ component Hull() {
     fix((-202mm, 107.8mm)) b_forward6
     bh_forward_outline := line(b_forward0, b_forward1) -> line(b_forward1, b_forward2) -> line(b_forward2, b_forward3) -> line(b_forward3, b_forward4) -> line(b_forward4, b_forward5) -> line(b_forward5, b_forward6) -> line(b_forward6, b_forward0) -> close
   }
-  // the floor bulkhead, 2180 aft of the stem head
+  // the floor bulkhead, 2160 aft of the stem head
   bh_floor := plane
-  fix(origin == (2180mm, 0mm, 0mm)) bh_floor
+  fix(origin == (2160mm, 0mm, 0mm)) bh_floor
   fix(dir == (0, 1, 0)) bh_floor.u
   fix(dir == (0, 0, 1)) bh_floor.v
   in bh_floor {
-    b_floor0 := point hint((0, 17.8))
-    fix((0mm, 17.8mm)) b_floor0
-    b_floor1 := point hint((255, 74.1))
-    fix((255mm, 74.1mm)) b_floor1
-    b_floor2 := point hint((279.8, 110))
-    fix((279.8mm, 110mm)) b_floor2
-    b_floor3 := point hint((-279.8, 110))
-    fix((-279.8mm, 110mm)) b_floor3
-    b_floor4 := point hint((-255, 74.1))
-    fix((-255mm, 74.1mm)) b_floor4
+    b_floor0 := point hint((0, 18.6))
+    fix((0mm, 18.6mm)) b_floor0
+    b_floor1 := point hint((253.6, 74.9))
+    fix((253.6mm, 74.9mm)) b_floor1
+    b_floor2 := point hint((277.6, 110))
+    fix((277.6mm, 110mm)) b_floor2
+    b_floor3 := point hint((-277.6, 110))
+    fix((-277.6mm, 110mm)) b_floor3
+    b_floor4 := point hint((-253.6, 74.9))
+    fix((-253.6mm, 74.9mm)) b_floor4
     bh_floor_outline := line(b_floor0, b_floor1) -> line(b_floor1, b_floor2) -> line(b_floor2, b_floor3) -> line(b_floor3, b_floor4) -> line(b_floor4, b_floor0) -> close
   }
   // the aft bulkhead, 5250 aft of the stem head
@@ -271,36 +272,54 @@ component Hull() {
   }
   // the shaft tunnel's profile and its channel's, in the centreplane
   in centre {
-    tu0 := point hint((2300, 13.5))
-    fix((2300mm, 13.5mm)) tu0
-    tu1 := point hint((2497.6, 7.6))
-    fix((2497.6mm, 7.6mm)) tu1
-    tu2 := point hint((3037.5, 0.1))
-    fix((3037.5mm, 0.1mm)) tu2
-    tu3 := point hint((3775, 7.3))
-    fix((3775mm, 7.3mm)) tu3
-    tu4 := point hint((4512.5, 32.1))
-    fix((4512.5mm, 32.1mm)) tu4
-    tu5 := point hint((5052.4, 61.4))
-    fix((5052.4mm, 61.4mm)) tu5
+    tu0 := point hint((2390, 10.6))
+    fix((2390mm, 10.6mm)) tu0
+    tu1 := point hint((2581.6, 5.7))
+    fix((2581.6mm, 5.7mm)) tu1
+    tu2 := point hint((3105, 0))
+    fix((3105mm, 0mm)) tu2
+    tu3 := point hint((3820, 8.3))
+    fix((3820mm, 8.3mm)) tu3
+    tu4 := point hint((4535, 33.1))
+    fix((4535mm, 33.1mm)) tu4
+    tu5 := point hint((5058.4, 61.7))
+    fix((5058.4mm, 61.7mm)) tu5
     tu6 := point hint((5250, 74.4))
     fix((5250mm, 74.4mm)) tu6
     tu7 := point hint((5250, 116))
     fix((5250mm, 116mm)) tu7
-    tu8 := point hint((2300, 116))
-    fix((2300mm, 116mm)) tu8
+    tu8 := point hint((2390, 116))
+    fix((2390mm, 116mm)) tu8
     tunnel_outline := line(tu0, tu1) -> line(tu1, tu2) -> line(tu2, tu3) -> line(tu3, tu4) -> line(tu4, tu5) -> line(tu5, tu6) -> line(tu6, tu7) -> line(tu7, tu8) -> line(tu8, tu0) -> close
   }
   in centre {
-    tc0 := point hint((2299, -16.5))
-    fix((2299mm, -16.5mm)) tc0
+    tc0 := point hint((2389, -19.4))
+    fix((2389mm, -19.4mm)) tc0
     tc1 := point hint((5251, 44.4))
     fix((5251mm, 44.4mm)) tc1
-    tc2 := point hint((5251, 110))
-    fix((5251mm, 110mm)) tc2
-    tc3 := point hint((2299, 110))
-    fix((2299mm, 110mm)) tc3
+    tc2 := point hint((5251, 107))
+    fix((5251mm, 107mm)) tc2
+    tc3 := point hint((2389, 107))
+    fix((2389mm, 107mm)) tc3
     channel_outline := line(tc0, tc1) -> line(tc1, tc2) -> line(tc2, tc3) -> line(tc3, tc0) -> close
+  }
+  // the drive bed's profile, in the centreplane
+  in centre {
+    db0 := point hint((1860, 32.4))
+    fix((1860mm, 32.4mm)) db0
+    db1 := point hint((1937.6, 28.4))
+    fix((1937.6mm, 28.4mm)) db1
+    db2 := point hint((2125, 20))
+    fix((2125mm, 20mm)) db2
+    db3 := point hint((2312.4, 13.1))
+    fix((2312.4mm, 13.1mm)) db3
+    db4 := point hint((2390, 10.6))
+    fix((2390mm, 10.6mm)) db4
+    db5 := point hint((2390, 45))
+    fix((2390mm, 45mm)) db5
+    db6 := point hint((1860, 45))
+    fix((1860mm, 45mm)) db6
+    bed_outline := line(db0, db1) -> line(db1, db2) -> line(db2, db3) -> line(db3, db4) -> line(db4, db5) -> line(db5, db6) -> line(db6, db0) -> close
   }
   // each deck's two sheers: the sheer over the deck's length
   dfp0 := point hint((0, 0, 540))
@@ -375,26 +394,59 @@ component Hull() {
   // -- the transom: 9 mm, inside the panels' aft ends ----------------------------------------------
   transom := solid(std.solids.Prism(face(transom_outline), from: -9mm, to: 0mm))
 
-  // -- the skeg: a 50 mm deadwood under the keel aft, carrying the line shaft's tube to the CV
-  // joint at its heel and the gimbal's bracket. Its bottom is level with the keel's lowest point,
-  // so it adds no draft.
+  // -- the skeg: a 50 mm deadwood of laminated okoumé under the keel aft. It carries the line
+  // shaft's stern tube to its heel, where the heel bracket bolts on (drive_parts.sv). Its bottom
+  // is level with the keel's lowest point, so it adds no draft.
   centre := plane
   fix(origin == (0mm, 0mm, 0mm)) centre
   fix(dir == (1, 0, 0)) centre.u
   fix(dir == (0, 0, 1)) centre.v
   skeg := solid(std.solids.Prism(face(skeg_outline), from: -25mm, to: 25mm))
 
-  // -- the bulkheads, 6 mm, each its station's section: the forward one closes the bow's buoyancy and
-  // carries the boom's forward end, the aft one closes the stern's and takes the shaft's gland. The
-  // floor, 12 mm, is the section below 110: it seats the lower bevel box at the pedal tower's foot.
+  // -- the stern tube: GRP, 32 × 38, on the line shaft's axis, from inside the tunnel to the skeg's
+  // heel. It is laid in a channel routed in the skeg's top, and it leaves the hull through the keel
+  // seam, between x 4400 and 5130. The garboards are cut back round it there, and the tube is
+  // glassed in inside and out, so it closes the slot.
+  st_fwd := point hint((4380, 0, 45))
+  fix((mech.stern_fwd_x, 0mm, dims.lower_box_z + (mech.stern_fwd_x - dims.low_x) * (dims.joint_z - dims.lower_box_z) / (dims.joint_x - dims.low_x))) st_fwd
+  st_aft := point hint((5670, 0, 32))
+  fix((mech.skeg_heel_x, 0mm, dims.lower_box_z + (mech.skeg_heel_x - dims.low_x) * (dims.joint_z - dims.lower_box_z) / (dims.joint_x - dims.low_x))) st_aft
+  stern_axis := line(st_fwd, st_aft)
+  stern_tube := solid(std.sets.Rod(stern_axis, r: mech.stern_od / 2))
+  construction stern_bore := solid(std.sets.Rod(stern_axis, r: mech.stern_id / 2))
+  stern_bore cut stern_tube
+  // the room it takes, run a little past each end so its square ends leave no sliver
+  sr_fwd := point hint((4370, 0, 45))
+  fix((mech.stern_fwd_x - 10mm, 0mm, dims.lower_box_z + (mech.stern_fwd_x - 10mm - dims.low_x) * (dims.joint_z - dims.lower_box_z) / (dims.joint_x - dims.low_x))) sr_fwd
+  sr_aft := point hint((5680, 0, 32))
+  fix((mech.skeg_heel_x + 10mm, 0mm, dims.lower_box_z + (mech.skeg_heel_x + 10mm - dims.low_x) * (dims.joint_z - dims.lower_box_z) / (dims.joint_x - dims.low_x))) sr_aft
+  room_axis := line(sr_fwd, sr_aft)
+  construction stern_room := solid(std.sets.Rod(room_axis, r: mech.stern_od / 2))
+  stern_room cut skeg
+  stern_room cut port_garboard_panel
+  stern_room cut starboard_garboard_panel
+
+  // -- the bulkheads, 6 mm, each its station's section. The forward one closes the bow's buoyancy;
+  // the aft one closes the stern's, with the stern tube passing beneath it. The floor, 12 mm, is the
+  // section below 110, just forward of the keel box. It ties the garboards over the drive bed,
+  // which passes through a notch in it.
   bulkhead_t := 6mm
   forward_bulkhead := solid(std.solids.Prism(face(bh_forward_outline), from: 0mm, to: bulkhead_t))
   floor_frame := solid(std.solids.Prism(face(bh_floor_outline), from: 0mm, to: 12mm))
   aft_bulkhead := solid(std.solids.Prism(face(bh_aft_outline), from: -bulkhead_t, to: 0mm))
 
-  // -- the shaft tunnel: a 6 mm box along the keel over the line shaft, from the pedal tower's foot
-  // to the aft bulkhead, open below; it stiffens the bottom and carries the seat's rails
-  tunnel := solid(std.solids.Prism(face(tunnel_outline), from: -36mm, to: 36mm))
+  // -- the drive bed: a keelson of laminated ash, 60 wide, glued and glassed along the keel seam
+  // from the strut's clevis to the tunnel. The keel box bolts down to it. With the tunnel it carries
+  // the pedals' push aft to the seat's rails (mech.sv).
+  drive_bed := solid(std.solids.Prism(face(bed_outline), from: -30mm, to: 30mm))
+  construction bed_notch := solid(std.solids.Prism(face(bed_outline), from: -31mm, to: 31mm))
+  bed_notch cut floor_frame
+
+  // -- the shaft tunnel: a box girder along the keel over the line shaft, from the keel box's
+  // output to the aft bulkhead, open below. Its webs are 9 mm with 60 clear between them, and its
+  // 9 mm lid screws down in sections; the midway bush's lies over it. The seat's rails run on the
+  // webs' outsides.
+  tunnel := solid(std.solids.Prism(face(tunnel_outline), from: -39mm, to: 39mm))
   channel := solid(std.solids.Prism(face(channel_outline), from: -30mm, to: 30mm))
   channel cut tunnel
 

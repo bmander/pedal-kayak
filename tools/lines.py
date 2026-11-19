@@ -306,15 +306,16 @@ def rail_block():
 
 
 SKEG_FWD = 4000.0      # where the skeg leaves the keel
-SKEG_HEEL = 5770.0     # its aft end, past the transom's bottom: the gimbal's bracket bolts here
+SKEG_HEEL = 5670.0     # its aft end, short of the transom's bottom: the heel bracket bolts here
+                       # (mech.sv: the double U-joint's forward half and the shaft's cartridge)
 SKEG_FOOT = 4400.0     # where its bottom reaches the baseline
 
 
 def skeg_block():
     """The skeg's outline in the centreplane (u = x, v = z): its top along the keel from SKEG_FWD to
-    the transom, its heel square, its bottom on the baseline, rising forward to the keel."""
-    top = [(x, keel_z(x)) for x in stations(SKEG_FWD, keel_aft_x(), 7)]
-    ring = top + [(SKEG_HEEL, KEEL_AFT_Z), (SKEG_HEEL, 0.0), (SKEG_FOOT, 0.0)]
+    its heel, its heel square, its bottom on the baseline, rising forward to the keel."""
+    top = [(x, keel_z(x)) for x in stations(SKEG_FWD, SKEG_HEEL, 7)]
+    ring = top + [(SKEG_HEEL, 0.0), (SKEG_FOOT, 0.0)]
     out = ["// the skeg's outline in the centreplane, its top along the keel", "in centre {"]
     names = []
     for i, (x, z) in enumerate(ring):
@@ -328,7 +329,9 @@ def skeg_block():
     return out
 
 
-TUNNEL = (2300.0, 5250.0, 116.0)   # the shaft tunnel: from, to, top (outside)
+TUNNEL = (2390.0, 5250.0, 116.0)   # the shaft tunnel: from the keel box's output, to, top (outside)
+TUNNEL_LID = 9.0                   # its lid's thickness
+BED = (1860.0, 2390.0, 45.0)       # the drive bed: from the strut's clevis to the tunnel, its top
 
 
 def centre_profile(name, ring, prefix):
@@ -347,13 +350,19 @@ def centre_profile(name, ring, prefix):
 
 def tunnel_block():
     """The shaft tunnel's profile in the centreplane, its bottom along the keel and its top level;
-    and its channel's, from below the keel up to the top's underside, 6 mm down."""
+    its channel's, from below the keel up to the lid's underside; and the drive bed's."""
     x0, x1, top = TUNNEL
     bottom = [(x, keel_z(x)) for x in stations(x0, x1, 7)]
     out = ["// the shaft tunnel's profile and its channel's, in the centreplane"]
     out += centre_profile("tunnel_outline", bottom + [(x1, top), (x0, top)], "tu")
-    chan = [(x0 - 1, keel_z(x0) - 30), (x1 + 1, keel_z(x1) - 30), (x1 + 1, top - 6), (x0 - 1, top - 6)]
+    chan = [(x0 - 1, keel_z(x0) - 30), (x1 + 1, keel_z(x1) - 30), (x1 + 1, top - TUNNEL_LID),
+            (x0 - 1, top - TUNNEL_LID)]
     out += centre_profile("channel_outline", chan, "tc")
+    # the drive bed: its bottom along the keel, its top level, under the strut's clevis and the keel box
+    b0, b1, btop = BED
+    bed = [(x, keel_z(x)) for x in stations(b0, b1, 5)]
+    out.append("// the drive bed's profile, in the centreplane")
+    out += centre_profile("bed_outline", bed + [(b1, btop), (b0, btop)], "db")
     return out
 
 
@@ -382,7 +391,7 @@ def deck_rails_block():
     return out
 
 
-BULKHEADS = {"forward": (1600.0, None), "floor": (2180.0, 110.0), "aft": (5250.0, None)}   # station, top (None: to the sheer)
+BULKHEADS = {"forward": (1600.0, None), "floor": (2160.0, 110.0), "aft": (5250.0, None)}   # station, top (None: to the sheer)
 
 
 def bulkhead_block():

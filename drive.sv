@@ -19,8 +19,11 @@
 unit mm
 use std
 use std.sets
+use std.solids (cut)
 use dims
+use mech
 use spiral_bevel.hypoid (HypoidPair)
+use drive_parts (Mechanism)
 
 component Drive(teeth: Int) {
   // -- the datums: held, every one, so the pairs seated on them start where they stand ----------
@@ -96,19 +99,36 @@ component Drive(teeth: Int) {
     claim pinion_2 coincident stage_2.pinion_member.foot
   }
   when teeth == 0 {
-    // each a disc on its shaft, its face width about its mean point, out to its mean tip
-    g1a := point hint((2250, 13.5, 330))
-    fix((dims.bb_x, dims.r_tower_pinion - dims.b_1 / 2, dims.bb_z)) g1a
-    g1b := point hint((2250, 31.5, 330))
-    fix((dims.bb_x, dims.r_tower_pinion + dims.b_1 / 2, dims.bb_z)) g1b
+    // each member's envelope (mech.sv): a gear a ring from its toe's tip to its heel's back, a
+    // pinion a solid of its tip radius over the same run, along its own axis from the apex
+    g1a := point hint((2250, 18, 330))
+    fix((dims.bb_x, mech.crank_gear_a0, dims.bb_z)) g1a
+    g1b := point hint((2250, 33, 330))
+    fix((dims.bb_x, mech.crank_gear_a1, dims.bb_z)) g1b
     g1 := line(g1a, g1b)
-    crank_gear_blank := solid(std.sets.Rod(g1, r: dims.r_crank_gear + dims.m_1))
-    p1 := line(pinion_1, bb)
-    tower_pinion_blank := solid(std.sets.Rod(p1, r: dims.r_tower_pinion + dims.m_1))
-    g2 := line(low, gear_2)
-    tower_gear_blank := solid(std.sets.Rod(g2, r: dims.r_tower_gear + dims.m_2))
-    p2 := line(low, pinion_2)
-    line_pinion_blank := solid(std.sets.Rod(p2, r: dims.r_line_pinion + dims.m_2))
+    crank_gear_blank := solid(std.sets.Rod(g1, r: mech.crank_gear_tip))
+    construction g1_bore := solid(std.sets.Rod(g1, r: mech.crank_gear_rin))
+    g1_bore cut crank_gear_blank
+    p1a := point hint((2250, 0, 279))
+    fix((dims.bb_x + mech.tower_pinion_a0 * dims.down_x, 0mm, dims.bb_z + mech.tower_pinion_a0 * dims.down_z)) p1a
+    p1b := point hint((2250, 0, 265))
+    fix((dims.bb_x + mech.tower_pinion_a1 * dims.down_x, 0mm, dims.bb_z + mech.tower_pinion_a1 * dims.down_z)) p1b
+    p1 := line(p1a, p1b)
+    tower_pinion_blank := solid(std.sets.Rod(p1, r: mech.tower_pinion_tip))
+    g2a := point hint((2247, 0, 84))
+    fix((dims.low_x - mech.tower_gear_a0 * dims.down_x, 0mm, dims.lower_box_z - mech.tower_gear_a0 * dims.down_z)) g2a
+    g2b := point hint((2247, 0, 95))
+    fix((dims.low_x - mech.tower_gear_a1 * dims.down_x, 0mm, dims.lower_box_z - mech.tower_gear_a1 * dims.down_z)) g2b
+    g2 := line(g2a, g2b)
+    tower_gear_blank := solid(std.sets.Rod(g2, r: mech.tower_gear_tip))
+    construction g2_bore := solid(std.sets.Rod(g2, r: mech.tower_gear_rin))
+    g2_bore cut tower_gear_blank
+    p2a := point hint((2285, 0, 72))
+    fix((dims.low_x + mech.line_pinion_a0 * dims.aft_x, 0mm, dims.lower_box_z + mech.line_pinion_a0 * dims.aft_z)) p2a
+    p2b := point hint((2296, 0, 71))
+    fix((dims.low_x + mech.line_pinion_a1 * dims.aft_x, 0mm, dims.lower_box_z + mech.line_pinion_a1 * dims.aft_z)) p2b
+    p2 := line(p2a, p2b)
+    line_pinion_blank := solid(std.sets.Rod(p2, r: mech.line_pinion_tip))
   }
 
   // -- the tail --------------------------------------------------------------------------------------
@@ -119,38 +139,10 @@ component Drive(teeth: Int) {
   joint distance(>= 0mm, along: std.x) prop_c
   tail_axis := line(joint, prop_c)
 
-  // -- the parts -------------------------------------------------------------------------------------
-  // the shafts, each a rod between the feet of the members it carries
-  axle_p := point hint((2250, -90, 330))
-  bb distance(-90mm, along: std.y) axle_p
-  bb distance(0mm, along: std.x) axle_p
-  bb distance(0mm, along: std.z) axle_p
-  axle_s := point hint((2250, 90, 330))
-  bb distance(90mm, along: std.y) axle_s
-  bb distance(0mm, along: std.x) axle_s
-  bb distance(0mm, along: std.z) axle_s
-  axle_line := line(axle_p, axle_s)
-  axle := solid(std.sets.Rod(axle_line, r: 10mm))
-  tower_line := line(gear_2, pinion_1)
-  tower_shaft := solid(std.sets.Rod(tower_line, r: dims.tower_d / 2))
-  line_seg := line(pinion_2, joint)
-  line_shaft := solid(std.sets.Rod(line_seg, r: dims.line_od / 2))
-
-  // the midway bearing: a pillow block on the tunnel's top, at the middle of the shaft's run
-  run := dims.r_tower_gear + (dims.line_length - dims.r_tower_gear) / 2
-  mb_a := point hint((4020, 0, 51))
-  fix((dims.low_x + (run - 15mm) * dims.aft_x, 0mm, dims.lower_box_z + (run - 15mm) * dims.aft_z)) mb_a
-  mb_b := point hint((4050, 0, 51))
-  fix((dims.low_x + (run + 15mm) * dims.aft_x, 0mm, dims.lower_box_z + (run + 15mm) * dims.aft_z)) mb_b
-  mb_line := line(mb_a, mb_b)
-  midway_bearing := solid(std.sets.Rod(mb_line, r: 26mm))
-
-  // the CV joint, and the tail's tube to the propeller's hub
-  cv := solid(std.sets.Ball(joint, r: 30mm))
-  tube_line := line(joint, prop_c)
-  tail_tube := solid(std.sets.Rod(tube_line, r: 20mm))
+  // -- the hardware: the boxes, shafts, strut, heel, gimbal and tail, drawn in drive_parts.sv -------
+  mechanism := Mechanism()
   // a stand-in for the propeller's hub, which prop.sv draws. (In solventc v0.1.24 the cut pairs'
-  // solve converged with this solid present and diverged without it: see the README.)
+  // solve converged with this solid present and diverged without it: see findings/.)
   hub := solid(std.sets.Ball(prop_c, r: 28mm))
 
   // -- the cranks and pedals: arms in planes q_half each side, opposite, drawn along the line from
@@ -173,50 +165,16 @@ component Drive(teeth: Int) {
   p_arm := line(p_root, p_tip)
   s_spindle := line(s_tip, s_pedal)
   p_spindle := line(p_tip, p_pedal)
-  starboard_crank := solid(std.sets.Rod(s_arm, r: 11mm))
-  port_crank := solid(std.sets.Rod(p_arm, r: 11mm))
+  starboard_crank := solid(std.sets.Rod(s_arm, r: 8mm))
+  port_crank := solid(std.sets.Rod(p_arm, r: 8mm))
   starboard_pedal := solid(std.sets.Rod(s_spindle, r: 16mm))
   port_pedal := solid(std.sets.Rod(p_spindle, r: 16mm))
 
-  // -- the housings: the crank's pod round stage 1, the tower's column, the keel's box round stage 2
-  pod_p := point hint((2250, -45, 330))
-  fix((dims.bb_x, -45mm, dims.bb_z)) pod_p
-  pod_s := point hint((2250, 50, 330))
-  fix((dims.bb_x, 50mm, dims.bb_z)) pod_s
-  pod_line := line(pod_p, pod_s)
-  crank_pod := solid(std.sets.Rod(pod_line, r: dims.r_crank_gear + dims.m_1 + 8mm))
-  column_line := line(gear_2, pinion_1)
-  tower_column := solid(std.sets.Rod(column_line, r: 24mm))
-  box_low := point hint((2247, 0, 40))
-  fix((dims.low_x, 0mm, dims.lower_box_z - 32mm)) box_low
-  box_high := point hint((2246, 0, 112))
-  fix((dims.low_x + 40mm * dims.down_x * -1, 0mm, dims.lower_box_z + 40mm)) box_high
-  box_line := line(box_low, box_high)
-  keel_box := solid(std.sets.Rod(box_line, r: dims.r_tower_gear + dims.m_2 + 8mm))
-
-  // -- the boom: from the forward bulkhead to the crank's pod, on the centreline between the feet
-  boom_fwd := point hint((1606, 0, 330))
-  fix((dims.boom_x, 0mm, dims.bb_z)) boom_fwd
-  boom_aft := point hint((2180, 0, 330))
-  fix((dims.bb_x - dims.r_crank_gear - dims.m_1, 0mm, dims.bb_z)) boom_aft
-  boom_line := line(boom_fwd, boom_aft)
-  boom := solid(std.sets.Rod(boom_line, r: 22mm))
-
-  // -- the gimbal: the tilt pin athwartships through the joint, the steering stock through it too,
-  // raked aft with the transom, up to a tiller head above the deck
-  pin_p := point hint((5798, -40, 30))
-  fix((dims.joint_x, -40mm, dims.joint_z)) pin_p
-  pin_s := point hint((5798, 40, 30))
-  fix((dims.joint_x, 40mm, dims.joint_z)) pin_s
-  tilt_line := line(pin_p, pin_s)
-  tilt_pin := solid(std.sets.Rod(tilt_line, r: 8mm))
-  stock_top := point hint((5893, 0, 470))
-  fix((dims.joint_x + (dims.stock_top_z - dims.joint_z) * tan(dims.transom_rake), 0mm, dims.stock_top_z)) stock_top
-  stock_line := line(joint, stock_top)
-  steering_stock := solid(std.sets.Rod(stock_line, r: 12mm))
 }
 
-drive := Drive(teeth: 1)
+// the teeth cut (1), or blanks (0): `solventc drive.sv --set teeth=0` draws the drive in a second
+teeth := 1
+drive := Drive(teeth: teeth)
 
 // The propeller is drawn by prop.sv and placed with this drive in kayak.sv: its blades are a face
 // family over a running number, which this file, cutting its gears, leaves out.

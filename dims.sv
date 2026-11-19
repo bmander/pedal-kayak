@@ -52,8 +52,8 @@ transom_keel_z := 112mm                // the transom's bottom corner
 freeboard_full := depth - draft_full   // at the widest station
 
 // The centre of gravity, height above the keel: a recumbent pilot's about 130 mm above the hip,
-// the hip 200 mm up (on the seat over the shaft tunnel); a passenger sits on the floor.
-hip_z := 200mm
+// the hip 240 mm up (on the seat over the shaft tunnel); a passenger sits on the floor.
+hip_z := 240mm                         // the seat's pan clears the shaft tunnel's top on its rails (mech.sv)
 pilot_kg_z := hip_z + 130mm
 boat_kg_z := 190mm
 low_kg_z := 150mm                      // gear, cargo
@@ -123,9 +123,9 @@ line_peak := crank_peak / ratio                  // 28.6 N·m in the line shaft
 // Lewis bending at each pinion's root, the sprint peak, the form factor at the virtual tooth count.
 // Estimates, to be checked to ISO 10300 before tooling.
 m_1 := 2.5mm                           // stage 1 mean module
-b_1 := 18mm                            // face width
+b_1 := 0.2 * m_1 * sqrt(z_crank_gear^2 + z_tower_pinion^2) / 2   // face width: 0.2 of the mean cone distance, as hypoid.sv cuts it (12.1)
 m_2 := 2mm
-b_2 := 16mm
+b_2 := 0.2 * m_2 * sqrt(z_tower_gear^2 + z_line_pinion^2) / 2     // 8.9
 lewis_y := 0.30
 force_1 := crank_peak / (z_crank_gear * m_1 / 2)
 force_2 := tower_peak / (z_tower_gear * m_2 / 2)
@@ -184,10 +184,9 @@ fin_below_tips := 25mm
 tip_z := joint_z - tail * sin(tail_down) - prop_r * cos(tail_down)  // the lowest tip's height
 deepest_running := draft_design - (tip_z - fin_below_tips)          // the fin, below the waterline
 
-// -- the cranks, the boom and the steering ------------------------------------------------------
+// -- the cranks and the steering ---------------------------------------------------------------
 q_half := 70mm                         // each crank arm's plane, out from the centreline
 pedal_width := 90mm
-boom_x := 1606mm                       // the boom's forward end, on the forward bulkhead's face
 transom_rake := 12deg                  // the steering stock leans aft with the transom
 stock_top_z := 470mm                   // the tiller head, above the deck aft
 

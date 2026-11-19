@@ -67,6 +67,7 @@ Built and solving:
 | `drive.sv` | The `Drive` component. `drive.sv` itself draws the drive with its teeth cut (`teeth: 1`, about a minute to solve and minutes to render). |
 | `tools/propeller.py`, `prop.sv` | The propeller's design, analysis and report (`.venv/bin/python tools/propeller.py --write`, which needs `numpy`, `scipy` and `neuralfoil` in `.venv`), and its geometry: `Propeller`, `Hub`, `BladeSection`, and `propeller` as one part. |
 | `docs/propeller.md` | The propeller design report. |
+| `fabrication/` | The propeller's parts as STL, each built exactly by solventc's kernel and meshed within 10 µm: `blade_a`, `blade_b`, `hub_barrel`, `hub_cap`. They are joined in CAM with a 3 mm root fillet. |
 | `findings/` | A solventc behaviour worth reporting, with its reproduction. |
 | `seat.sv` | The `Seat` and `Pilot` components; the ergonomics check across the ANSUR range. |
 | `kayak.sv`, `kayak.svd` | The assembly, with gear blanks (`teeth: 0`) so it solves in a second. Drawing sheet: `arrangement`. |
@@ -84,6 +85,8 @@ solventc drive.sv --png tower.png --view 35,20     # the gears with their teeth 
 ![Spiral bevel stage 1](renders/stage1.png)
 
 ![The stern](renders/stern.png)
+
+![The propeller](renders/prop_iso.png)
 
 ## What solventc did, and where it pushed back
 

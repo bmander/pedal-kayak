@@ -3,7 +3,8 @@
 unit mm
 use std
 use hull (Hull)
-use drive (Drive, PropBlade)
+use drive (Drive)
+use prop (Propeller, Hub, BladeSection)
 use seat (Seat, Pilot)
 use dims
 
@@ -12,7 +13,9 @@ drive := Drive(teeth: 0)        // gear blanks; drive.sv cuts the teeth
 seat := Seat(hip_x: dims.hip_x_max)
 pilot := Pilot(stature: 1927mm, fll: dims.fll_max, hip_x: dims.hip_x_max)   // 99th-percentile man
 
-// the propeller's two blades, each its section carried by the propeller's screw
-param s: Scalar over (0, 1)
-blade_a := solid({ p | some s: p in PropBlade(drive.prop_base, side: 1).f at s })
-blade_b := solid({ p | some s: p in PropBlade(drive.prop_base, side: -1).f at s })
+// the propeller (prop.sv): designed by tools/propeller.py for minimum induced loss
+prop := Propeller()
+hub := Hub()
+param s: Scalar over (-0.06, 1)
+blade_a := solid({ p | some s: p in BladeSection(prop.stack_a, prop.fwd).profile at s })
+blade_b := solid({ p | some s: p in BladeSection(prop.stack_b, prop.fwd).profile at s })

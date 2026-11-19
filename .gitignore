@@ -3,3 +3,4 @@ renders/*.svg
 __pycache__/
 _*.sv
 exp/
+.venv/

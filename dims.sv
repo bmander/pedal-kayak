@@ -68,7 +68,7 @@ gm_full := km_full - kg_full           // ≈ 175 mm
 // ITTC-57 friction on the wetted area at the design load, a form factor for the hull's shape, and
 // a residuary allowance for wave-making at Froude number 0.29. An estimate, to be checked in the water.
 rho_sea := 1025kg / 1m^3
-nu_sea := 1.19e-6 * 1m * 1m / 1s
+nu_sea := 1.35e-6 * 1m * 1m / 1s       // at 10 °C, the San Juans' summer water
 g := 9.81m / 1s^2
 cruise := 2.06m / 1s                   // 4 knots
 froude := cruise / sqrt(g * lwl)
@@ -81,21 +81,18 @@ effective := drag * cruise             // ≈ 55 W delivered to the water
 
 pedal_power := 100W                    // sustained, a fit adult on a recumbent
 cadence := 70rpm
-eta_prop := 0.75
+eta_prop := 0.816                      // tools/propeller.py: the final blade at 100 W, analysed
 eta_drive := 0.94                      // two spiral bevel meshes, a CV joint, seals and bearings
 delivered := pedal_power * eta_drive * eta_prop
 
 // -- the propeller -------------------------------------------------------------------------------------
+// Designed by tools/propeller.py (docs/propeller.md): minimum induced loss, NACA 16 sections on the
+// a = 1.0 mean line, the pitch varying along the blade; prop.sv is its geometry.
 prop_d := 270mm
 prop_r := prop_d / 2
-prop_pitch := 300mm
+prop_pitch := 365mm                    // at 0.7 R: P/D 1.35
 prop_blades := 2
-prop_hub_r := 28mm
-blade_sweep := 50deg                   // each blade's angular extent: blade area ratio ≈ 0.28
-blade_t := 6mm                         // its thickness along the axis
-blade_turns := blade_sweep / 360deg
-blade_area_ratio := prop_blades * blade_sweep / 360deg * (1 - (prop_hub_r / prop_r)^2)
-
+prop_hub_r := 24mm
 // -- the train --------------------------------------------------------------------------------------
 z_crank_gear := 45                     // stage 1, at the top of the pedal tower
 z_tower_pinion := 18
@@ -218,7 +215,7 @@ claim froude <= 0.32
 claim delivered >= effective           // 100 W makes 4 knots
 claim ratio == 7
 claim z_tower_pinion >= 15 and z_line_pinion >= 15
-claim slip >= 0.1 and slip <= 0.3
+claim slip >= 0.15 and slip <= 0.35    // against the nose-tail pitch at 0.7 R; the sections run ~5° above zero lift
 claim thrust_load <= 0.5
 claim sigma_1 <= case_steel and sigma_2 <= case_steel
 claim line_tau <= 60MPa

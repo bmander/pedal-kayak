@@ -33,6 +33,8 @@ Built and solving:
   - analysed off design by blade-element momentum and matched to the hull and the rider;
   - checked for sprint strength, Goodman fatigue under the tail's crossflow, cavitation and
     strikes, with a shear pin;
+  - its math reviewed independently. The review found three defects in the cavitation check and
+    the offsets table, now fixed;
   - lofted in solventc from its design table.
 - **Seat and pilot.** A sliding recumbent seat. The leg is checked as a two-link chain for the
   1st-percentile woman and the 99th-percentile man of ANSUR II, at the pedal's far and near points.
@@ -48,9 +50,9 @@ Built and solving:
 | Boat weight (estimate) | 51 kg: hull 38, drive 9, seat 4 |
 | Design load / full load | 156 kg (draft 123 mm) / 320 kg (draft 181 mm, freeboard 199 mm) |
 | GM, design / full | 263 / 189 mm |
-| Speed at 100 W (estimate) | 4.42 kn. Propeller η 0.82 (analysed); pedal-to-tow efficiency 0.77. 40–250 W gives 3.4–5.4 kn at a 53–93 rpm cadence. |
+| Speed (estimate) | 4.41 kn at 100 W (cadence 61 rpm), 4.94 kn at 160 W (the propeller's design point, cadence 70 rpm). Propeller η 0.81 (analysed). 40–250 W gives about 3.4–5.4 kn. |
 | Train | 70 rpm at the cranks × 2.5 × 2.8 = 490 rpm at the propeller. Slip 16%; thrust loading C_T 0.20. |
-| Propeller | Ø270 mm, 2 blades, left-handed, P/D 1.35 at 0.7 R (pitch varies along the blade), expanded area ratio 0.09, NAB C95800, 0.81 kg, 1.6 mm brass shear pin |
+| Propeller | Ø270 mm, 2 blades, left-handed, P/D 1.51 at 0.7 R (the pitch varies along the blade), expanded area ratio 0.13, NAB C95800, 0.90 kg, Ø1.8 mm brass shear pin. Cavitation-free to 250 W at the design load (estimate). |
 | Line shaft | 6061-T6 tube, 25 × 1.5 mm, 3.55 m. Whirls at 1258 rpm with the midway bearing, and at 315 rpm (below running speed) without it. Wind-up 2.1° at the cranks under a 200 N·m push. |
 | Tail | 520 mm, 11.3° below level when running. CV joint at 10.6° running, 27° at full helm, 33° raised. Deepest point (the guard fin) about 352 mm below the waterline running, ~150 mm with the tail raised. |
 | Seat | 380 mm of travel. The hip moves 2967–3303 mm aft of the stem head to fit legs from 921 to 1267 mm (ANSUR II functional leg length). Knee bend at the top of the stroke: 103° (smallest pilot), 89° (largest). |

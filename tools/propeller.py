@@ -53,8 +53,9 @@ WAKE = 0.03                  # the tail puts the disc 0.5 m behind the transom: 
 THRUST_DEDUCTION = 0.03
 TAIL_DOWN = math.radians(11.27)           # dims.tail_down
 ETA_DRIVE = 0.94             # two spiral bevel meshes, a CV joint, seals and bearings
-PEDAL_DESIGN = 100.0         # W, sustained
-CADENCE_DESIGN = 70.0        # rpm at the cranks
+PEDAL_DESIGN = 160.0         # W: the blade's design point, a hard sustained effort (see the report)
+PEDAL_CRUISE = 100.0         # W: the easy cruise the performance is quoted at
+CADENCE_DESIGN = 70.0        # rpm at the cranks, at the design point
 
 # -- the propeller's frame ---------------------------------------------------------------------
 BLADES = 2
@@ -65,12 +66,14 @@ STATIONS = 21
 # thickness/chord along the blade: thick at the root for the sprint's bending, falling fast so the
 # working span stays thin, and not so thin at the tip that its leading edge's radius invites a
 # suction peak where the tilted inflow swings the incidence
-TC_ROOT, TC_TIP, TC_SHAPE = 0.20, 0.075, 2.5
+TC_ROOT, TC_TIP, TC_SHAPE = 0.22, 0.075, 2.5
 IDEAL_INCIDENCE = False     # camber for least drag; the cavitation margin is checked, not assumed
 
 
-def tc_at(xi):
-    u = min(max((xi - XI_HUB) / (1 - XI_HUB), 0.0), 1.0)
+def tc_at(xi, xh=None):
+    """Thickness/chord at r/R `xi`, the hub at r/R `xh` (HUB_R over the design's radius)."""
+    xh = HUB_R / (D_FINAL / 2) if xh is None else xh
+    u = min(max((xi - xh) / (1 - xh), 0.0), 1.0)
     return TC_TIP + (TC_ROOT - TC_TIP) * (1 - u) ** TC_SHAPE
 
 
@@ -200,7 +203,7 @@ def mil_design(R, rpm, v_ship, p_shaft, stations=STATIONS, iterations=30, prescr
             phi = math.atan(math.tan(phit) / x)
             xx = om * x * R / V
             Gc = F * xx * math.cos(phi) * math.sin(phi)
-            tc = tc_at(x)
+            tc = tc_at(x, XI_HUB)
             # the section, at the Reynolds number the last pass gave this station
             re = re_prev.get(round(x, 4), 2e5)
             if prescribed is None:
@@ -426,35 +429,60 @@ def blade_stresses(blade, v_ship, rpm, dvt=0.0):
 
 
 # -- cavitation --------------------------------------------------------------------------------------------
-def cavitation(blade, v_ship, rpm, shaft_depth, rows_alpha=None):
+def cavitation(blade, v_ship, rpm, shaft_depth):
     """Each station's cavitation number where it is worst, against an estimate of its least
-    pressure coefficient.
+    pressure coefficient, both at the operating point (v_ship, rpm) as the blade-element analysis
+    finds it.
 
-    Thin-section superposition: the 16-series thickness (1 + 1.2 t/c), the uniform load (cl/4 each
-    side), and the leading edge's suction peak for incidence Δα away from ideal, Δα·sqrt(c / 2ρ),
-    ρ = 0.49 (t/c)² c the 16-series' nose radius (the exact peak of an ellipse at incidence). The
-    tilted inflow's crossflow is spanwise at the top of the disc and tangential at 3 and 9 o'clock,
-    so both are checked: the top, shallowest, at design incidence; the side, at the propeller's
-    depth, with the incidence the crossflow adds."""
+    The peak surface speed is the lifting-ellipse form (Lighthill; Riegels):
+        u/W = (1 + 1.2 t/c + c_li/4) · sqrt(1 + (Δα · sqrt(2c/ρ))²)
+    with the 16-series' thickness overspeed, the a = 1.0 mean line's uniform load at ideal
+    incidence, and Δα the incidence away from ideal. ρ = 0.49 (t/c)² c is the 16-series nose
+    radius, so sqrt(2c/ρ) = 2.02 / (t/c). Δα is the analysed section lift's departure from c_li
+    over the lift slope 2π.
+    The tilted inflow's crossflow is spanwise at the top of the disc and tangential at 3 and 9
+    o'clock, so both are checked: the top, shallowest, at the analysed incidence; the side, at the
+    propeller's depth, at the incidence the same analysis gives with the crossflow added (the
+    quasi-steady case the fatigue check uses)."""
     om = rpm * 2 * math.pi / 60
-    R = blade["R"]
     vt = crossflow(v_ship)
+    _, _, mid = bem(blade, v_ship, rpm)
+    _, _, side = bem(blade, v_ship, rpm, dvt=vt)
     out = []
-    for s in blade["rows"]:
-        tc, cl = s["tc"], s["cl"]
-        off_ideal = (cl - s["cli"]) / (2 * math.pi)                # rad, from the lift slope
-        Va = inflow(v_ship)
-        W_top = math.hypot(Va, om * s["r"])
-        W_side = math.hypot(Va, om * s["r"] + vt)
-        d_alpha = abs(math.atan2(Va, om * s["r"] - vt) - math.atan2(Va, om * s["r"])) * 0.5
-        le = 1.01 / tc                                             # sqrt(c / 2ρ) for the 16-series
-        def cpmin(da):
-            u = 1 + 1.2 * tc + cl / 4 + abs(da) * le
+    for s, lm, ls in zip(blade["rows"], mid, side):
+        tc = tc_at(s["xi"], HUB_R / blade["R"])
+        if s["c"] <= 1e-4 or lm[4] == 0:
+            continue
+
+        def peak(alpha_deg, W):
+            cl, _, _ = section_at(tc, s["cli"], max(W * s["c"] / NU, 2e4), alpha=alpha_deg)
+            d_alpha = (cl - s["cli"]) / (2 * math.pi)
+            u = (1 + 1.2 * tc + s["cli"] / 4) * math.sqrt(1 + (d_alpha * 2.02 / tc) ** 2)
             return u * u - 1
-        sig_top = (P_ATM + RHO * G * (shaft_depth - s["r"]) - P_VAP) / (0.5 * RHO * W_top**2)
-        sig_side = (P_ATM + RHO * G * shaft_depth - P_VAP) / (0.5 * RHO * W_side**2)
-        out.append((s["xi"], sig_top, cpmin(off_ideal), sig_side, cpmin(off_ideal + d_alpha)))
+
+        sig_top = (P_ATM + RHO * G * (shaft_depth - s["r"]) - P_VAP) / (0.5 * RHO * lm[4] ** 2)
+        sig_side = (P_ATM + RHO * G * shaft_depth - P_VAP) / (0.5 * RHO * ls[4] ** 2)
+        out.append((s["xi"], sig_top, peak(lm[3], lm[4]), sig_side, peak(ls[3], ls[4])))
     return out
+
+
+def inception(perf, blade_=None):
+    """The pedal power at which the least cavitation margin falls to 1, by interpolation over the
+    operating points (pedal W, op); the last power if it never does."""
+    b = blade_ if blade_ is not None else _BLADE[0]
+    pts = [(pw, least_margin(b, op)) for pw, op in perf]
+    for (p0, m0), (p1, m1) in zip(pts, pts[1:]):
+        if m0 >= 1 > m1:
+            return p0 + (m0 - 1) / (m0 - m1) * (p1 - p0)
+    return pts[-1][0] if pts[-1][1] >= 1 else pts[0][0]
+
+
+_BLADE = [None]
+
+
+def least_margin(blade, op):
+    cav = cavitation(blade, op["v"], op["rpm"], SHAFT_DEPTH)
+    return min(min(c[1] / c[2], c[3] / c[4]) for c in cav)
 
 
 # -- the final blade ---------------------------------------------------------------------------------------
@@ -553,7 +581,8 @@ def main():
         if m <= 0:
             continue
         sa = abs(hi - lo) / 2
-        sf = 1 / (sa / NAB_FATIGUE_SEAWATER + m / NAB_UTS)
+        kt = FILLET_KT if x < HUB_R / blade["R"] + 0.01 else 1.0
+        sf = 1 / (kt * sa / NAB_FATIGUE_SEAWATER + kt * m / NAB_UTS)
         checks.append((x, sp, m, sa, sf))
         print(f" {x:.3f}  {sp / 1e6:7.1f}            {m / 1e6:6.1f}      {sa / 1e6:6.1f}       {sf:5.1f}")
     hard = perf[-1][1]
@@ -674,7 +703,7 @@ def solvent_block(blade, f):
 
 
 NAB_DENSITY = 7640.0         # kg/m^3
-SHEAR_PIN_D = 1.6e-3         # m, C36000 free-cutting brass, double shear
+SHEAR_PIN_D = 1.8e-3         # m, C36000 free-cutting brass, double shear
 FILLET_KT = 1.3              # stress concentration at the root's fillet
 SHEAR_PIN_TAU = 205e6        # its ultimate shear strength, Pa
 SHAFT_D = 16.0e-3            # the tail shaft, 316 stainless
@@ -690,7 +719,7 @@ def offsets(blade, xis=(0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 0.95)):
     out = []
     for x in xis:
         c = float(np.interp(x, xi, [r["c"] for r in rows]))
-        tc = tc_at(x)
+        tc = tc_at(x, HUB_R / blade["R"])
         cli = float(np.interp(x, xi, [r["cli"] for r in rows]))
         beta = float(np.interp(x, xi, [math.degrees(r["beta"]) for r in rows]))
         P = 2 * math.pi * x * blade["R"] * math.tan(math.radians(beta))
@@ -760,8 +789,8 @@ def report(blade, perf, perf_full, sprint, st, cr, adv, ret, cav, f, tr, mp, off
     w("| Sections | NACA 16-series thickness on the NACA a = 1.0 mean line; 0.5 mm minimum trailing edge |")
     w(f"| Thickness/chord | {TC_ROOT:.2f} at the root, falling to {TC_TIP:.3f} at the tip as (1 − s)^{TC_SHAPE} |")
     w(f"| Design point | {PEDAL_DESIGN:.0f} W at the pedals, cadence {CADENCE_DESIGN:.0f} rpm, {CADENCE_DESIGN * RATIO_FINAL:.0f} rpm at the propeller |")
-    w(f"| Open-water efficiency at the design point | **{cruise['eta']:.3f}** (BEM analysis of the final blade) |")
-    w(f"| Speed at the design point | **{cruise['kn']:.2f} kn** ({cruise['v']:.2f} m/s); thrust {cruise['T']:.1f} N |")
+    w(f"| Cruise, {PEDAL_CRUISE:.0f} W | **{cruise['kn']:.2f} kn** ({cruise['v']:.2f} m/s), cadence {cruise['cadence']:.0f} rpm, thrust {cruise['T']:.1f} N, propeller η **{cruise['eta']:.3f}** (BEM analysis of the final blade) |")
+    w(f"| Cavitation | none up to {inception(perf):.0f} W at the design load, {inception(perf_full):.0f} W fully loaded (estimate) |")
     w(f"| Pedal-to-tow efficiency | {cruise['total']:.3f} (hull drag × speed / pedal power) |")
     w(f"| Material | Nickel-aluminium bronze, ASTM B148 C95800 |")
     w(f"| Mass | {mp['m_blades'] + mp['m_hub']:.2f} kg ({mp['m_blades']:.2f} kg blades, {mp['m_hub']:.2f} kg hub); polar inertia {mp['J'] * 1e6:.0f} kg·mm² |")
@@ -775,7 +804,10 @@ def report(blade, perf, perf_full, sprint, st, cr, adv, ret, cav, f, tr, mp, off
     w(f"- **Hull interaction:** wake fraction {WAKE}, thrust deduction {THRUST_DEDUCTION}. The disc is 0.5 m behind")
     w(f"  the transom on the hinged tail. The shaft runs {math.degrees(TAIL_DOWN):.1f}° below level, so the required")
     w("  thrust is divided by the cosine of that angle. The crossflow across the disc is the hull's speed times its sine.")
-    w(f"- **Rider and drive:** {PEDAL_DESIGN:.0f} W sustained at {CADENCE_DESIGN:.0f} rpm. The drive is {ETA_DRIVE:.0%} efficient; the train is {RATIO_FINAL:.0f}:1.")
+    w(f"- **Rider and drive:** the blade is designed at {PEDAL_DESIGN:.0f} W and {CADENCE_DESIGN:.0f} rpm, a hard sustained effort, not at the")
+    w(f"  {PEDAL_CRUISE:.0f} W cruise. A blade designed at 100 W runs at higher incidence when pushed, and was")
+    w("  predicted to cavitate from about 185 W. Designed at 160 W it stays clear to 250 W, costing under 1 % of")
+    w(f"  efficiency at 100 W, and the cruise cadence falls to about {cruise['cadence']:.0f} rpm. The drive is {ETA_DRIVE:.0%} efficient; the train is {RATIO_FINAL:.0f}:1.")
     w(f"- **Sections:** polars from NeuralFoil (an XFOIL-trained surrogate, `large` model), n_crit {N_CRIT:g}. Each")
     w("  station is read at its own Reynolds number, which runs from 3×10⁴ to 10⁵: laminar separation bubbles")
     w("  dominate the drag here, which is why the polars and not textbook drag coefficients set the sections.")
@@ -796,16 +828,19 @@ def report(blade, perf, perf_full, sprint, st, cr, adv, ret, cav, f, tr, mp, off
     w("")
     w("## Trade study: diameter against gear ratio")
     w("")
-    w("At 100 W and a 70 rpm cadence, the efficiency and speed of a minimum-induced-loss blade:")
+    w(f"At {PEDAL_DESIGN:.0f} W and a {CADENCE_DESIGN:.0f} rpm cadence, the efficiency and speed of a minimum-induced-loss blade:")
     w("")
     w("| D mm | ratio | rpm | η | kn | max chord mm |")
     w("|---|---|---|---|---|---|")
     for D, ratio, eta, kn, cm in tr:
         w(f"| {D * 1000:.0f} | {ratio:.0f} | {CADENCE_DESIGN * ratio:.0f} | {eta:.3f} | {kn:.2f} | {cm:.1f} |")
     w("")
-    w("The optimum is flat. The best case in the window, 330 mm at 5:1, gains 0.04 kn over 270 mm at 7:1.")
-    w("It would cost 60 mm more draft, a new gear train, and blades too narrow (25–31 mm) to stay thick")
-    w("enough. So the design is 270 mm at 7:1, the train already designed.")
+    best = max(tr, key=lambda t: t[2])
+    here = min(tr, key=lambda t: abs(t[0] - D_FINAL) + abs(t[1] - RATIO_FINAL))
+    w(f"The optimum is flat. The best case in the window, {best[0] * 1000:.0f} mm at {best[1]:.0f}:1, gains {best[3] - here[3]:.2f} kn")
+    w(f"(η {best[2]:.3f} against {here[2]:.3f}) over {D_FINAL * 1000:.0f} mm at {RATIO_FINAL:.0f}:1. It would cost "
+      f"{(best[0] - D_FINAL) * 1000:.0f} mm more draft and a new gear train.")
+    w(f"So the design is {D_FINAL * 1000:.0f} mm at {RATIO_FINAL:.0f}:1, the train already designed.")
     w("")
     w("## The blade")
     w("")
@@ -848,8 +883,8 @@ def report(blade, perf, perf_full, sprint, st, cr, adv, ret, cav, f, tr, mp, off
     for pw, op in perf_full:
         w(f"| {pw} | {op['kn']:.2f} | {op['cadence']:.1f} | {op['rpm']:.0f} | {op['T']:.1f} | {op['eta']:.3f} |")
     w("")
-    w("A fixed-pitch propeller sets the cadence by the power: 50–95 rpm from a gentle paddle to a sprint,")
-    w("all in a recumbent rider's range. Fully loaded, the cadence at a given power falls by only a few rpm.")
+    w(f"A fixed-pitch propeller sets the cadence by the power: {perf[0][1]['cadence']:.0f}–{perf[-1][1]['cadence']:.0f} rpm from {perf[0][0]} W to {perf[-1][0]} W,")
+    w("in a recumbent rider's range. Fully loaded, the cadence at a given power is a few rpm lower.")
     w("")
     w("## Strength")
     w("")
@@ -870,11 +905,14 @@ def report(blade, perf, perf_full, sprint, st, cr, adv, ret, cav, f, tr, mp, off
         if m <= 0 or x > 0.95:
             continue
         sa = abs(hi - lo) / 2
-        sf = 1 / (sa / NAB_FATIGUE_SEAWATER + m / NAB_UTS)
-        w(f"| {x:.3f} | {sp / 1e6:.1f} | {m / 1e6:.1f} | {sa / 1e6:.1f} | {sf:.1f} |")
+        kt = FILLET_KT if x < HUB_R / R + 0.01 else 1.0
+        sf = 1 / (kt * sa / NAB_FATIGUE_SEAWATER + kt * m / NAB_UTS)
+        w(f"| {x:.3f} | {sp / 1e6:.1f} | {m / 1e6:.1f} | {sa / 1e6:.1f} | {sf:.1f}{' (with the fillet)' if kt > 1 else ''} |")
     w("")
-    w("The root takes the highest stress. Give it a fillet of at least 3 mm radius to the hub. The stresses above")
-    w("carry no fillet concentration factor, and a cast root with a fillet sees about 1.3×.")
+    root_sprint = st[0][1] * FILLET_KT
+    w(f"The root takes the highest stress. Give it a fillet of at least 3 mm radius to the hub. The root's Goodman")
+    w(f"factor includes a {FILLET_KT}× fillet concentration. With it, the root's sprint stress is {root_sprint / 1e6:.0f} MPa against the")
+    w(f"{ALLOW_SPRINT / 1e6:.0f} MPa limit" + (" (within it)." if root_sprint <= ALLOW_SPRINT else ": **over it. Thicken the root.**"))
     w("")
     ok = strike_stress * FILLET_KT < NAB_YIELD
     w(f"**Strikes.** The shear pin shears at {pin_torque:.1f} N·m, {pin_torque / Qs:.2f}× the sprint start's torque. A tangential")
@@ -890,16 +928,25 @@ def report(blade, perf, perf_full, sprint, st, cr, adv, ret, cav, f, tr, mp, off
     w("swings the incidence). It is set against a thin-section estimate of the least pressure coefficient:")
     w("thickness, load, and the leading edge's peak for incidence away from ideal.")
     w("")
-    w(f"Worst case shown: {perf[-1][0]} W, {perf[-1][1]['kn']:.2f} kn, {perf[-1][1]['rpm']:.0f} rpm.")
+    w("The least margin over the blade, at each power:")
+    w("")
+    w("| pedal W | margin, design load | margin, full load |")
+    w("|---|---|---|")
+    full = dict(perf_full)
+    for pw, op in perf:
+        if pw in full:
+            w(f"| {pw} | {least_margin(blade, op):.2f} | {least_margin(blade, full[pw]):.2f} |")
+    w("")
+    w(f"Station by station at {perf[-1][0]} W, {perf[-1][1]['kn']:.2f} kn, {perf[-1][1]['rpm']:.0f} rpm, at the design load:")
     w("")
     w("| r/R | σ top | −Cp min top | σ side | −Cp min side | margin |")
     w("|---|---|---|---|---|---|")
     for x, st_, ct, ss, cs in cav[::2]:
         w(f"| {x:.3f} | {st_:.2f} | {ct:.2f} | {ss:.2f} | {cs:.2f} | {min(st_ / ct, ss / cs):.2f} |")
     w("")
-    w("At 100 W the least margin is about 1.8. At a 250 W sprint the outer tenth of the blade reaches about 1.1 at the")
-    w("sides, so a short sprint may show tip-vortex or leading-edge cavitation inception, harmless at these")
-    w("powers. Ventilation is the likelier nuisance. With 60 mm of tip cover (0.22 D), a steep wave or a")
+    w(f"Inception is estimated at {inception(perf):.0f} W at the design load and {inception(perf_full):.0f} W fully loaded.")
+    w("Fully loaded, the hull needs more thrust at each power, so the blade runs at higher incidence and the margin falls sooner.")
+    w("Ventilation is the likelier nuisance. With 60 mm of tip cover (0.22 D), a steep wave or a")
     w("hard turn can draw air down to the upper blade. The guard fin under the tail and the tail's own")
     w("depth limit it. Avoid running with the tail partly raised.")
     w("")
@@ -966,8 +1013,9 @@ if __name__ == "__main__":
         vt = crossflow(cruise["v"])
         adv = blade_stresses(blade, cruise["v"], cruise["rpm"], dvt=vt)
         ret = blade_stresses(blade, cruise["v"], cruise["rpm"], dvt=-vt)
+        _BLADE[0] = blade
         perf_full = at_full_load(lambda: [(pw, operating_point(blade, RATIO_FINAL, pw))
-                                          for pw in (60, 100, 160, 250)])
+                                          for pw in (60, 100, 130, 160, 200, 250)])
         print("trade study ...")
         tr = trade()
         report(blade, perf, perf_full, sprint, st, cr, adv, ret, cav, f, tr, mass_props(blade),

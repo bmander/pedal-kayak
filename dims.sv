@@ -81,7 +81,7 @@ effective := drag * cruise             // ≈ 55 W delivered to the water
 
 pedal_power := 100W                    // sustained, a fit adult on a recumbent
 cadence := 70rpm
-eta_prop := 0.816                      // tools/propeller.py: the final blade at 100 W, analysed
+eta_prop := 0.811                      // tools/propeller.py: the final blade at 100 W, analysed
 eta_drive := 0.94                      // two spiral bevel meshes, a CV joint, seals and bearings
 delivered := pedal_power * eta_drive * eta_prop
 
@@ -90,7 +90,7 @@ delivered := pedal_power * eta_drive * eta_prop
 // a = 1.0 mean line, the pitch varying along the blade; prop.sv is its geometry.
 prop_d := 270mm
 prop_r := prop_d / 2
-prop_pitch := 365mm                    // at 0.7 R: P/D 1.35
+prop_pitch := 409mm                    // at 0.7 R: P/D 1.51
 prop_blades := 2
 prop_hub_r := 24mm
 // -- the train --------------------------------------------------------------------------------------
@@ -110,7 +110,8 @@ r_line_pinion := z_line_pinion * m_2 / 2         // 15
 delta_1 := atan(z_crank_gear / z_tower_pinion)   // stage 1's gear pitch angle, 68.2°
 delta_2 := atan(z_tower_gear / z_line_pinion)    // stage 2's, 70.3°
 prop_speed := cadence * ratio                    // 490 rpm
-slip := 1 - cruise / (prop_speed / turn * prop_pitch)
+design_speed := 2.54m / 1s             // tools/propeller.py: the blade's design point, 160 W, 4.94 kn
+slip := 1 - design_speed * 0.97 * cos(tail_down) / (prop_speed / turn * prop_pitch)   // in the wake, along the tail
 thrust_load := drag / (0.5 * rho_sea * cruise^2 * pi * prop_r^2)    // C_T: light, so efficient
 
 crank := 155mm

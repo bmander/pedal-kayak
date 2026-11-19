@@ -9,18 +9,18 @@ geometry is `prop.sv`. Every number below is computed. The assumptions are liste
 |---|---|
 | Diameter | 270 mm |
 | Blades | 2, left-handed: counter-clockwise seen from astern when going ahead |
-| Pitch at 0.7 R | 365 mm (P/D 1.35); the pitch varies along the blade (table below) |
-| Expanded area ratio | 0.093 |
+| Pitch at 0.7 R | 408 mm (P/D 1.51); the pitch varies along the blade (table below) |
+| Expanded area ratio | 0.127 |
 | Hub | Ø48 × 40 mm; hub ratio 0.18; bore Ø16 H7 |
 | Sections | NACA 16-series thickness on the NACA a = 1.0 mean line; 0.5 mm minimum trailing edge |
-| Thickness/chord | 0.20 at the root, falling to 0.075 at the tip as (1 − s)^2.5 |
-| Design point | 100 W at the pedals, cadence 70 rpm, 490 rpm at the propeller |
-| Open-water efficiency at the design point | **0.819** (BEM analysis of the final blade) |
-| Speed at the design point | **4.42 kn** (2.27 m/s); thrust 35.6 N |
-| Pedal-to-tow efficiency | 0.769 (hull drag × speed / pedal power) |
+| Thickness/chord | 0.22 at the root, falling to 0.075 at the tip as (1 − s)^2.5 |
+| Design point | 160 W at the pedals, cadence 70 rpm, 490 rpm at the propeller |
+| Cruise, 100 W | **4.41 kn** (2.27 m/s), cadence 61 rpm, thrust 35.3 N, propeller η **0.809** (BEM analysis of the final blade) |
+| Cavitation | none up to 250 W at the design load, 199 W fully loaded (estimate) |
+| Pedal-to-tow efficiency | 0.761 (hull drag × speed / pedal power) |
 | Material | Nickel-aluminium bronze, ASTM B148 C95800 |
-| Mass | 0.81 kg (0.10 kg blades, 0.71 kg hub); polar inertia 601 kg·mm² |
-| Protection | Ø1.6 mm brass shear pin through hub and shaft, shears at 6.6 N·m |
+| Mass | 0.90 kg (0.18 kg blades, 0.71 kg hub); polar inertia 996 kg·mm² |
+| Protection | Ø1.8 mm brass shear pin through hub and shaft, shears at 8.3 N·m |
 
 ## Design basis
 
@@ -30,7 +30,10 @@ geometry is `prop.sv`. Every number below is computed. The assumptions are liste
 - **Hull interaction:** wake fraction 0.03, thrust deduction 0.03. The disc is 0.5 m behind
   the transom on the hinged tail. The shaft runs 11.3° below level, so the required
   thrust is divided by the cosine of that angle. The crossflow across the disc is the hull's speed times its sine.
-- **Rider and drive:** 100 W sustained at 70 rpm. The drive is 94% efficient; the train is 7:1.
+- **Rider and drive:** the blade is designed at 160 W and 70 rpm, a hard sustained effort, not at the
+  100 W cruise. A blade designed at 100 W runs at higher incidence when pushed, and was
+  predicted to cavitate from about 185 W. Designed at 160 W it stays clear to 250 W, costing under 1 % of
+  efficiency at 100 W, and the cruise cadence falls to about 61 rpm. The drive is 94% efficient; the train is 7:1.
 - **Sections:** polars from NeuralFoil (an XFOIL-trained surrogate, `large` model), n_crit 5. Each
   station is read at its own Reynolds number, which runs from 3×10⁴ to 10⁵: laminar separation bubbles
   dominate the drag here, which is why the polars and not textbook drag coefficients set the sections.
@@ -51,63 +54,63 @@ geometry is `prop.sv`. Every number below is computed. The assumptions are liste
 
 ## Trade study: diameter against gear ratio
 
-At 100 W and a 70 rpm cadence, the efficiency and speed of a minimum-induced-loss blade:
+At 160 W and a 70 rpm cadence, the efficiency and speed of a minimum-induced-loss blade:
 
 | D mm | ratio | rpm | η | kn | max chord mm |
 |---|---|---|---|---|---|
-| 220 | 5 | 350 | 0.699 | 4.24 | 78.4 |
-| 220 | 6 | 420 | 0.742 | 4.31 | 61.3 |
-| 220 | 7 | 490 | 0.766 | 4.34 | 52.8 |
-| 220 | 8 | 560 | 0.780 | 4.37 | 46.0 |
-| 250 | 5 | 350 | 0.771 | 4.35 | 58.3 |
-| 250 | 6 | 420 | 0.795 | 4.39 | 45.1 |
-| 250 | 7 | 490 | 0.806 | 4.40 | 37.0 |
-| 250 | 8 | 560 | 0.810 | 4.41 | 31.2 |
-| 270 | 5 | 350 | 0.802 | 4.40 | 50.7 |
-| 270 | 6 | 420 | 0.817 | 4.42 | 39.0 |
-| 270 | 7 | 490 | 0.821 | 4.42 | 31.5 |
-| 270 | 8 | 560 | 0.821 | 4.42 | 27.5 |
-| 300 | 5 | 350 | 0.831 | 4.44 | 39.6 |
-| 300 | 6 | 420 | 0.835 | 4.44 | 30.7 |
-| 300 | 7 | 490 | 0.833 | 4.44 | 25.5 |
-| 300 | 8 | 560 | 0.826 | 4.43 | 22.7 |
-| 330 | 5 | 350 | 0.846 | 4.46 | 32.3 |
-| 330 | 6 | 420 | 0.844 | 4.45 | 25.1 |
-| 330 | 7 | 490 | 0.835 | 4.44 | 21.1 |
-| 330 | 8 | 560 | 0.823 | 4.43 | 20.2 |
+| 220 | 5 | 350 | 0.632 | 4.66 | 108.3 |
+| 220 | 6 | 420 | 0.697 | 4.77 | 84.4 |
+| 220 | 7 | 490 | 0.733 | 4.82 | 73.8 |
+| 220 | 8 | 560 | 0.755 | 4.86 | 64.4 |
+| 250 | 5 | 350 | 0.731 | 4.82 | 78.8 |
+| 250 | 6 | 420 | 0.768 | 4.88 | 66.7 |
+| 250 | 7 | 490 | 0.788 | 4.91 | 55.7 |
+| 250 | 8 | 560 | 0.800 | 4.93 | 48.3 |
+| 270 | 5 | 350 | 0.773 | 4.89 | 70.0 |
+| 270 | 6 | 420 | 0.798 | 4.92 | 56.4 |
+| 270 | 7 | 490 | 0.812 | 4.94 | 49.4 |
+| 270 | 8 | 560 | 0.818 | 4.95 | 41.7 |
+| 300 | 5 | 350 | 0.814 | 4.95 | 55.8 |
+| 300 | 6 | 420 | 0.828 | 4.97 | 46.4 |
+| 300 | 7 | 490 | 0.833 | 4.97 | 38.6 |
+| 300 | 8 | 560 | 0.832 | 4.97 | 30.6 |
+| 330 | 5 | 350 | 0.839 | 4.98 | 45.4 |
+| 330 | 6 | 420 | 0.844 | 4.99 | 33.4 |
+| 330 | 7 | 490 | 0.843 | 4.99 | 28.8 |
+| 330 | 8 | 560 | 0.838 | 4.98 | 25.4 |
 
-The optimum is flat. The best case in the window, 330 mm at 5:1, gains 0.04 kn over 270 mm at 7:1.
-It would cost 60 mm more draft, a new gear train, and blades too narrow (25–31 mm) to stay thick
-enough. So the design is 270 mm at 7:1, the train already designed.
+The optimum is flat. The best case in the window, 330 mm at 6:1, gains 0.04 kn
+(η 0.844 against 0.812) over 270 mm at 7:1. It would cost 60 mm more draft and a new gear train.
+So the design is 270 mm at 7:1, the train already designed.
 
 ## The blade
 
 | r/R | r mm | chord mm | β ° | P/D | t/c | t mm | c_li | c_l | α ° | Re | c_d |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| 0.178 | 24.0 | 22.0 | 69.94 | 1.530 | 0.200 | 4.39 | 0.18 | 0.603 | 6.63 | 40239 | 0.0642 |
-| 0.242 | 32.7 | 28.5 | 61.86 | 1.423 | 0.177 | 5.04 | 0.29 | 0.660 | 6.27 | 57479 | 0.0467 |
-| 0.306 | 41.4 | 31.7 | 55.31 | 1.391 | 0.157 | 4.96 | 0.38 | 0.709 | 6.21 | 70784 | 0.0351 |
-| 0.370 | 49.9 | 32.4 | 49.84 | 1.377 | 0.139 | 4.51 | 0.46 | 0.749 | 6.11 | 80118 | 0.0279 |
-| 0.432 | 58.3 | 31.6 | 45.28 | 1.370 | 0.125 | 3.94 | 0.52 | 0.781 | 5.96 | 86194 | 0.0238 |
-| 0.492 | 66.5 | 30.1 | 41.27 | 1.358 | 0.112 | 3.38 | 0.57 | 0.804 | 5.57 | 89801 | 0.0212 |
-| 0.551 | 74.4 | 28.3 | 38.16 | 1.360 | 0.103 | 2.90 | 0.61 | 0.819 | 5.46 | 91572 | 0.0215 |
-| 0.607 | 82.0 | 26.3 | 35.28 | 1.350 | 0.095 | 2.49 | 0.64 | 0.828 | 5.06 | 91933 | 0.0202 |
-| 0.661 | 89.2 | 24.4 | 33.11 | 1.354 | 0.089 | 2.16 | 0.66 | 0.830 | 4.95 | 91142 | 0.0210 |
-| 0.712 | 96.1 | 22.4 | 31.19 | 1.354 | 0.084 | 1.89 | 0.67 | 0.826 | 4.76 | 89326 | 0.0207 |
-| 0.759 | 102.5 | 20.6 | 29.60 | 1.355 | 0.081 | 1.66 | 0.68 | 0.818 | 4.61 | 86521 | 0.0213 |
-| 0.803 | 108.4 | 18.7 | 28.42 | 1.365 | 0.079 | 1.47 | 0.67 | 0.807 | 4.64 | 82707 | 0.0220 |
-| 0.843 | 113.8 | 16.9 | 27.29 | 1.366 | 0.077 | 1.30 | 0.66 | 0.793 | 4.52 | 77830 | 0.0217 |
-| 0.879 | 118.6 | 15.0 | 26.46 | 1.374 | 0.076 | 1.14 | 0.65 | 0.778 | 4.53 | 71825 | 0.0224 |
-| 0.910 | 122.9 | 13.6 | 25.84 | 1.385 | 0.075 | 1.03 | 0.64 | 0.763 | 4.61 | 67212 | 0.0239 |
-| 0.937 | 126.6 | 12.3 | 25.29 | 1.392 | 0.075 | 0.93 | 0.63 | 0.748 | 4.62 | 62255 | 0.0262 |
-| 0.960 | 129.6 | 10.1 | 25.13 | 1.415 | 0.075 | 0.76 | 0.61 | 0.735 | 4.90 | 52017 | 0.0286 |
-| 0.977 | 131.9 | 7.6 | 25.16 | 1.442 | 0.075 | 0.57 | 0.60 | 0.724 | 5.26 | 39861 | 0.0327 |
-| 0.990 | 133.6 | 5.4 | 25.46 | 1.481 | 0.075 | 0.41 | 0.59 | 0.716 | 5.79 | 28781 | 0.0405 |
-| 0.997 | 134.7 | 4.0 | 25.77 | 1.513 | 0.075 | 0.30 | 0.59 | 0.710 | 6.24 | 21137 | 0.0455 |
-| 0.999 | 134.9 | 3.6 | 25.82 | 1.519 | 0.075 | 0.27 | 0.59 | 0.709 | 6.32 | 19502 | 0.0455 |
+| 0.178 | 24.0 | 27.2 | 71.91 | 1.710 | 0.220 | 5.99 | 0.10 | 0.564 | 5.50 | 54257 | 0.0641 |
+| 0.242 | 32.7 | 35.9 | 64.94 | 1.628 | 0.193 | 6.94 | 0.10 | 0.633 | 5.69 | 77792 | 0.0423 |
+| 0.306 | 41.4 | 40.8 | 58.35 | 1.562 | 0.170 | 6.93 | 0.21 | 0.691 | 5.31 | 96739 | 0.0310 |
+| 0.370 | 49.9 | 42.7 | 52.77 | 1.528 | 0.150 | 6.39 | 0.33 | 0.739 | 5.00 | 110739 | 0.0265 |
+| 0.432 | 58.3 | 42.5 | 48.33 | 1.524 | 0.133 | 5.63 | 0.43 | 0.776 | 5.01 | 120429 | 0.0216 |
+| 0.492 | 66.5 | 41.1 | 44.69 | 1.530 | 0.118 | 4.86 | 0.51 | 0.803 | 5.10 | 126690 | 0.0177 |
+| 0.551 | 74.4 | 39.1 | 41.32 | 1.522 | 0.107 | 4.18 | 0.57 | 0.821 | 4.86 | 130303 | 0.0155 |
+| 0.607 | 82.0 | 36.8 | 38.56 | 1.521 | 0.098 | 3.60 | 0.61 | 0.830 | 4.72 | 131835 | 0.0156 |
+| 0.661 | 89.2 | 34.4 | 36.05 | 1.511 | 0.091 | 3.13 | 0.64 | 0.831 | 4.41 | 131645 | 0.0152 |
+| 0.712 | 96.1 | 32.0 | 34.07 | 1.512 | 0.086 | 2.74 | 0.65 | 0.826 | 4.30 | 129917 | 0.0156 |
+| 0.759 | 102.5 | 29.6 | 32.29 | 1.507 | 0.082 | 2.42 | 0.66 | 0.815 | 4.08 | 126700 | 0.0156 |
+| 0.803 | 108.4 | 27.2 | 30.98 | 1.514 | 0.079 | 2.15 | 0.65 | 0.800 | 4.08 | 121948 | 0.0162 |
+| 0.843 | 113.8 | 24.8 | 29.74 | 1.513 | 0.077 | 1.91 | 0.64 | 0.782 | 3.95 | 115552 | 0.0162 |
+| 0.879 | 118.6 | 22.2 | 28.82 | 1.519 | 0.076 | 1.69 | 0.62 | 0.763 | 3.96 | 107377 | 0.0166 |
+| 0.910 | 122.9 | 20.2 | 28.13 | 1.529 | 0.076 | 1.53 | 0.60 | 0.744 | 4.03 | 100891 | 0.0175 |
+| 0.937 | 126.6 | 18.2 | 27.52 | 1.535 | 0.075 | 1.37 | 0.58 | 0.725 | 4.04 | 93391 | 0.0190 |
+| 0.960 | 129.6 | 14.9 | 27.28 | 1.555 | 0.075 | 1.12 | 0.55 | 0.708 | 4.29 | 77994 | 0.0207 |
+| 0.977 | 131.9 | 11.3 | 27.21 | 1.579 | 0.075 | 0.84 | 0.54 | 0.694 | 4.59 | 59743 | 0.0241 |
+| 0.990 | 133.6 | 8.0 | 27.45 | 1.615 | 0.075 | 0.60 | 0.52 | 0.683 | 5.09 | 43127 | 0.0292 |
+| 0.997 | 134.7 | 5.9 | 27.70 | 1.645 | 0.075 | 0.44 | 0.52 | 0.677 | 5.49 | 31644 | 0.0425 |
+| 0.999 | 134.9 | 5.4 | 27.75 | 1.651 | 0.075 | 0.41 | 0.51 | 0.675 | 5.57 | 29196 | 0.0422 |
 
 `prop.sv` draws the blade from polynomial fits of these columns. They hold the chord to
-0.07 mm and the pitch angle to 0.26° at every station. Each section is drawn square to a
+0.13 mm and the pitch angle to 0.23° at every station. Each section is drawn square to a
 straight radial stacking line through the mid-chords, with no skew and no rake.
 
 ### Section offsets
@@ -117,22 +120,22 @@ the pressure side, facing aft. The trailing edge is thickened linearly to 0.5 mm
 
 | r/R | chord | pitch | t max | side | 0 | 0.01 | 0.03 | 0.06 | 0.1 | 0.17 | 0.26 | 0.37 | 0.5 | 0.63 | 0.76 | 0.88 | 0.96 | 1 |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| 0.30 | 31.36 | 377 | 4.73 | back | 0.000 | 0.511 | 0.909 | 1.303 | 1.689 | 2.185 | 2.630 | 2.972 | 3.133 | 3.021 | 2.552 | 1.707 | 0.858 | 0.297 |
-| | | | | face | 0.000 | -0.408 | -0.660 | -0.883 | -1.087 | -1.341 | -1.569 | -1.752 | -1.850 | -1.800 | -1.531 | -1.027 | -0.547 | -0.297 |
-| 0.40 | 32.02 | 372 | 4.05 | back | 0.000 | 0.464 | 0.841 | 1.222 | 1.598 | 2.085 | 2.522 | 2.858 | 3.017 | 2.909 | 2.463 | 1.660 | 0.845 | 0.291 |
-| | | | | face | 0.000 | -0.324 | -0.505 | -0.656 | -0.788 | -0.948 | -1.094 | -1.215 | -1.288 | -1.266 | -1.089 | -0.745 | -0.426 | -0.291 |
-| 0.50 | 29.87 | 367 | 3.22 | back | 0.000 | 0.390 | 0.720 | 1.058 | 1.396 | 1.835 | 2.231 | 2.536 | 2.681 | 2.590 | 2.202 | 1.501 | 0.784 | 0.282 |
-| | | | | face | 0.000 | -0.237 | -0.352 | -0.438 | -0.507 | -0.589 | -0.665 | -0.735 | -0.786 | -0.788 | -0.695 | -0.498 | -0.325 | -0.282 |
-| 0.60 | 26.56 | 365 | 2.49 | back | 0.000 | 0.318 | 0.597 | 0.887 | 1.179 | 1.560 | 1.905 | 2.172 | 2.301 | 2.228 | 1.905 | 1.316 | 0.709 | 0.275 |
-| | | | | face | 0.000 | -0.168 | -0.235 | -0.277 | -0.305 | -0.334 | -0.365 | -0.400 | -0.438 | -0.457 | -0.423 | -0.330 | -0.257 | -0.275 |
-| 0.70 | 22.89 | 366 | 1.93 | back | 0.000 | 0.257 | 0.488 | 0.730 | 0.975 | 1.297 | 1.590 | 1.817 | 1.931 | 1.876 | 1.614 | 1.133 | 0.632 | 0.269 |
-| | | | | face | 0.000 | -0.120 | -0.160 | -0.178 | -0.184 | -0.188 | -0.196 | -0.214 | -0.245 | -0.273 | -0.273 | -0.240 | -0.224 | -0.269 |
-| 0.80 | 18.87 | 368 | 1.48 | back | 0.000 | 0.202 | 0.386 | 0.580 | 0.778 | 1.039 | 1.277 | 1.465 | 1.562 | 1.525 | 1.323 | 0.948 | 0.553 | 0.265 |
-| | | | | face | 0.000 | -0.089 | -0.114 | -0.123 | -0.123 | -0.120 | -0.123 | -0.137 | -0.166 | -0.197 | -0.213 | -0.208 | -0.215 | -0.265 |
-| 0.90 | 14.10 | 373 | 1.07 | back | 0.000 | 0.146 | 0.280 | 0.422 | 0.567 | 0.759 | 0.937 | 1.079 | 1.158 | 1.140 | 1.005 | 0.743 | 0.465 | 0.261 |
-| | | | | face | 0.000 | -0.065 | -0.085 | -0.094 | -0.097 | -0.101 | -0.109 | -0.128 | -0.158 | -0.189 | -0.209 | -0.213 | -0.223 | -0.261 |
-| 0.95 | 11.04 | 379 | 0.83 | back | 0.000 | 0.113 | 0.217 | 0.327 | 0.441 | 0.592 | 0.733 | 0.849 | 0.917 | 0.911 | 0.814 | 0.620 | 0.412 | 0.258 |
-| | | | | face | 0.000 | -0.052 | -0.070 | -0.081 | -0.087 | -0.096 | -0.110 | -0.132 | -0.163 | -0.194 | -0.215 | -0.221 | -0.230 | -0.258 |
+| 0.30 | 40.35 | 424 | 6.94 | back | 0.000 | 0.708 | 1.233 | 1.741 | 2.231 | 2.856 | 3.413 | 3.841 | 4.037 | 3.881 | 3.256 | 2.135 | 1.025 | 0.319 |
+| | | | | face | 0.000 | -0.637 | -1.061 | -1.451 | -1.816 | -2.273 | -2.681 | -2.999 | -3.151 | -3.039 | -2.552 | -1.667 | -0.810 | -0.319 |
+| 0.40 | 42.58 | 413 | 6.00 | back | 0.000 | 0.654 | 1.166 | 1.673 | 2.171 | 2.809 | 3.380 | 3.816 | 4.016 | 3.860 | 3.245 | 2.145 | 1.041 | 0.310 |
+| | | | | face | 0.000 | -0.510 | -0.820 | -1.091 | -1.337 | -1.639 | -1.909 | -2.125 | -2.237 | -2.169 | -1.831 | -1.203 | -0.610 | -0.310 |
+| 0.50 | 40.82 | 413 | 4.77 | back | 0.000 | 0.557 | 1.017 | 1.483 | 1.945 | 2.542 | 3.079 | 3.487 | 3.675 | 3.536 | 2.982 | 1.992 | 0.988 | 0.298 |
+| | | | | face | 0.000 | -0.369 | -0.564 | -0.720 | -0.852 | -1.009 | -1.151 | -1.271 | -1.343 | -1.319 | -1.129 | -0.758 | -0.423 | -0.298 |
+| 0.60 | 37.11 | 411 | 3.67 | back | 0.000 | 0.457 | 0.851 | 1.257 | 1.663 | 2.191 | 2.666 | 3.030 | 3.198 | 3.082 | 2.610 | 1.765 | 0.898 | 0.287 |
+| | | | | face | 0.000 | -0.257 | -0.370 | -0.446 | -0.502 | -0.563 | -0.620 | -0.676 | -0.723 | -0.728 | -0.642 | -0.454 | -0.298 | -0.287 |
+| 0.70 | 32.59 | 409 | 2.82 | back | 0.000 | 0.369 | 0.698 | 1.040 | 1.385 | 1.835 | 2.242 | 2.554 | 2.702 | 2.609 | 2.221 | 1.521 | 0.798 | 0.278 |
+| | | | | face | 0.000 | -0.181 | -0.245 | -0.277 | -0.293 | -0.303 | -0.316 | -0.340 | -0.373 | -0.395 | -0.369 | -0.288 | -0.234 | -0.278 |
+| 0.80 | 27.39 | 409 | 2.17 | back | 0.000 | 0.291 | 0.555 | 0.831 | 1.111 | 1.478 | 1.810 | 2.067 | 2.193 | 2.125 | 1.820 | 1.266 | 0.690 | 0.272 |
+| | | | | face | 0.000 | -0.133 | -0.173 | -0.187 | -0.189 | -0.185 | -0.185 | -0.199 | -0.227 | -0.256 | -0.257 | -0.225 | -0.214 | -0.272 |
+| 0.90 | 20.87 | 412 | 1.58 | back | 0.000 | 0.212 | 0.403 | 0.604 | 0.808 | 1.076 | 1.322 | 1.514 | 1.614 | 1.574 | 1.364 | 0.973 | 0.563 | 0.266 |
+| | | | | face | 0.000 | -0.099 | -0.131 | -0.146 | -0.153 | -0.158 | -0.167 | -0.187 | -0.217 | -0.246 | -0.253 | -0.233 | -0.225 | -0.266 |
+| 0.95 | 16.38 | 417 | 1.23 | back | 0.000 | 0.162 | 0.308 | 0.462 | 0.618 | 0.824 | 1.014 | 1.166 | 1.249 | 1.227 | 1.076 | 0.787 | 0.483 | 0.262 |
+| | | | | face | 0.000 | -0.080 | -0.111 | -0.129 | -0.141 | -0.155 | -0.173 | -0.199 | -0.232 | -0.260 | -0.267 | -0.249 | -0.237 | -0.262 |
 
 ## Performance
 
@@ -140,32 +143,34 @@ The final blade, analysed. The boat at 156 kg:
 
 | pedal W | kn | cadence rpm | propeller rpm | thrust N | η propeller | pedal-to-tow |
 |---|---|---|---|---|---|---|
-| 40 | 3.40 | 52.9 | 370 | 18.1 | 0.804 | 0.755 |
-| 60 | 3.84 | 59.9 | 420 | 24.3 | 0.811 | 0.762 |
-| 80 | 4.17 | 65.4 | 458 | 30.1 | 0.815 | 0.767 |
-| 100 | 4.42 | 70.0 | 490 | 35.6 | 0.819 | 0.769 |
-| 130 | 4.72 | 75.6 | 529 | 43.5 | 0.821 | 0.772 |
-| 160 | 4.95 | 80.5 | 564 | 50.9 | 0.821 | 0.771 |
-| 200 | 5.20 | 86.5 | 606 | 60.1 | 0.814 | 0.765 |
-| 250 | 5.44 | 93.2 | 652 | 70.8 | 0.803 | 0.755 |
+| 40 | 3.40 | 46.1 | 323 | 18.1 | 0.800 | 0.752 |
+| 60 | 3.84 | 52.3 | 366 | 24.2 | 0.805 | 0.756 |
+| 80 | 4.16 | 57.0 | 399 | 29.9 | 0.808 | 0.759 |
+| 100 | 4.41 | 61.0 | 427 | 35.3 | 0.809 | 0.761 |
+| 130 | 4.70 | 65.9 | 461 | 43.0 | 0.810 | 0.762 |
+| 160 | 4.94 | 70.0 | 490 | 50.4 | 0.810 | 0.762 |
+| 200 | 5.19 | 74.8 | 523 | 59.8 | 0.809 | 0.761 |
+| 250 | 5.44 | 80.1 | 561 | 70.9 | 0.804 | 0.756 |
 
 Fully loaded (320 kg: pilot, passenger, cargo):
 
 | pedal W | kn | cadence rpm | propeller rpm | thrust N | η propeller |
 |---|---|---|---|---|---|
-| 60 | 3.56 | 58.7 | 411 | 26.2 | 0.810 |
-| 100 | 4.12 | 69.1 | 484 | 37.7 | 0.809 |
-| 160 | 4.64 | 80.5 | 564 | 52.7 | 0.797 |
-| 250 | 5.15 | 92.7 | 649 | 73.2 | 0.784 |
+| 60 | 3.55 | 51.0 | 357 | 25.9 | 0.799 |
+| 100 | 4.12 | 59.7 | 418 | 37.5 | 0.802 |
+| 130 | 4.41 | 64.8 | 453 | 45.4 | 0.802 |
+| 160 | 4.65 | 69.2 | 484 | 52.8 | 0.798 |
+| 200 | 4.89 | 74.5 | 522 | 62.0 | 0.789 |
+| 250 | 5.14 | 80.2 | 561 | 73.0 | 0.781 |
 
-A fixed-pitch propeller sets the cadence by the power: 50–95 rpm from a gentle paddle to a sprint,
-all in a recumbent rider's range. Fully loaded, the cadence at a given power falls by only a few rpm.
+A fixed-pitch propeller sets the cadence by the power: 46–80 rpm from 40 W to 250 W,
+in a recumbent rider's range. Fully loaded, the cadence at a given power is a few rpm lower.
 
 ## Strength
 
 - **Material:** nickel-aluminium bronze C95800. Yield 240 MPa, ultimate 585 MPa, corrosion
   fatigue in sea water 105 MPa (10⁸ cycles, reversed; a literature value for as-cast material).
-- **Sprint start:** a standing start at a 130 rpm cadence (910 rpm, 0.3 m/s), 3.82 N·m, 129 N of thrust.
+- **Sprint start:** a standing start at a 130 rpm cadence (910 rpm, 0.3 m/s), 5.79 N·m, 179 N of thrust.
   Most of the blade is stalled here, and the polars past stall are NeuralFoil's least confident.
   Limit: yield / 1.5 = 160 MPa. The cranks' 200 N·m peak cannot reach the blade: a propeller's
   torque is set by its speed, and below that speed the push only spins it up.
@@ -176,29 +181,30 @@ all in a recumbent rider's range. Fully loaded, the cadence at a given power fal
 
 | r/R | sprint MPa | cruise mean MPa | alternating MPa | Goodman SF |
 |---|---|---|---|---|
-| 0.178 | 123.6 | 36.8 | 11.9 | 5.7 |
-| 0.242 | 63.7 | 18.9 | 6.0 | 11.2 |
-| 0.306 | 51.1 | 15.0 | 4.7 | 14.3 |
-| 0.370 | 51.1 | 14.9 | 4.5 | 14.6 |
-| 0.432 | 56.6 | 16.4 | 4.9 | 13.4 |
-| 0.492 | 64.8 | 18.5 | 5.4 | 12.0 |
-| 0.551 | 73.7 | 20.8 | 6.0 | 10.8 |
-| 0.607 | 81.1 | 22.5 | 6.4 | 10.1 |
-| 0.661 | 85.1 | 23.3 | 6.5 | 9.8 |
-| 0.712 | 84.9 | 22.9 | 6.3 | 10.1 |
-| 0.759 | 80.0 | 21.2 | 5.8 | 10.9 |
-| 0.803 | 71.6 | 18.7 | 5.1 | 12.5 |
-| 0.843 | 60.7 | 15.6 | 4.2 | 15.0 |
-| 0.879 | 48.7 | 12.3 | 3.3 | 19.0 |
-| 0.910 | 32.6 | 8.1 | 2.2 | 28.9 |
-| 0.937 | 18.8 | 4.6 | 1.2 | 50.7 |
+| 0.178 | 75.4 | 16.5 | 6.5 | 8.6 (with the fillet) |
+| 0.242 | 37.2 | 8.1 | 3.1 | 23.0 |
+| 0.306 | 28.4 | 6.1 | 2.3 | 30.7 |
+| 0.370 | 27.3 | 5.8 | 2.2 | 32.6 |
+| 0.432 | 29.2 | 6.2 | 2.3 | 31.0 |
+| 0.492 | 32.7 | 6.9 | 2.5 | 28.4 |
+| 0.551 | 36.5 | 7.5 | 2.7 | 26.0 |
+| 0.607 | 39.6 | 8.1 | 2.8 | 24.6 |
+| 0.661 | 41.1 | 8.2 | 2.8 | 24.4 |
+| 0.712 | 40.5 | 7.9 | 2.7 | 25.4 |
+| 0.759 | 37.7 | 7.2 | 2.5 | 28.0 |
+| 0.803 | 33.2 | 6.2 | 2.1 | 32.6 |
+| 0.843 | 27.6 | 5.1 | 1.7 | 40.2 |
+| 0.879 | 21.7 | 3.9 | 1.3 | 52.2 |
+| 0.910 | 14.3 | 2.5 | 0.8 | 80.7 |
+| 0.937 | 8.2 | 1.4 | 0.5 | 142.4 |
 
-The root takes the highest stress. Give it a fillet of at least 3 mm radius to the hub. The stresses above
-carry no fillet concentration factor, and a cast root with a fillet sees about 1.3×.
+The root takes the highest stress. Give it a fillet of at least 3 mm radius to the hub. The root's Goodman
+factor includes a 1.3× fillet concentration. With it, the root's sprint stress is 98 MPa against the
+160 MPa limit (within it).
 
-**Strikes.** The shear pin shears at 6.6 N·m, 1.73× the sprint start's torque. A tangential
-blow at 0.8 R that shears it is 61 N. That puts 138 MPa into the root, or
-179 MPa with the fillet's 1.3× concentration, against 240 MPa yield. So the pin shears before the blade bends.
+**Strikes.** The shear pin shears at 8.3 N·m, 1.44× the sprint start's torque. A tangential
+blow at 0.8 R that shears it is 77 N. That puts 75 MPa into the root, or
+98 MPa with the fillet's 1.3× concentration, against 240 MPa yield. So the pin shears before the blade bends.
 A blow from below or behind is the kick-up tail's to absorb.
 
 ## Cavitation and ventilation
@@ -208,25 +214,36 @@ is computed at the top of the disc (shallowest) and at the 3 and 9 o'clock posit
 swings the incidence). It is set against a thin-section estimate of the least pressure coefficient:
 thickness, load, and the leading edge's peak for incidence away from ideal.
 
-Worst case shown: 250 W, 5.44 kn, 652 rpm.
+The least margin over the blade, at each power:
+
+| pedal W | margin, design load | margin, full load |
+|---|---|---|
+| 60 | 4.76 | 3.67 |
+| 100 | 2.82 | 2.33 |
+| 130 | 2.14 | 1.77 |
+| 160 | 1.72 | 1.39 |
+| 200 | 1.37 | 0.99 |
+| 250 | 1.03 | 0.73 |
+
+Station by station at 250 W, 5.44 kn, 561 rpm, at the design load:
 
 | r/R | σ top | −Cp min top | σ side | −Cp min side | margin |
 |---|---|---|---|---|---|
-| 0.178 | 20.31 | 2.00 | 16.87 | 3.53 | 4.78 |
-| 0.306 | 13.16 | 1.90 | 10.85 | 3.15 | 3.44 |
-| 0.432 | 8.63 | 1.83 | 7.25 | 2.82 | 2.57 |
-| 0.551 | 6.01 | 1.74 | 5.16 | 2.56 | 2.02 |
-| 0.661 | 4.46 | 1.63 | 3.91 | 2.30 | 1.70 |
-| 0.759 | 3.51 | 1.49 | 3.12 | 2.05 | 1.53 |
-| 0.843 | 2.92 | 1.46 | 2.62 | 1.94 | 1.35 |
-| 0.910 | 2.54 | 1.38 | 2.30 | 1.80 | 1.28 |
-| 0.960 | 2.30 | 1.38 | 2.09 | 1.75 | 1.19 |
-| 0.990 | 2.17 | 1.37 | 1.98 | 1.72 | 1.15 |
-| 0.999 | 2.14 | 1.32 | 1.95 | 1.67 | 1.17 |
+| 0.178 | 77951.25 | 0.71 | 66209.96 | 0.71 | 93084.78 |
+| 0.306 | 15.52 | 1.85 | 12.89 | 3.35 | 3.85 |
+| 0.432 | 10.64 | 2.28 | 8.90 | 2.76 | 3.23 |
+| 0.551 | 7.62 | 1.88 | 6.48 | 2.92 | 2.22 |
+| 0.661 | 5.76 | 1.96 | 4.98 | 2.86 | 1.74 |
+| 0.759 | 4.58 | 1.95 | 4.02 | 2.73 | 1.48 |
+| 0.843 | 3.83 | 1.89 | 3.40 | 2.64 | 1.28 |
+| 0.910 | 3.35 | 1.81 | 2.99 | 2.52 | 1.19 |
+| 0.960 | 3.05 | 1.74 | 2.74 | 2.49 | 1.10 |
+| 0.990 | 2.89 | 1.62 | 2.60 | 2.52 | 1.03 |
+| 0.999 | 2.87 | 0.51 | 2.59 | 0.50 | 5.16 |
 
-At 100 W the least margin is about 1.8. At a 250 W sprint the outer tenth of the blade reaches about 1.1 at the
-sides, so a short sprint may show tip-vortex or leading-edge cavitation inception, harmless at these
-powers. Ventilation is the likelier nuisance. With 60 mm of tip cover (0.22 D), a steep wave or a
+Inception is estimated at 250 W at the design load and 199 W fully loaded.
+Fully loaded, the hull needs more thrust at each power, so the blade runs at higher incidence and the margin falls sooner.
+Ventilation is the likelier nuisance. With 60 mm of tip cover (0.22 D), a steep wave or a
 hard turn can draw air down to the upper blade. The guard fin under the tail and the tail's own
 depth limit it. Avoid running with the tail partly raised.
 
@@ -246,8 +263,8 @@ depth limit it. Avoid running with the tail partly raised.
   - Blade-to-blade angular spacing ±0.5°.
 - **Surface:** Ra ≤ 1.6 µm on both faces, ≤ 0.8 µm over the outer half of the back. Edges sharp to the offsets.
 - **Balance:** static and dynamic, to ISO 1940 G6.3 at 650 rpm. That is a residual unbalance of about
-  75 g·mm.
-- **Hub:** bore Ø16 H7 on a 316 shaft. A Ø1.6 mm C36000 brass shear pin is cross-drilled through hub and
+  83 g·mm.
+- **Hub:** bore Ø16 H7 on a 316 shaft. A Ø1.8 mm C36000 brass shear pin is cross-drilled through hub and
   shaft. A spinner nut and a split pin hold it aft. Fit a sacrificial zinc anode on the tail tube.
 
 ## Limits of this design

@@ -4,8 +4,7 @@ A plywood stitch-and-glue pedal kayak for open water in the San Juan Islands. A 
 drives a propeller through two spiral bevel stages and a line shaft that passes through the hull.
 The hull follows the Duckling (Sam Devlin's 14′ skiff): six developable plywood panels, three a side,
 plus a transom and assorted pieces. Every part is drawn in [Solvent](https://github.com/bmander/geomsolver)
-and checked with `solventc` v0.1.24; `hydrostatics.sv` needs a later geomsolver, one that sews a
-hull's pointed panels and reads a claim exactly off a body's boundary.
+and checked with `solventc` v0.1.27.
 
 ![General arrangement](renders/arrangement.png)
 
@@ -57,7 +56,7 @@ Built and solving:
   1st-percentile woman and the 99th-percentile man of ANSUR II, at the pedal's far and near points.
 - **Hydrostatics** (`hydrostatics.sv`). Read off the hull as drawn: the body its panels, transom
   and the sheet between its sheers enclose, kept within the water at each load's waterline. Six
-  claims, each read exactly off the B-rep (nothing meshed, about 13 s): the draft floats the
+  claims, each read exactly off the B-rep (nothing meshed, about 10 s): the draft floats the
   design and the full load, to within 1 % of the displacement, and KM clears KG by the GM each
   load needs.
 - **Design tables.** `dims.sv` has 18 claims and `mech.sv` 25, all holding. They cover:
@@ -94,10 +93,10 @@ Built and solving:
 | `tools/lines.py` | The lines plan. `python3 tools/lines.py --write` regenerates the rails, transom, skeg, bulkheads, tunnel and deck rails in `hull.sv`. |
 | `hydrostatics.sv` | The hull's draft and stability at the design and the full load, claimed and read exactly off the drawn hull (`solventc hydrostatics.sv`). `--where immersed_design` reads the waterplane's length, breadth and the wetted area. |
 | `hull.sv`, `hull.svd` | The `Hull` component, and the cut file at the top level. Drawing sheets: `lines` and `cutting`. |
-| `drive.sv` | The `Drive` component: the train's datums, the gear pairs, cranks and pedals, and the hardware. `drive.sv` itself draws the drive with its teeth cut (`teeth: 1`, about 40 s to solve and minutes to render). |
+| `drive.sv` | The `Drive` component: the train's datums, the gear pairs, cranks and pedals, and the hardware. `drive.sv` itself draws the drive with its teeth cut (`teeth: 1`, about 25 s to solve and minutes to render). |
 | `mech.sv` | The mechanical design table: bearing and seal stations, materials, the sprint's forces, and 25 checks (`solventc mech.sv`). |
 | `drive_parts.sv` | The hardware: the upper and keel gearboxes, the line shaft (tube, plugs, midway bush, heel cartridge), the heel bracket, gimbal, stock and yoke, the tail, and the strut. Each gearbox is drawn in its own frame at its pair's apex. |
-| `fit.sv` | Clearance claims between the hardware and the hull (about 3 minutes). |
+| `fit.sv` | Clearance claims between the hardware and the hull (about a minute). |
 | `docs/mechanical.md` | The mechanical design: load paths, the shaft's route, each box, the heel, assembly and removal, bought-in parts. |
 | `tools/propeller.py`, `prop.sv` | The propeller's design, analysis and report (`.venv/bin/python tools/propeller.py --write`, which needs `numpy`, `scipy` and `neuralfoil` in `.venv`), and its geometry: `Propeller`, `Hub`, `BladeSection`, and `propeller` as one part. |
 | `docs/propeller.md` | The propeller design report. |

@@ -26,7 +26,9 @@ geometry is `prop.sv`. Every number below is computed. The assumptions are liste
 
 - **Water:** sea water at 10 °C, ρ = 1025 kg/m³, ν = 1.35e-06 m²/s, vapour pressure 1230 Pa.
 - **Hull:** drag from ITTC-57 friction on 2.67 m² wetted, form factor 1.12, plus wave-making
-  of 25% of friction at Froude number 0.29, growing as Fn⁴. The hull figures are `tools/lines.py`'s at 156 kg.
+  of 25% of friction at Froude number 0.29, growing as Fn⁴. The hull figures were `tools/lines.py`'s
+  at 156 kg; the hull as drawn (`hydrostatics.sv`) wets 2.69 m² at a waterline 6.6 mm deeper, which
+  adds 0.5% to the drag.
 - **Hull interaction:** wake fraction 0.03, thrust deduction 0.03. The disc is 0.5 m behind
   the transom on the hinged tail. The shaft runs 11.3° below level, so the required
   thrust is divided by the cosine of that angle. The crossflow across the disc is the hull's speed times its sine.

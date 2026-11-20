@@ -4,7 +4,8 @@ A plywood stitch-and-glue pedal kayak for open water in the San Juan Islands. A 
 drives a propeller through two spiral bevel stages and a line shaft that passes through the hull.
 The hull follows the Duckling (Sam Devlin's 14′ skiff): six developable plywood panels, three a side,
 plus a transom and assorted pieces. Every part is drawn in [Solvent](https://github.com/bmander/geomsolver)
-and checked with `solventc` v0.1.24.
+and checked with `solventc` v0.1.24; `hydrostatics.sv` needs a later geomsolver, one that sews a
+hull's pointed panels and reads a claim exactly off a body's boundary.
 
 ![General arrangement](renders/arrangement.png)
 
@@ -15,8 +16,8 @@ and checked with `solventc` v0.1.24.
 Built and solving:
 
 - **Hull.** Seven rails, each in its own plane and convex in it, so every panel develops without
-  folding. Six developable strakes, a raked transom, two bulkheads and two developable decks.
-  Also:
+  folding, each ending on its corner of the transom. Six developable strakes, a raked transom, two
+  bulkheads and two developable decks. Also:
   - the skeg, carrying the GRP stern tube out through the keel seam;
   - the floor frame;
   - the drive bed, a hardwood keelson;
@@ -54,8 +55,13 @@ Built and solving:
   - lofted in solventc from its design table.
 - **Seat and pilot.** A sliding recumbent seat. The leg is checked as a two-link chain for the
   1st-percentile woman and the 99th-percentile man of ANSUR II, at the pedal's far and near points.
-- **Design tables.** `dims.sv` has 20 claims and `mech.sv` 25, all holding. They cover:
-  - stability, freeboard, and power against drag;
+- **Hydrostatics** (`hydrostatics.sv`). Read off the hull as drawn: the body its panels, transom
+  and the sheet between its sheers enclose, kept within the water at each load's waterline. Six
+  claims, each read exactly off the B-rep (nothing meshed, about 13 s): the draft floats the
+  design and the full load, to within 1 % of the displacement, and KM clears KG by the GM each
+  load needs.
+- **Design tables.** `dims.sv` has 18 claims and `mech.sv` 25, all holding. They cover:
+  - freeboard, and power against drag;
   - gear root stresses, at the cut gears' real face widths;
   - shaft stress, whirl and wind-up;
   - tail and joint angles, and the propeller's clearance when raised;
@@ -68,8 +74,9 @@ Built and solving:
 |---|---|
 | LOA × beam × depth | 5800 × 824 × 380 mm |
 | Boat weight (estimate) | 51 kg: hull 38, drive 9, seat 4 |
-| Design load / full load | 156 kg (draft 123 mm) / 320 kg (draft 181 mm, freeboard 199 mm) |
-| GM, design / full | 240 / 171 mm |
+| Design load / full load | 156 kg (draft 130 mm) / 312 kg (draft 186 mm, freeboard 194 mm) |
+| KM / GM, design | 513 / 223 mm |
+| KM / GM, full | 460 / 160 mm |
 | Speed (estimate) | 4.41 kn at 100 W (cadence 61 rpm), 4.94 kn at 160 W (the propeller's design point, cadence 70 rpm). Propeller η 0.81 (analysed). 40–250 W gives about 3.4–5.4 kn. |
 | Train | 70 rpm at the cranks × 2.5 × 2.8 = 490 rpm at the propeller. Slip 16%; thrust loading C_T 0.20. |
 | Propeller | Ø270 mm, 2 blades, left-handed, P/D 1.51 at 0.7 R (the pitch varies along the blade), expanded area ratio 0.13, NAB C95800, 0.90 kg, Ø1.8 mm brass shear pin. Cavitation-free to 250 W at the design load (estimate). |
@@ -84,7 +91,8 @@ Built and solving:
 | File | What it is |
 |---|---|
 | `dims.sv` | The design table, every figure with its unit, and the claims it is held to (`solventc dims.sv`). |
-| `tools/lines.py` | The lines plan and hydrostatics. `python3 tools/lines.py --write` regenerates the rails, transom, skeg, bulkheads, tunnel and deck rails in `hull.sv`. |
+| `tools/lines.py` | The lines plan. `python3 tools/lines.py --write` regenerates the rails, transom, skeg, bulkheads, tunnel and deck rails in `hull.sv`. |
+| `hydrostatics.sv` | The hull's draft and stability at the design and the full load, claimed and read exactly off the drawn hull (`solventc hydrostatics.sv`). `--where immersed_design` reads the waterplane's length, breadth and the wetted area. |
 | `hull.sv`, `hull.svd` | The `Hull` component, and the cut file at the top level. Drawing sheets: `lines` and `cutting`. |
 | `drive.sv` | The `Drive` component: the train's datums, the gear pairs, cranks and pedals, and the hardware. `drive.sv` itself draws the drive with its teeth cut (`teeth: 1`, about 40 s to solve and minutes to render). |
 | `mech.sv` | The mechanical design table: bearing and seal stations, materials, the sprint's forces, and 25 checks (`solventc mech.sv`). |
@@ -158,10 +166,15 @@ solventc drive.sv --png tower.png --view 35,20     # the gears with their teeth 
    Trim with the pilot and passenger placed. Test the propeller's thrust and torque against rpm
    to anchor its polars.
 6. **Hull rails.** They are B-splines whose control points are `lines.py`'s offsets, so the rails
-   lie a few mm inside them (6 mm at the keel's lowest point). Either interpolate the rails
-   (`spline(through: …)`) or compute the hydrostatics on the B-splines. The skeg and drive bed
-   follow the keel rail, which is the hull's inside; the skeg's top should be lowered by the
-   garboard's thickness.
+   lie a few mm inside them: the hull's lowest point is 6.3 mm above the baseline. The
+   hydrostatics are read on the B-splines (`hydrostatics.sv`). The polygons through the control
+   points, which `lines.py` used to integrate, overstated the volume by about 10 % at the design
+   waterline, so the drafts were 6 to 7 mm shallow; the drive was placed again at the new ones.
+   The skeg and drive bed follow the keel rail, which is the hull's inside; the skeg's top should
+   be lowered by the garboard's thickness. The wetted area and the waterplane's length and breadth
+   are stated in `dims.sv` from `--where`: claiming them needs a word for a body's extent and an
+   instance's faces by shorter names.
 7. Cut files for the bulkheads, decks, tunnel, skeg, drive bed and seat.
 8. Update the tail sketch (`docs/hinged-tail.html`) to the modelled numbers: the joint is 93 mm
-   below the waterline and the tail runs 11° down.
+   below the waterline and the tail runs 11° down. (The joint is now 100 mm below the design
+   waterline.)

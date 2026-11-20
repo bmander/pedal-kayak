@@ -37,17 +37,19 @@ cargo_mass := 25kg                     // a bicycle, front wheel off, or the equ
 design_load := boat_mass + 90kg + gear_mass           // 156 kg
 full_load := boat_mass + pilot_max + passenger_max + cargo_mass   // 312 kg
 
-// -- the hull: tools/lines.py's hydrostatics, read at its three loads ---------------------------------
+// -- the hull: its waterlines, which hydrostatics.sv holds the drawn hull to --------------------------
+// Each draft is the waterline's height where the hull floats that load: what the hull displaces
+// there floats the load, and is no more than 1 % over it. The waterplane's length and breadth and
+// the wetted area are the hull's at the design waterline, read off the drawing
+// (`solventc --where immersed_design hydrostatics.sv`).
 loa := 5800mm
 beam := 824mm
 depth := 380mm                         // keel to sheer at the widest station
-draft_design := 123.4mm                // at 156 kg
-draft_full := 180.9mm                  // at 320 kg
-lwl := 5050mm                          // at the design load
-bwl := 670mm
-wetted := 2.67m * 1m                  // (a literal with ^ squares its unit and its number)
-km_design := 530mm                     // the metacentre above the keel at the design load
-km_full := 472mm
+draft_design := 130mm                  // at 156 kg
+draft_full := 186mm                    // at 312 kg
+lwl := 5115mm                          // at the design load
+bwl := 656mm
+wetted := 2.69m * 1m                  // (a literal with ^ squares its unit and its number)
 transom_keel_z := 112mm                // the transom's bottom corner
 freeboard_full := depth - draft_full   // at the widest station
 
@@ -61,8 +63,8 @@ passenger_kg_z := 300mm
 kg_design := (90kg * pilot_kg_z + boat_mass * boat_kg_z + gear_mass * low_kg_z) / design_load
 full_moment := pilot_max * pilot_kg_z + passenger_max * passenger_kg_z + cargo_mass * low_kg_z
 kg_full := (full_moment + boat_mass * boat_kg_z) / full_load
-gm_design := km_design - kg_design     // ≈ 260 mm
-gm_full := km_full - kg_full           // ≈ 175 mm
+gm_design_min := 150mm                 // the metacentric height the boat needs: hydrostatics.sv
+gm_full_min := 120mm
 
 // -- speed and power ---------------------------------------------------------------------------------
 // ITTC-57 friction on the wetted area at the design load, a form factor for the hull's shape, and
@@ -208,9 +210,7 @@ crank_ux := (bb_x - hip_x_max) / hip_to_bb_max
 crank_uz := (bb_z - hip_z) / hip_to_bb_max
 
 // -- claims ------------------------------------------------------------------------------------------
-claim full_load <= 320kg               // inside lines.py's full-load hydrostatics
 claim freeboard_full >= 180mm
-claim gm_design >= 150mm and gm_full >= 120mm
 claim froude <= 0.32
 claim delivered >= effective           // 100 W makes 4 knots
 claim ratio == 7

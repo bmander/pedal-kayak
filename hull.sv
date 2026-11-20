@@ -4,8 +4,8 @@
 //
 // The rails: the keel in the centreplane, and on each side a lower chine, an upper chine and a
 // sheer. Each side rail lies in a plane of its own and narrows one way only from its widest
-// station toward each end, so no panel folds. Each rail starts on the stem line and ends on the
-// transom's plane. `tools/lines.py` writes the rails and reports the hydrostatics.
+// station toward each end, so no panel folds. Each rail starts on the stem line and ends on its
+// corner of the transom. `tools/lines.py` writes the rails; `hydrostatics.sv` measures the hull.
 //
 // The strakes, each `std.panels.Developable` between two rails. A panel's outside is
 // `a′ × (b − a)`, and every rail runs bow to stern, so each port panel takes its lower rail first

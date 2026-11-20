@@ -1,24 +1,20 @@
 #!/usr/bin/env python3
-"""The pedal kayak's lines: seven rails, each drawn in a plane and convex in it, and the
-hydrostatics of the hull they bound.
+"""The pedal kayak's lines: seven rails, each drawn in a plane and convex in it.
 
 The hull is a six-panel stitch-and-glue hull, three strakes a side: the garboard (keel to the
 lower chine), the middle strake (lower chine to upper chine) and the sheer strake (upper chine to
 sheer). Its seven rails are the keel, in the centreplane, and a lower chine, an upper chine and a
 sheer each side. `solventc` refuses a developable panel whose rails fold, so each rail is drawn in
 a plane of its own and its half-breadth is concave along the boat: it narrows one way only from
-its widest station to each end.
+its widest station to each end. Each rail ends on its corner of the transom.
 
 Coordinates, mm: x aft from the stem head, y to starboard (port is -y), z up from the keel's
 lowest point (the baseline).
 
-    python3 tools/lines.py            hydrostatics at the design and the full load
+    python3 tools/lines.py            check the rails and print where they run
     python3 tools/lines.py --write    also rewrite the generated rails in hull.sv
 
-The hydrostatics read each station as the polygon through the rails' points at that station.
-The panels between the rails are ruled surfaces whose rulings are not square to the centreline,
-so the section between two rails bows slightly from that polygon. For a slender hull the
-difference is small, but these are estimates.
+The hydrostatics are not here: hydrostatics.sv reads them off the hull as drawn, exactly.
 """
 import math
 import pathlib
@@ -44,7 +40,6 @@ RAILS = {
     "sheer":    (540.0, (412.0, 380.0), (322.0, 405.0), 1.7, 2.8),
 }
 
-RHO = 1025e-9         # seawater, kg / mm^3
 
 
 def transom_x(z):
@@ -140,10 +135,10 @@ def side_points(rail, n=9):
     return pts
 
 
-# -- hydrostatics ---------------------------------------------------------------------------------
+# -- the rails at a station ------------------------------------------------------------------------
 def section(x):
-    """The half-section at x: the polygon keel, chine_lo, chine_hi, sheer (y >= 0), or None
-    where x is outside the rail's run."""
+    """The rails' points at x (y >= 0): keel, chine_lo, chine_hi, sheer, or None where x is
+    outside a rail's run."""
     pts = []
     if FOREFOOT[0] <= x <= keel_aft_x():
         pts.append((0.0, keel_z(x)))
@@ -156,96 +151,6 @@ def section(x):
         else:
             return None
     return pts
-
-
-def clip_area(poly, T):
-    """Area and centroid (y, z) of the half-section polygon closed to the centreline, below z = T.
-    Returns (area, z-moment, half-breadth at T)."""
-    # closed region: centreline from the keel up to the sheer height, out along the rails
-    ring = [(0.0, poly[-1][1])] + poly[::-1]      # (0, sheer z) -> sheer -> ... -> keel
-    # clip against z <= T (Sutherland–Hodgman, one edge)
-    out = []
-    for i in range(len(ring)):
-        p, q = ring[i], ring[(i + 1) % len(ring)]
-        pin, qin = p[1] <= T, q[1] <= T
-        if pin:
-            out.append(p)
-        if pin != qin:
-            t = (T - p[1]) / (q[1] - p[1])
-            out.append((p[0] + t * (q[0] - p[0]), T))
-    if len(out) < 3:
-        return 0.0, 0.0, 0.0
-    a = mz = 0.0
-    for i in range(len(out)):
-        (y0, z0), (y1, z1) = out[i], out[(i + 1) % len(out)]
-        cr = y0 * z1 - y1 * z0
-        a += cr
-        mz += (z0 + z1) * cr
-    a /= 2
-    mz /= 6
-    hb = max((p[0] for p in out if abs(p[1] - T) < 1e-9), default=0.0)
-    return abs(a), abs(mz), hb
-
-
-def hydro(T, dx=10.0):
-    """Displacement (kg), LCB (mm from stem), KB, waterline length, beam, BM, wetted-ish."""
-    vol = mx = mz = 0.0
-    xs_wet = []
-    I = 0.0
-    bwl = 0.0
-    x = FOREFOOT[0]
-    while x <= LOA:
-        poly = section(x)
-        if poly:
-            a, mzz, hb = clip_area(poly, T)
-            vol += 2 * a * dx
-            mx += 2 * a * x * dx
-            mz += 2 * mzz * dx
-            I += (2 / 3) * hb ** 3 * dx
-            bwl = max(bwl, 2 * hb)
-            if a > 0:
-                xs_wet.append(x)
-        x += dx
-    if vol == 0:
-        return None
-    disp = vol * RHO
-    lwl = (max(xs_wet) - min(xs_wet)) if xs_wet else 0
-    return dict(T=T, disp=disp, vol=vol, lcb=mx / vol, kb=mz / vol, lwl=lwl, bwl=bwl,
-                bm=I / vol, cb=vol / (lwl * bwl * T) if lwl and bwl else 0)
-
-
-def wetted(T, dx=10.0):
-    """Wetted surface (mm^2): the half-section's girth below z = T, both sides, along x."""
-    S = 0.0
-    x = FOREFOOT[0]
-    while x <= LOA:
-        poly = section(x)
-        if poly:
-            g = 0.0
-            for (y0, z0), (y1, z1) in zip(poly, poly[1:]):
-                if z0 >= T:
-                    break
-                if z1 > T:
-                    t = (T - z0) / (z1 - z0)
-                    y1, z1 = y0 + t * (y1 - y0), T
-                g += math.hypot(y1 - y0, z1 - z0)
-            S += 2 * g * dx
-        x += dx
-    return S
-
-
-def draft_for(kg):
-    lo, hi = 1.0, 400.0
-    for _ in range(60):
-        mid = (lo + hi) / 2
-        h = hydro(mid)
-        if h is None or h["disp"] < kg:
-            lo = mid
-        else:
-            hi = mid
-    h = hydro((lo + hi) / 2)
-    assert h is not None
-    return h
 
 
 def check_rails():
@@ -279,24 +184,26 @@ def rail_block():
     out = ["// BEGIN generated by tools/lines.py: the seven rails. Edit the lines there, not here.",
            "// Each side rail lies in its own plane and narrows one way to each end, so no panel folds."]
 
-    def emit(name, pts, mirror):
+    def emit(name, pts, mirror, end):
+        """A rail's control points, its last the transom's corner `end`, so the rail ends on it."""
         names = []
-        for i, (x, y, z) in enumerate(pts):
+        for i, (x, y, z) in enumerate(pts[:-1]):
             n = f"{name}{i}"
             names.append(n)
             yy = -y if mirror else y
             out.append(f"{n} := point hint(({fmt(x)}, {fmt(yy)}, {fmt(z)}))")
             out.append(f"fix(({fmt(x)}mm, {fmt(yy)}mm, {fmt(z)}mm)) {n}")
-        return names
+        return names + [end]
 
-    k = emit("k", keel_points(), False)
-    out.append(f"keel := spline({', '.join(k)})")
-    for rail, short in (("chine_lo", "cl"), ("chine_hi", "ch"), ("sheer", "sh")):
-        pts = side_points(SIDE[rail])
-        for side, mirror in (("port", True), ("starboard", False)):
-            names = emit(f"{short}{side[0]}", pts, mirror)
-            out.append(f"{side}_{rail} := spline({', '.join(names)})")
     out.extend(transom_block())
+    k = emit("k", keel_points(), False, "t0")
+    out.append(f"keel := spline({', '.join(k)})")
+    # the transom's ring runs t0 (keel), up the starboard side t1..t3, back down the port t4..t6
+    for j, (rail, short) in enumerate((("chine_lo", "cl"), ("chine_hi", "ch"), ("sheer", "sh"))):
+        pts = side_points(SIDE[rail])
+        for side, mirror, end in (("port", True, f"t{6 - j}"), ("starboard", False, f"t{1 + j}")):
+            names = emit(f"{short}{side[0]}", pts, mirror, end)
+            out.append(f"{side}_{rail} := spline({', '.join(names)})")
     out.extend(skeg_block())
     out.extend(bulkhead_block())
     out.extend(tunnel_block())
@@ -501,17 +408,6 @@ def main():
               f"transom ({r.xt:.0f}, y={r.yt:.0f}, z={r.zt:.0f})  plane z = {r.a:.1f} "
               f"{r.b:+.5f} x {r.c:+.4f} y")
     print("transom corners (starboard):", [tuple(round(v) for v in p) for p in transom_corners()])
-    for label, kg in (("light (boat 51 kg, pilot 47 kg)", 98), ("design (boat, pilot 90, gear 15)", 156),
-                      ("full (pilot, passenger, cargo)", 320)):
-        h = draft_for(kg)
-        immersion = h["T"] - KEEL_AFT_Z
-        print(f"{label:34} {kg:4} kg: draft {h['T']:5.1f}  LWL {h['lwl']:5.0f}  BWL {h['bwl']:4.0f}"
-              f"  LCB {h['lcb']:5.0f} ({h['lcb'] / LOA:.3f} LOA)"
-              f"  KB {h['kb']:4.0f}  BM {h['bm']:4.0f}  KM {h['kb'] + h['bm']:4.0f}"
-              f"  Cb {h['cb']:.2f}  transom immersed {immersion:5.1f}  wetted {wetted(h['T']) / 1e6:.2f} m2")
-    sheer_mid = SIDE["sheer"].z(X_MAX)
-    print(f"depth at the widest station: {sheer_mid - keel_z(X_MAX):.0f}; "
-          f"freeboard there at full load: {sheer_mid - draft_for(320)['T']:.0f}")
     if "--write" in sys.argv:
         hull = pathlib.Path(__file__).resolve().parent.parent / "hull.sv"
         text = hull.read_text()

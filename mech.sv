@@ -20,15 +20,14 @@
 //   seals in a cartridge in the heel bracket. That is the only place water meets the drive. With
 //   the tail off and the cartridge unbolted, the whole shaft draws aft out of the boat.
 // - **The tail** hangs from a gimbal at the heel. A fork turns with the steering stock, raked 12°,
-//   78 mm aft of the transom in two bosses. The tail tilts on a pin across the fork. A stainless
-//   double U-joint, its centre on both axes, drives the propeller shaft, so the drive is constant
-//   velocity at any helm and tilt.
+//   78 mm aft of the transom in two bosses. The tail tilts on two outboard pins. A stainless
+//   double U-joint, its centre on both axes, drives the propeller shaft.
 //
 // **Load cases.**
 // - **Sprint:** the crank's peak, `dims.crank_peak` (200 N·m): a standing start, one leg pushing
 //   off the seat back.
 // - **Design:** the propeller's design point, 160 W at 70 rpm, for bearing life.
-// Every static check is at the sprint load.
+// The gimbal uses the separate 200 N side-load case below.
 //
 // Coordinates, mm: x aft from the stem head, y to starboard, z up from the keel's lowest point.
 // Along each shaft, `a` is the distance from its pair's cone apex.
@@ -107,7 +106,10 @@ brg_port_y := -46mm
 brg_stbd_y := 48mm
 crank_taper_y := 62mm
 drum_r := crank_gear_tip + 3mm + 5mm                    // the gear's tip, 3 clear, a 5 mm wall
-drum_port_y := -58mm
+drum_port_y := -60mm
+port_bearing_face := brg_port_y + 7mm   // the cavity opens at this face of the 6204
+port_bearing_back := brg_port_y - 7mm
+port_seal_back := drum_port_y + 5mm
 drum_stbd_y := 60mm
 // 6204-2RS: 20 × 47 × 14, C 13.5 kN, C0 6.55 kN (ISO 15; SKF's table)
 c_6204 := 13500N
@@ -305,3 +307,28 @@ stock_lever := 120mm - dims.prop_z
 stock_Z := pi * (stock_od^4 - stock_id^4) / (32 * stock_od)
 claim yield_316 / (side_load * stock_lever / stock_Z) >= 2
 detent_release := 40Nm                  // about the tilt pin: 77 N at the propeller's centre
+
+// Distances athwartships from the joint centre to the fork and tail cheek faces.
+fork_in := 31mm
+fork_out := 37mm
+ear_in := 38mm
+ear_out := 44mm
+pivot_d := 12mm
+pivot_length := 12.8mm                 // flange underside to journal tip
+pivot_flange := 4mm
+keeper_pitch := 12mm                   // aft of the journal in the tail frame
+bush_flange := 0.75mm
+bush_bore := 12.12mm                   // finished after fitting
+
+// The lateral tip load creates a yaw moment. Opposed fore-and-aft pin reactions
+// act at the bush midplanes. Screen each journal as a cantilever from the ear.
+pivot_force := side_load * dims.tail / (fork_in + fork_out)
+pivot_lever := ear_in - fork_in         // reaction at the far edge, conservative
+pivot_sigma := 32 * pivot_force * pivot_lever / (pi * pivot_d^3)
+pivot_tau := 4 * pivot_force / (pi * pivot_d^2) * 4 / 3
+pivot_vm := sqrt(pivot_sigma^2 + 3 * pivot_tau^2)
+pivot_engagement := fork_out - (ear_out - pivot_length)
+pivot_pressure := pivot_force / (pivot_d * pivot_engagement)
+claim yield_316 / pivot_vm >= 2
+claim pivot_engagement >= 5.5mm and ear_out - pivot_length >= fork_in
+claim ear_in - fork_out - bush_flange >= 0.2mm

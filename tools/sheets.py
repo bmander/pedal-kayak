@@ -20,7 +20,8 @@ TOWER = [M + p for p in ["upper_box.housing", "upper_box.cover", "upper_box.cran
                          "strut.tube.body", "strut.clevis"]]
 SHAFT = [M + p for p in ["line_shaft.tube", "line_shaft.bush_block", "line_shaft.cartridge",
                          "line_shaft.stub", "line_shaft.uj_fwd"]]
-HEEL = [M + p for p in ["heel.bracket", "heel.upper_bracket", "heel.fork", "heel.tilt_pin.body",
+HEEL = [M + p for p in ["heel.bracket", "heel.upper_bracket", "heel.fork", "heel.bush_port.body", "heel.bush_stbd.body",
+                        "tail.pin_port.body", "tail.pin_port.screw", "tail.pin_stbd.body", "tail.pin_stbd.screw",
                         "heel.stock.body", "heel.yoke", "tail.uj_aft", "tail.uj_centre",
                         "tail.head", "tail.tube.body", "tail.prop_shaft.body", "tail.guard_fin"]]
 PROP = ["drive.hub", "blade_a", "blade_b"]

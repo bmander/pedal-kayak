@@ -42,20 +42,25 @@ sheet arrangement {
   view profile_34(m.drive.mechanism.heel.bracket) from front at (30mm, 110mm) scale 0.06
   view profile_35(m.drive.mechanism.heel.upper_bracket) from front at (30mm, 110mm) scale 0.06
   view profile_36(m.drive.mechanism.heel.fork) from front at (30mm, 110mm) scale 0.06
-  view profile_37(m.drive.mechanism.heel.tilt_pin.body) from front at (30mm, 110mm) scale 0.06
-  view profile_38(m.drive.mechanism.heel.stock.body) from front at (30mm, 110mm) scale 0.06
-  view profile_39(m.drive.mechanism.heel.yoke) from front at (30mm, 110mm) scale 0.06
-  view profile_40(m.drive.mechanism.tail.uj_aft) from front at (30mm, 110mm) scale 0.06
-  view profile_41(m.drive.mechanism.tail.uj_centre) from front at (30mm, 110mm) scale 0.06
-  view profile_42(m.drive.mechanism.tail.head) from front at (30mm, 110mm) scale 0.06
-  view profile_43(m.drive.mechanism.tail.tube.body) from front at (30mm, 110mm) scale 0.06
-  view profile_44(m.drive.mechanism.tail.prop_shaft.body) from front at (30mm, 110mm) scale 0.06
-  view profile_45(m.drive.mechanism.tail.guard_fin) from front at (30mm, 110mm) scale 0.06
-  view profile_46(m.drive.hub) from front at (30mm, 110mm) scale 0.06
-  view profile_47(m.blade_a) from front at (30mm, 110mm) scale 0.06
-  view profile_48(m.blade_b) from front at (30mm, 110mm) scale 0.06
-  view profile_49(m.seat.pan) from front at (30mm, 110mm) scale 0.06
-  view profile_50(m.seat.back) from front at (30mm, 110mm) scale 0.06
+  view profile_37(m.drive.mechanism.heel.bush_port.body) from front at (30mm, 110mm) scale 0.06
+  view profile_38(m.drive.mechanism.heel.bush_stbd.body) from front at (30mm, 110mm) scale 0.06
+  view profile_39(m.drive.mechanism.tail.pin_port.body) from front at (30mm, 110mm) scale 0.06
+  view profile_40(m.drive.mechanism.tail.pin_port.screw) from front at (30mm, 110mm) scale 0.06
+  view profile_41(m.drive.mechanism.tail.pin_stbd.body) from front at (30mm, 110mm) scale 0.06
+  view profile_42(m.drive.mechanism.tail.pin_stbd.screw) from front at (30mm, 110mm) scale 0.06
+  view profile_43(m.drive.mechanism.heel.stock.body) from front at (30mm, 110mm) scale 0.06
+  view profile_44(m.drive.mechanism.heel.yoke) from front at (30mm, 110mm) scale 0.06
+  view profile_45(m.drive.mechanism.tail.uj_aft) from front at (30mm, 110mm) scale 0.06
+  view profile_46(m.drive.mechanism.tail.uj_centre) from front at (30mm, 110mm) scale 0.06
+  view profile_47(m.drive.mechanism.tail.head) from front at (30mm, 110mm) scale 0.06
+  view profile_48(m.drive.mechanism.tail.tube.body) from front at (30mm, 110mm) scale 0.06
+  view profile_49(m.drive.mechanism.tail.prop_shaft.body) from front at (30mm, 110mm) scale 0.06
+  view profile_50(m.drive.mechanism.tail.guard_fin) from front at (30mm, 110mm) scale 0.06
+  view profile_51(m.drive.hub) from front at (30mm, 110mm) scale 0.06
+  view profile_52(m.blade_a) from front at (30mm, 110mm) scale 0.06
+  view profile_53(m.blade_b) from front at (30mm, 110mm) scale 0.06
+  view profile_54(m.seat.pan) from front at (30mm, 110mm) scale 0.06
+  view profile_55(m.seat.back) from front at (30mm, 110mm) scale 0.06
   view plan_0(m.hull.port_garboard_panel) from top at (30mm, 190mm) scale 0.06
   view plan_1(m.hull.starboard_garboard_panel) from top at (30mm, 190mm) scale 0.06
   view plan_2(m.hull.port_middle_panel) from top at (30mm, 190mm) scale 0.06
@@ -93,20 +98,25 @@ sheet arrangement {
   view plan_34(m.drive.mechanism.heel.bracket) from top at (30mm, 190mm) scale 0.06
   view plan_35(m.drive.mechanism.heel.upper_bracket) from top at (30mm, 190mm) scale 0.06
   view plan_36(m.drive.mechanism.heel.fork) from top at (30mm, 190mm) scale 0.06
-  view plan_37(m.drive.mechanism.heel.tilt_pin.body) from top at (30mm, 190mm) scale 0.06
-  view plan_38(m.drive.mechanism.heel.stock.body) from top at (30mm, 190mm) scale 0.06
-  view plan_39(m.drive.mechanism.heel.yoke) from top at (30mm, 190mm) scale 0.06
-  view plan_40(m.drive.mechanism.tail.uj_aft) from top at (30mm, 190mm) scale 0.06
-  view plan_41(m.drive.mechanism.tail.uj_centre) from top at (30mm, 190mm) scale 0.06
-  view plan_42(m.drive.mechanism.tail.head) from top at (30mm, 190mm) scale 0.06
-  view plan_43(m.drive.mechanism.tail.tube.body) from top at (30mm, 190mm) scale 0.06
-  view plan_44(m.drive.mechanism.tail.prop_shaft.body) from top at (30mm, 190mm) scale 0.06
-  view plan_45(m.drive.mechanism.tail.guard_fin) from top at (30mm, 190mm) scale 0.06
-  view plan_46(m.drive.hub) from top at (30mm, 190mm) scale 0.06
-  view plan_47(m.blade_a) from top at (30mm, 190mm) scale 0.06
-  view plan_48(m.blade_b) from top at (30mm, 190mm) scale 0.06
-  view plan_49(m.seat.pan) from top at (30mm, 190mm) scale 0.06
-  view plan_50(m.seat.back) from top at (30mm, 190mm) scale 0.06
+  view plan_37(m.drive.mechanism.heel.bush_port.body) from top at (30mm, 190mm) scale 0.06
+  view plan_38(m.drive.mechanism.heel.bush_stbd.body) from top at (30mm, 190mm) scale 0.06
+  view plan_39(m.drive.mechanism.tail.pin_port.body) from top at (30mm, 190mm) scale 0.06
+  view plan_40(m.drive.mechanism.tail.pin_port.screw) from top at (30mm, 190mm) scale 0.06
+  view plan_41(m.drive.mechanism.tail.pin_stbd.body) from top at (30mm, 190mm) scale 0.06
+  view plan_42(m.drive.mechanism.tail.pin_stbd.screw) from top at (30mm, 190mm) scale 0.06
+  view plan_43(m.drive.mechanism.heel.stock.body) from top at (30mm, 190mm) scale 0.06
+  view plan_44(m.drive.mechanism.heel.yoke) from top at (30mm, 190mm) scale 0.06
+  view plan_45(m.drive.mechanism.tail.uj_aft) from top at (30mm, 190mm) scale 0.06
+  view plan_46(m.drive.mechanism.tail.uj_centre) from top at (30mm, 190mm) scale 0.06
+  view plan_47(m.drive.mechanism.tail.head) from top at (30mm, 190mm) scale 0.06
+  view plan_48(m.drive.mechanism.tail.tube.body) from top at (30mm, 190mm) scale 0.06
+  view plan_49(m.drive.mechanism.tail.prop_shaft.body) from top at (30mm, 190mm) scale 0.06
+  view plan_50(m.drive.mechanism.tail.guard_fin) from top at (30mm, 190mm) scale 0.06
+  view plan_51(m.drive.hub) from top at (30mm, 190mm) scale 0.06
+  view plan_52(m.blade_a) from top at (30mm, 190mm) scale 0.06
+  view plan_53(m.blade_b) from top at (30mm, 190mm) scale 0.06
+  view plan_54(m.seat.pan) from top at (30mm, 190mm) scale 0.06
+  view plan_55(m.seat.back) from top at (30mm, 190mm) scale 0.06
   view stern_0(m.hull.transom) from front at (-360mm, 272mm) scale 0.12
   view stern_1(m.hull.skeg) from front at (-360mm, 272mm) scale 0.12
   view stern_2(m.hull.stern_tube) from front at (-360mm, 272mm) scale 0.12
@@ -120,18 +130,23 @@ sheet arrangement {
   view stern_10(m.drive.mechanism.heel.bracket) from front at (-360mm, 272mm) scale 0.12
   view stern_11(m.drive.mechanism.heel.upper_bracket) from front at (-360mm, 272mm) scale 0.12
   view stern_12(m.drive.mechanism.heel.fork) from front at (-360mm, 272mm) scale 0.12
-  view stern_13(m.drive.mechanism.heel.tilt_pin.body) from front at (-360mm, 272mm) scale 0.12
-  view stern_14(m.drive.mechanism.heel.stock.body) from front at (-360mm, 272mm) scale 0.12
-  view stern_15(m.drive.mechanism.heel.yoke) from front at (-360mm, 272mm) scale 0.12
-  view stern_16(m.drive.mechanism.tail.uj_aft) from front at (-360mm, 272mm) scale 0.12
-  view stern_17(m.drive.mechanism.tail.uj_centre) from front at (-360mm, 272mm) scale 0.12
-  view stern_18(m.drive.mechanism.tail.head) from front at (-360mm, 272mm) scale 0.12
-  view stern_19(m.drive.mechanism.tail.tube.body) from front at (-360mm, 272mm) scale 0.12
-  view stern_20(m.drive.mechanism.tail.prop_shaft.body) from front at (-360mm, 272mm) scale 0.12
-  view stern_21(m.drive.mechanism.tail.guard_fin) from front at (-360mm, 272mm) scale 0.12
-  view stern_22(m.drive.hub) from front at (-360mm, 272mm) scale 0.12
-  view stern_23(m.blade_a) from front at (-360mm, 272mm) scale 0.12
-  view stern_24(m.blade_b) from front at (-360mm, 272mm) scale 0.12
+  view stern_13(m.drive.mechanism.heel.bush_port.body) from front at (-360mm, 272mm) scale 0.12
+  view stern_14(m.drive.mechanism.heel.bush_stbd.body) from front at (-360mm, 272mm) scale 0.12
+  view stern_15(m.drive.mechanism.tail.pin_port.body) from front at (-360mm, 272mm) scale 0.12
+  view stern_16(m.drive.mechanism.tail.pin_port.screw) from front at (-360mm, 272mm) scale 0.12
+  view stern_17(m.drive.mechanism.tail.pin_stbd.body) from front at (-360mm, 272mm) scale 0.12
+  view stern_18(m.drive.mechanism.tail.pin_stbd.screw) from front at (-360mm, 272mm) scale 0.12
+  view stern_19(m.drive.mechanism.heel.stock.body) from front at (-360mm, 272mm) scale 0.12
+  view stern_20(m.drive.mechanism.heel.yoke) from front at (-360mm, 272mm) scale 0.12
+  view stern_21(m.drive.mechanism.tail.uj_aft) from front at (-360mm, 272mm) scale 0.12
+  view stern_22(m.drive.mechanism.tail.uj_centre) from front at (-360mm, 272mm) scale 0.12
+  view stern_23(m.drive.mechanism.tail.head) from front at (-360mm, 272mm) scale 0.12
+  view stern_24(m.drive.mechanism.tail.tube.body) from front at (-360mm, 272mm) scale 0.12
+  view stern_25(m.drive.mechanism.tail.prop_shaft.body) from front at (-360mm, 272mm) scale 0.12
+  view stern_26(m.drive.mechanism.tail.guard_fin) from front at (-360mm, 272mm) scale 0.12
+  view stern_27(m.drive.hub) from front at (-360mm, 272mm) scale 0.12
+  view stern_28(m.blade_a) from front at (-360mm, 272mm) scale 0.12
+  view stern_29(m.blade_b) from front at (-360mm, 272mm) scale 0.12
   label "Profile from starboard" at (30mm, 62mm)
   label "Plan, decks lifted" at (30mm, 150mm)
   label "The stern, 1:8.3: skeg and stern tube, heel bracket, gimbal, steering stock, tail, propeller" at (30mm, 262mm)

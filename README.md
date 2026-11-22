@@ -4,7 +4,7 @@ A plywood stitch-and-glue pedal kayak for open water in the San Juan Islands. A 
 drives a propeller through two spiral bevel stages and a line shaft that passes through the hull.
 The hull follows the Duckling (Sam Devlin's 14′ skiff): six developable plywood panels, three a side,
 plus a transom and assorted pieces. Every part is drawn in [Solvent](https://github.com/bmander/geomsolver)
-and checked with `solventc` v0.1.27.
+and the mechanical revision was checked with `solventc` v0.1.28.
 
 ![General arrangement](renders/arrangement.png)
 
@@ -37,9 +37,9 @@ Built and solving:
     skeg's heel: the drive's only wet seal, reachable from outside. The shaft draws aft out of the
     boat.
   - **Heel.** A milled bracket carries the shaft's bearing, the gimbal fork and the steering
-    stock. A stainless double U-joint is centred on both pivots.
+    stock. Two removable pins leave the stainless double U-joint clear at the tilt axis. [Pivot detail and shop fits](docs/mechanical.md#tail-pivot-machining-and-inspection).
   - **Tail.** It carries the propeller shaft in bushes, with a guard fin.
-  - **Checks.** `mech.sv` sizes and checks 25 items: bevel forces and spiral hands, bearings,
+  - **Checks.** `mech.sv` checks 28 mechanical design conditions covering bevel forces and spiral hands, bearings,
     shafts, tangs, bonds, the strut, latches and pins. The clearances between parts are claimed in
     `fit.sv`.
 - **Propeller.** A professional-grade design, `tools/propeller.py` → `prop.sv` and
@@ -59,7 +59,7 @@ Built and solving:
   claims, each read exactly off the B-rep (nothing meshed, about 10 s): the draft floats the
   design and the full load, to within 1 % of the displacement, and KM clears KG by the GM each
   load needs.
-- **Design tables.** `dims.sv` has 18 claims and `mech.sv` 25, all holding. They cover:
+- **Design tables.** `dims.sv` has 18 claims and `mech.sv` 28, all holding. They cover:
   - freeboard, and power against drag;
   - gear root stresses, at the cut gears' real face widths;
   - shaft stress, whirl and wind-up;
@@ -94,13 +94,13 @@ Built and solving:
 | `hydrostatics.sv` | The hull's draft and stability at the design and the full load, claimed and read exactly off the drawn hull (`solventc hydrostatics.sv`). `--where immersed_design` reads the waterplane's length, breadth and the wetted area. |
 | `hull.sv`, `hull.svd` | The `Hull` component, and the cut file at the top level. Drawing sheets: `lines` and `cutting`. |
 | `drive.sv` | The `Drive` component: the train's datums, the gear pairs, cranks and pedals, and the hardware. `drive.sv` itself draws the drive with its teeth cut (`teeth: 1`, about 25 s to solve and minutes to render). |
-| `mech.sv` | The mechanical design table: bearing and seal stations, materials, the sprint's forces, and 25 checks (`solventc mech.sv`). |
+| `mech.sv` | The mechanical design table: bearing and seal stations, materials, the sprint's forces, and 28 checks (`solventc mech.sv`). |
 | `drive_parts.sv` | The hardware: the upper and keel gearboxes, the line shaft (tube, plugs, midway bush, heel cartridge), the heel bracket, gimbal, stock and yoke, the tail, and the strut. Each gearbox is drawn in its own frame at its pair's apex. |
 | `fit.sv` | Clearance claims between the hardware and the hull (about a minute). |
 | `docs/mechanical.md` | The mechanical design: load paths, the shaft's route, each box, the heel, assembly and removal, bought-in parts. |
 | `tools/propeller.py`, `prop.sv` | The propeller's design, analysis and report (`.venv/bin/python tools/propeller.py --write`, which needs `numpy`, `scipy` and `neuralfoil` in `.venv`), and its geometry: `Propeller`, `Hub`, `BladeSection`, and `propeller` as one part. |
 | `docs/propeller.md` | The propeller design report. |
-| `fabrication/` | The propeller's parts as STL, each built exactly by solventc's kernel and meshed within 10 µm: `blade_a`, `blade_b`, `hub_barrel`, `hub_cap`. They are joined in CAM with a 3 mm root fillet. |
+| `fabrication/` | Six STEP solids for the tail pivots, tail head, fork and gearbox housings. The propeller's parts as STL, each built exactly by solventc's kernel and meshed within 10 µm: `blade_a`, `blade_b`, `hub_barrel`, `hub_cap`. They are joined in CAM with a 3 mm root fillet. |
 | `findings/` | A solventc behaviour worth reporting, with its reproduction. |
 | `seat.sv` | The `Seat` and `Pilot` components; the ergonomics check across the ANSUR range. |
 | `kayak.sv`, `kayak.svd` | The assembly, with gear blanks (`teeth: 0`) so it solves in a second. Drawing sheet: `arrangement` (written by `tools/sheets.py`). |

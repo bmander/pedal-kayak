@@ -100,7 +100,6 @@ component UpperBox() {
   rin := mech.drum_r - 5mm
   // -- the housing: drum, port bearing boss, neck, flange, spigot, keepers, lugs
   construction drum := RodY(a0: mech.drum_port_y, a1: 56mm, r: r)
-  construction port_boss := RodY(a0: -54mm, a1: -37mm, r: 30mm)
   construction neck := RodZ(a0: -60mm, a1: -mech.neck_face + 10mm, r: 31mm)
   construction flange := RodZ(a0: -mech.neck_face + 10mm, a1: -mech.neck_face, r: 52mm)
   construction spigot := RodZ(a0: -mech.neck_face, a1: -mech.neck_face - 6mm, r: 34mm)
@@ -109,7 +108,6 @@ component UpperBox() {
   construction lug_p := Block({x: -47mm, y: -16mm, z: -80mm}, {x: -23mm, y: -10mm, z: -55mm})
   construction lug_s := Block({x: -47mm, y: 10mm, z: -80mm}, {x: -23mm, y: 16mm, z: -55mm})
   housing := solid(drum.body)
-  port_boss.body union housing
   neck.body union housing
   flange.body union housing
   spigot.body union housing
@@ -119,9 +117,13 @@ component UpperBox() {
   lug_s.body union housing
   // the bores: the drum's inside (open to starboard), the port bearing and seal, the neck's
   // bearings, nut and seal, the tang's clearance, the strut's pin
-  construction cavity := RodY(a0: -54mm, a1: 61mm, r: rin)
-  construction brg_port := RodY(a0: -53mm, a1: -36mm, r: 23.5mm)
-  construction seal_port := RodY(a0: -59mm, a1: -53mm, r: 16mm)
+  // Mill the deep annular pocket around the port boss, leaving its stock intact.
+  construction port_pocket := OnY(a0: -54mm, a1: mech.port_bearing_face, ro: rin, ri: 30mm)
+  construction cavity := RodY(a0: mech.port_bearing_face, a1: 61mm, r: rin)
+  construction brg_port := RodY(a0: mech.port_bearing_back, a1: mech.port_bearing_face, r: 23.5mm)
+  construction brg_shoulder := RodY(a0: mech.port_bearing_back - 1mm, a1: mech.port_bearing_back, r: 20mm)
+  construction port_passage := RodY(a0: mech.port_seal_back, a1: mech.port_bearing_back, r: 13mm)
+  construction seal_port := RodY(a0: mech.drum_port_y - 1mm, a1: mech.port_seal_back, r: 16mm)
   construction neck_bore := RodZ(a0: -55mm, a1: -150mm, r: 23.5mm)
   construction pinion_pocket := RodZ(a0: -45mm, a1: -mech.tower_pinion_a1 - 3mm, r: mech.tower_pinion_tip + 3mm)
   construction nut_bore := RodZ(a0: -150mm, a1: -158mm, r: 17mm)
@@ -129,6 +131,9 @@ component UpperBox() {
   construction tang_bore := RodZ(a0: -165mm, a1: -mech.neck_face - 7mm, r: 12mm)
   construction strut_pin := Cyl({x: -35mm, y: -20mm, z: -68mm}, {x: -35mm, y: 20mm, z: -68mm}, r: 4mm)
   cavity.body cut housing
+  port_pocket.body cut housing
+  brg_shoulder.body cut housing
+  port_passage.body cut housing
   brg_port.body cut housing
   seal_port.body cut housing
   neck_bore.body cut housing
@@ -156,7 +161,7 @@ component UpperBox() {
   // the 6204-2RS pair, and the seals
   bearing_port := OnY(a0: mech.brg_port_y - 7mm, a1: mech.brg_port_y + 7mm, ro: 23.5mm, ri: 10mm)
   bearing_stbd := OnY(a0: mech.brg_stbd_y - 7mm, a1: mech.brg_stbd_y + 7mm, ro: 23.5mm, ri: 10mm)
-  seal_p := OnY(a0: -58mm, a1: -53mm, ro: 16mm, ri: 10mm)
+  seal_p := OnY(a0: mech.drum_port_y, a1: mech.port_seal_back, ro: 16mm, ri: 10mm)
   seal_s := OnY(a0: 55mm, a1: 60mm, ro: 16mm, ri: 10mm)
   // the crank gear's web and hub, behind its ring (the ring is the pair's, in drive.sv), keyed
   construction web_disc := OnY(a0: 33mm, a1: 37mm, ro: 50mm, ri: 10mm)
@@ -184,14 +189,18 @@ component KeelBox() {
   bottom := mech.box_floor
   construction chamber := RodZ(a0: bottom, a1: 30mm, r: 55mm)
   construction barrel := RodX(a0: 30mm, a1: mech.box_aft, r: 26mm)
-  construction base := Block({x: -55mm, y: -30mm, z: bottom}, {x: mech.box_aft, y: 30mm, z: bottom + 6mm})
-  construction low_boss := RodZ(a0: bottom, a1: -2mm, r: 21.5mm)
+  // An 8 mm foot overlaps the barrel by 2 mm at its lowest point.
+  construction base := Block({x: -55mm, y: -30mm, z: bottom}, {x: mech.box_aft, y: 30mm, z: bottom + 8mm})
   housing := solid(chamber.body)
   barrel.body union housing
   base.body union housing
-  construction cavity := RodZ(a0: bottom + 4mm, a1: 31mm, r: 51mm)
+  // Pocket around an integral island for the 6202, then bore its seat from above.
+  construction lower_pocket := OnZ(a0: bottom + 4mm, a1: -2mm, ro: 51mm, ri: 21.5mm)
+  construction cavity := RodZ(a0: -2mm, a1: 31mm, r: 51mm)
+  lower_pocket.body cut housing
   cavity.body cut housing
-  low_boss.body union housing
+  construction shaft_relief := RodZ(a0: mech.tg_brg_low - 7mm, a1: mech.tg_brg_low - 5.5mm, r: 14mm)
+  shaft_relief.body cut housing
   construction low_seat := RodZ(a0: mech.tg_brg_low - 5.5mm, a1: 0mm, r: 17.5mm)
   construction barrel_bore := RodX(a0: 30mm, a1: 120mm, r: 20mm)
   construction barrel_mouth := RodX(a0: 30mm, a1: mech.line_pinion_a1 + 3mm, r: mech.line_pinion_tip + 4mm)
@@ -288,11 +297,37 @@ component LineShaft() {
   uj_fwd := solid(uj_hub.body)
 }
 
-// -- the tail, in its own frame: origin the joint, x aft along the tail, y to starboard -----------------
-// The double U-joint's aft half and its spider, the tail's head (a collar and two ears on the tilt
-// pin, outboard of the fork's arms), the tube with its two acetal bushes, the propeller's shaft,
-// the raise line's lug, and the guard fin under the tube that takes a grounding before the blades
-// do.
+// Identical port and starboard pins. The eccentric flange screws to the tail ear.
+component TiltPin(side: Int) {
+  face_y := side * mech.ear_out
+  tip_y := side * (mech.ear_out - mech.pivot_length)
+  head_y := side * (mech.ear_out + mech.pivot_flange)
+  construction journal := RodY(a0: tip_y, a1: face_y, r: mech.pivot_d / 2)
+  construction flange := Cyl({x: 4.5mm, y: face_y, z: 0mm}, {x: 4.5mm, y: head_y, z: 0mm}, r: 12mm)
+  construction hole := Cyl({x: mech.keeper_pitch, y: face_y, z: 0mm}, {x: mech.keeper_pitch, y: head_y, z: 0mm}, r: 2.25mm)
+  body := solid(journal.body)
+  flange.body union body
+  hole.body cut body
+  // ISO 4762 M4 × 10. Thread features are represented by the tap-drill cylinder.
+  construction thread := Cyl({x: mech.keeper_pitch, y: head_y, z: 0mm}, {x: mech.keeper_pitch, y: head_y - side * 10mm, z: 0mm}, r: 1.65mm)
+  construction cap := Cyl({x: mech.keeper_pitch, y: head_y, z: 0mm}, {x: mech.keeper_pitch, y: head_y + side * 4mm, z: 0mm}, r: 3.5mm)
+  screw := solid(thread.body)
+  cap.body union screw
+}
+
+component TiltBush(side: Int) {
+  a := side * mech.fork_in
+  b := side * mech.fork_out
+  c := side * (mech.fork_out + mech.bush_flange)
+  construction sleeve := Cyl({x: dims.joint_x, y: a, z: dims.joint_z}, {x: dims.joint_x, y: b, z: dims.joint_z}, r: 8mm)
+  construction lip := Cyl({x: dims.joint_x, y: b, z: dims.joint_z}, {x: dims.joint_x, y: c, z: dims.joint_z}, r: 10mm)
+  construction bore := Cyl({x: dims.joint_x, y: a, z: dims.joint_z}, {x: dims.joint_x, y: c, z: dims.joint_z}, r: mech.bush_bore / 2)
+  body := solid(sleeve.body)
+  lip.body union body
+  bore.body cut body
+}
+
+// Tail frame: origin at the joint, x aft along the shaft, y to starboard.
 component Tail() {
   o := point
   fix((0mm, 0mm, 0mm)) o
@@ -303,10 +338,10 @@ component Tail() {
   // the head: a collar on the tube, a bar across, and an ear each side on the tilt pin
   construction collar := OnX(a0: 75mm, a1: 105mm, ro: 26mm, ri: 20mm)
   construction bar := Block({x: 78mm, y: -44mm, z: -8mm}, {x: 100mm, y: 44mm, z: 8mm})
-  construction ear_p := Block({x: 0mm, y: -44mm, z: -14mm}, {x: 95mm, y: -38mm, z: 14mm})
-  construction ear_s := Block({x: 0mm, y: 38mm, z: -14mm}, {x: 95mm, y: 44mm, z: 14mm})
-  construction boss_p := Cyl({x: 0mm, y: -44mm, z: 0mm}, {x: 0mm, y: -38mm, z: 0mm}, r: 14mm)
-  construction boss_s := Cyl({x: 0mm, y: 38mm, z: 0mm}, {x: 0mm, y: 44mm, z: 0mm}, r: 14mm)
+  construction ear_p := Block({x: 0mm, y: -mech.ear_out, z: -14mm}, {x: 95mm, y: -mech.ear_in, z: 14mm})
+  construction ear_s := Block({x: 0mm, y: mech.ear_in, z: -14mm}, {x: 95mm, y: mech.ear_out, z: 14mm})
+  construction boss_p := Cyl({x: 0mm, y: -mech.ear_out, z: 0mm}, {x: 0mm, y: -mech.ear_in, z: 0mm}, r: 14mm)
+  construction boss_s := Cyl({x: 0mm, y: mech.ear_in, z: 0mm}, {x: 0mm, y: mech.ear_out, z: 0mm}, r: 14mm)
   head := solid(collar.body)
   bar.body union head
   ear_p.body union head
@@ -314,9 +349,14 @@ component Tail() {
   boss_p.body union head
   boss_s.body union head
   construction head_bore := RodX(a0: 70mm, a1: 110mm, r: 20mm)
-  construction pin_hole := Cyl({x: 0mm, y: -50mm, z: 0mm}, {x: 0mm, y: 50mm, z: 0mm}, r: 6mm)
+  construction pin_hole := Cyl({x: 0mm, y: -50mm, z: 0mm}, {x: 0mm, y: 50mm, z: 0mm}, r: mech.pivot_d / 2)
   head_bore.body cut head
   pin_hole.body cut head
+  // The clearance bore and tapping drill run through both cheeks in one setup.
+  construction keeper_drill := Cyl({x: mech.keeper_pitch, y: -mech.ear_out - 1mm, z: 0mm}, {x: mech.keeper_pitch, y: mech.ear_out + 1mm, z: 0mm}, r: 1.65mm)
+  keeper_drill.body cut head
+  pin_port := TiltPin(side: -1)
+  pin_stbd := TiltPin(side: 1)
   // the tube, its bushes, the propeller's shaft
   tube := OnX(a0: mech.tail_tube_start, a1: 498mm, ro: 20mm, ri: 18mm)
   bush_fwd := OnX(a0: 100mm, a1: 125mm, ro: 18mm, ri: mech.prop_shaft_d / 2)
@@ -355,7 +395,7 @@ component Tail() {
 // acetal.
 //
 // The gimbal fork is clamped to the stock's foot. Its arms reach down either side of the joint to
-// the 316 tilt pin, Ø12, across them. The tail's ears ride the pin outboard of the arms.
+// two flanged bushes. The tail ears carry the removable Ø12 journals.
 // - The stock is 316 tube, 25 × 3, its axis raked with the transom through the joint.
 // - On its head, above the deck, the yoke takes the pull-pull cables.
 // - The tail's raise line runs up inside the stock.
@@ -440,21 +480,22 @@ component Heel() {
   // -- the gimbal fork: a crown clamped to the stock's foot, two arms to the tilt pin
   construction crown_hub := Cyl({x: jx + (68mm - jz) * rake, y: 0mm, z: 68mm}, {x: jx + (92mm - jz) * rake, y: 0mm, z: 92mm}, r: 22mm)
   construction crown_bar := Block({x: jx - 12mm, y: -37mm, z: 68mm}, {x: jx + 24mm, y: 37mm, z: 80mm})
-  construction arm_p := Block({x: jx - 12mm, y: -37mm, z: jz - 14mm}, {x: jx + 12mm, y: -31mm, z: 80mm})
-  construction arm_s := Block({x: jx - 12mm, y: 31mm, z: jz - 14mm}, {x: jx + 12mm, y: 37mm, z: 80mm})
-  construction eye_p := Cyl({x: jx, y: -37mm, z: jz}, {x: jx, y: -31mm, z: jz}, r: 14mm)
-  construction eye_s := Cyl({x: jx, y: 31mm, z: jz}, {x: jx, y: 37mm, z: jz}, r: 14mm)
+  construction arm_p := Block({x: jx - 12mm, y: -mech.fork_out, z: jz - 14mm}, {x: jx + 12mm, y: -mech.fork_in, z: 80mm})
+  construction arm_s := Block({x: jx - 12mm, y: mech.fork_in, z: jz - 14mm}, {x: jx + 12mm, y: mech.fork_out, z: 80mm})
+  construction eye_p := Cyl({x: jx, y: -mech.fork_out, z: jz}, {x: jx, y: -mech.fork_in, z: jz}, r: 14mm)
+  construction eye_s := Cyl({x: jx, y: mech.fork_in, z: jz}, {x: jx, y: mech.fork_out, z: jz}, r: 14mm)
   fork := solid(crown_hub.body)
   crown_bar.body union fork
   arm_p.body union fork
   arm_s.body union fork
   eye_p.body union fork
   eye_s.body union fork
-  construction fork_pin := Cyl({x: jx, y: -40mm, z: jz}, {x: jx, y: 40mm, z: jz}, r: 6mm)
+  construction fork_pin := Cyl({x: jx, y: -40mm, z: jz}, {x: jx, y: 40mm, z: jz}, r: 8mm)
   construction stock_hole := Cyl({x: jx + (75mm - jz) * rake, y: 0mm, z: 75mm}, {x: jx + (100mm - jz) * rake, y: 0mm, z: 100mm}, r: 12.5mm)
   fork_pin.body cut fork
   stock_hole.body cut fork
-  tilt_pin := Cyl({x: jx, y: -47mm, z: jz}, {x: jx, y: 47mm, z: jz}, r: 6mm)
+  bush_port := TiltBush(side: -1)
+  bush_stbd := TiltBush(side: 1)
   // -- the stock and its yoke
   stock := Pipe({x: jx + (75mm - jz) * rake, y: 0mm, z: 75mm}, {x: jx + (dims.stock_top_z - jz) * rake, y: 0mm, z: dims.stock_top_z}, ro: mech.stock_od / 2, ri: mech.stock_id / 2)
   construction yoke_bar := Cyl({x: jx + (dims.stock_top_z - 12mm - jz) * rake, y: -60mm, z: dims.stock_top_z - 12mm}, {x: jx + (dims.stock_top_z - 12mm - jz) * rake, y: 60mm, z: dims.stock_top_z - 12mm}, r: 7mm)

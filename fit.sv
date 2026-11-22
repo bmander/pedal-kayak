@@ -6,6 +6,8 @@ use hull (Hull)
 use drive (Drive)
 use seat (Seat)
 use dims
+use mech
+use drive_parts (OnY, OnZ)
 hull := Hull()
 drive := Drive(teeth: 0)
 seat := Seat(hip_x: dims.hip_x_min)
@@ -38,3 +40,22 @@ claim drive.starboard_crank clear(1mm) drive.mechanism.upper_box.cover
 claim drive.port_crank clear(1mm) drive.mechanism.upper_box.housing
 claim seat.pan clear(10mm) hull.tunnel
 claim seat.back clear(10mm) hull.tunnel
+
+// Witness rings sample the loaded walls inside each gearbox, 0.5 mm from the
+// nominal surfaces. A pocket that erases the boss also erases this material.
+in drive.mechanism.upper_frame {
+  construction port_wall := OnY(a0: mech.port_bearing_back + 0.5mm, a1: mech.port_bearing_face - 0.5mm, ro: 29.5mm, ri: 24mm)
+}
+in drive.mechanism.keel_frame {
+  construction lower_wall := OnZ(a0: mech.tg_brg_low - 5mm, a1: mech.tg_brg_low + 5mm, ro: 21mm, ri: 18mm)
+}
+claim every q in port_wall.body: q in drive.mechanism.upper_box.housing
+claim every q in lower_wall.body: q in drive.mechanism.keel_box.housing
+
+// Running pose. The ball represents the joint centre; the flexible boot needs a physical sweep.
+claim drive.mechanism.tail.pin_port.body clear(9mm) drive.mechanism.tail.uj_centre
+claim drive.mechanism.tail.pin_stbd.body clear(9mm) drive.mechanism.tail.uj_centre
+claim drive.mechanism.tail.pin_port.body clear(0.04mm) drive.mechanism.heel.bush_port.body
+claim drive.mechanism.tail.pin_stbd.body clear(0.04mm) drive.mechanism.heel.bush_stbd.body
+claim drive.mechanism.tail.head clear(0.15mm) drive.mechanism.heel.bush_port.body
+claim drive.mechanism.tail.head clear(0.15mm) drive.mechanism.heel.bush_stbd.body

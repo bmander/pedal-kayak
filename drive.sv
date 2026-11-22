@@ -62,7 +62,10 @@ component Drive(teeth: Int) {
   // stands decides which way the line shaft turns: here forward pedalling (the cranks turning
   // about −y, a bicycle's way seen from starboard) turns the tower about −z and the line shaft
   // about +x, aft: counter-clockwise seen from astern, so the propeller is left-handed (prop.sv).
+    // Start both zero-offset pairs at their analytical pitch-cone values. The solver
+    // still determines the module, radius and angle against the generating crown.
     stage_1 := HypoidPair(pinion_teeth: dims.z_tower_pinion, gear_teeth: dims.z_crank_gear,
+      mn: hint(mech.mn_1), rp: hint(dims.r_tower_pinion), pa: hint(mech.pinion_angle_1),
       mean_module: dims.m_1, shaft_angle: 90deg, offset: 0mm, spiral_angle: 25deg,
       backlash: 0.06mm, tip_relief: 0.25mm, end_relief: 0.25mm, pressure_shift: hint(-1.3deg),
       cutter_radius: 94.515mm, least: hint(0.2))
@@ -77,6 +80,7 @@ component Drive(teeth: Int) {
     // -- stage 2: the tower's gear drives the line shaft's pinion, over the keel ----------------------
     // the gear up the tower, the pinion aft along the line shaft
     stage_2 := HypoidPair(pinion_teeth: dims.z_line_pinion, gear_teeth: dims.z_tower_gear,
+      mn: hint(mech.mn_2), rp: hint(dims.r_line_pinion), pa: hint(mech.pinion_angle_2),
       mean_module: dims.m_2, shaft_angle: 90deg, offset: 0mm, spiral_angle: 25deg,
       backlash: 0.05mm, tip_relief: 0.2mm, end_relief: 0.2mm, pressure_shift: hint(-1.3deg),
       cutter_radius: 75.6122mm, least: hint(0.2))
